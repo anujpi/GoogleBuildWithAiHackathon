@@ -18,5 +18,9 @@ export default defineConfig([
     languageOptions: {
       globals: globals.browser,
     },
+    rules: {
+      // shadcn/ui co-exports its cva variant helpers next to the component.
+      'react-refresh/only-export-components': ['error', { allowConstantExport: true, allowCompoundComponents: true, allowExportNames: ['buttonVariants', 'tabsListVariants'] }],
+    },
   },
 ])

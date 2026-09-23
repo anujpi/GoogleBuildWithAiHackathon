@@ -1,0 +1,14 @@
+# Local dev database. Start with: docker compose up -d
+services:
+  postgres:
+    image: postgis/postgis:17-3.5
+    environment:
+      POSTGRES_DB: ${DB_NAME:-agri}
+      POSTGRES_USER: ${DB_USERNAME:-agri}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-agri}
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+volumes:
+  pgdata:

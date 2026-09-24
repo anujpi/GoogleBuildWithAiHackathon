@@ -91,17 +91,20 @@ The backend does NOT own:
 
 ## 4. Technology
 
-Current backend stack:
+Current backend stack (installed and in use):
 - Java 21
-- Spring Boot 4.1.x
-- Maven
-- Spring Web
+- Spring Boot 4.1.1 (Jackson 3, Hibernate 7)
+- Maven (wrapper: ./mvnw)
+- Spring Web MVC (spring-boot-starter-webmvc)
 - Spring Data JPA
-- PostgreSQL
-- PostGIS
-- Validation
+- Spring Validation
+- Spring Boot Actuator (only `health` exposed)
+- Flyway (spring-boot-starter-flyway + flyway-database-postgresql)
+- PostgreSQL + PostGIS (postgis/postgis:17-3.5)
 - Lombok
-- Spring Boot Actuator
+- Testcontainers (spring-boot-testcontainers + testcontainers-postgresql) for integration tests
+
+NOT installed: Spring Security, JWT, Hibernate Spatial, Redis, Kafka, Spring AI, external-provider HTTP clients.
 
 Planned later:
 - Spring Security + JWT
@@ -320,6 +323,8 @@ SYNTHETIC
 
 Never present synthetic or simulated data as observed real-world data.
 
+Current implementation: SoilProfile uses a farm-specific `SoilDataClassification` (OBSERVED, ESTIMATED, SYNTHETIC) plus `SoilDataSource`. `SoilDataSource.permits` rejects contradictory pairs (e.g. REGIONAL_ESTIMATE + OBSERVED, LAB_REPORT/SOIL_HEALTH_CARD + anything but OBSERVED) with `INCONSISTENT_SOIL_PROVENANCE`. Whether to unify it with the platform-wide list above is an open decision.
+
 If required data is unavailable:
 - reduce confidence
 - use a clearly labeled fallback
@@ -416,9 +421,13 @@ Domain errors should have meaningful application-level codes.
 
 Use PostgreSQL as the primary database.
 
-As the schema becomes important, use explicit database migrations.
+Flyway owns the schema. Migrations live in `src/main/resources/db/migration` (currently V1__create_farm.sql, V2__optional_soil_profile.sql).
 
-The early development environment may use Hibernate schema generation, but production schema management should move toward explicit migrations such as Flyway or Liquibase.
+- `spring.jpa.hibernate.ddl-auto=validate`: Hibernate only checks the schema, never generates it.
+- Every schema change is a new versioned migration. Never edit an applied migration.
+- `spring.jpa.open-in-view=false`.
+
+Local development database: `compose.yaml` runs PostGIS on host port **5433** (5432 is taken by a local PostgreSQL install on the dev machine). Connection defaults to `jdbc:postgresql://localhost:5433/agri`, overridable via `DB_URL`, `DB_USERNAME`, `DB_PASSWORD`.
 
 Prefer:
 - explicit indexes
@@ -460,7 +469,14 @@ Use @Transactional at service/application boundaries when a business operation n
 
 ## 18. Security
 
-Security will be introduced after the domain foundation is working.
+Current status: NOT implemented.
+- Spring Security is not installed.
+- JWT is not implemented.
+- Login/register do not exist.
+- No User entity or roles exist.
+- All current endpoints (including /api/farms) are public.
+
+Security will be introduced in its own phase, when explicitly instructed.
 
 Planned stack:
 - Spring Security
@@ -773,6 +789,8 @@ Every mature module should eventually include:
 - integration tests
 - controller/API tests
 
+Integration tests use Testcontainers (`TestcontainersConfiguration`: postgis/postgis:17-3.5 via `@ServiceConnection`), so they run against real PostgreSQL + PostGIS with the Flyway migrations. Docker must be running; the compose database is not needed. Do not replace this with H2 or mocks of the database.
+
 For external providers:
 - mock them in unit tests
 - use controlled fixtures for integration
@@ -817,7 +835,7 @@ Use:
 - environment variables
 - Spring profiles
 
-Separate:
+Currently there is a single `application.properties` with environment-variable overrides and no Spring profiles. When profiles are introduced, separate:
 - default
 - local
 - test
@@ -868,22 +886,25 @@ Optimize after understanding access patterns.
 
 ## 36. Current backend phase
 
-CURRENT PHASE: Backend Foundation
+COMPLETED: Phase 0 (Backend Foundation) and Phase 2 (Farm + soil).
 
-Objectives:
-1. Verify Spring Boot startup.
-2. Establish package structure.
-3. Add health endpoint.
-4. Connect PostgreSQL.
-5. Establish common exception handling.
-6. Establish base API conventions.
-7. Implement Farm domain.
-8. Implement FarmLocation.
-9. Implement SoilProfile.
-10. Implement basic Farm CRUD.
-11. Add tests for the above.
+Implemented and tested:
+1. Spring Boot startup and `/actuator/health`.
+2. Package structure: `common`, `configuration`, `farm`.
+3. PostgreSQL + PostGIS connection, Flyway migrations.
+4. Common error handling: `ApiError`, `ApiException`, `GlobalExceptionHandler`.
+5. CORS for `/api/**` (origins from `app.cors.allowed-origins`, default http://localhost:5173).
+6. Farm domain with FarmLocation (lat/lon plus a generated PostGIS `geog` column with GiST index) and an optional SoilProfile.
+7. Farm API: POST, GET list (unpaged), GET by id and PUT on `/api/farms` (public; no DELETE). `FarmResponse` includes `soilDataAvailable`.
+8. Soil provenance validation (`INCONSISTENT_SOIL_PROVENANCE`).
+9. Testcontainers integration tests (18 passing at last run).
+10. Frontend contract: `docs/farm-api.md`.
 
-Do NOT yet implement:
+The repository-root `PROJECT_STATE.md` is the source of truth for what is implemented.
+
+NEXT: not yet decided. Candidates are Phase 1 (User/auth) and Phase 3 (Weather/environmental providers). Wait for explicit instruction.
+
+Still do NOT implement without instruction:
 - ML
 - forecasting
 - demand models
@@ -899,9 +920,9 @@ Do NOT yet implement:
 
 ## 37. Backend development phases
 
-Phase 0 — Backend foundation
-Phase 1 — User/auth foundation
-Phase 2 — Farm + soil
+Phase 0 — Backend foundation (done)
+Phase 1 — User/auth foundation (not started)
+Phase 2 — Farm + soil (done, delivered before Phase 1)
 Phase 3 — Weather/environmental providers
 Phase 4 — Crop intelligence
 Phase 5 — Supply forecasting contract
@@ -944,18 +965,16 @@ Avoid vague commits such as:
 
 ---
 
-## 39. First task
+## 39. Starting a new phase
 
-Before implementing domain functionality:
+The Phase 0 inspection is complete.
 
-1. Inspect the current backend.
-2. Inspect pom.xml.
-3. Inspect application configuration.
-4. Inspect the main Spring Boot class.
-5. Inspect package names.
-6. Check existing dependencies.
-7. Report anything inconsistent with this CLAUDE.md.
-8. Propose the minimum changes needed for Backend Phase 0.
+Before implementing a new phase:
+
+1. Read PROJECT_STATE.md and this file.
+2. Inspect the modules and migrations the phase touches.
+3. Report anything inconsistent with this CLAUDE.md.
+4. Propose the minimum changes for that phase.
 
 Do NOT:
 - rewrite the project

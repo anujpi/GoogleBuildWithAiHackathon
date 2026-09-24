@@ -2,6 +2,10 @@
 
 Base URL (local): `http://localhost:8080`. CORS allows `http://localhost:5173` (override with `CORS_ALLOWED_ORIGINS`).
 
+**Authentication required.** Every endpoint needs `Authorization: Bearer <accessToken>` (see `auth-api.md`), and the caller must be a `FARMER` or `FPO`.
+- The farm owner is always the authenticated user. Never send `ownerId`; it is ignored.
+- Every endpoint sees only the caller's own farms. Another user's farm returns `404 FARM_NOT_FOUND`, exactly like a farm that doesn't exist.
+
 | Method | Path | Body | Success | Errors |
 |---|---|---|---|---|
 | POST | `/api/farms` | `FarmRequest` | `201` + `FarmResponse`, `Location: /api/farms/{id}` | `400` |
@@ -93,7 +97,9 @@ All errors share one shape:
 | `MALFORMED_REQUEST` | 400 | Invalid JSON, wrong type, or unknown enum value |
 | `INVALID_PARAMETER` | 400 | `{id}` is not a UUID |
 | `INCONSISTENT_SOIL_PROVENANCE` | 400 | `soilProfile.source` and `dataClassification` contradict each other (table above) |
-| `FARM_NOT_FOUND` | 404 | No farm with that id |
+| `UNAUTHORIZED` | 401 | Missing, invalid or expired token, or a disabled account |
+| `FORBIDDEN` | 403 | Authenticated, but the role has no farm access (`ADMIN`, `AGRICULTURAL_OFFICER` for now) |
+| `FARM_NOT_FOUND` | 404 | No farm with that id **owned by the caller** |
 | `INTERNAL_ERROR` | 500 | Unexpected failure. No internals are exposed. |
 
 `details` is an empty array except for `VALIDATION_ERROR`.

@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -42,6 +43,12 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(ApiException.class)
     ResponseEntity<ApiError> domain(ApiException ex, HttpServletRequest req) {
         return build(ex.getStatus(), ex.getCode(), ex.getMessage(), req, List.of());
+    }
+
+    /** Login failures. One generic message whether the email is unknown, the password wrong or the account disabled. */
+    @ExceptionHandler(AuthenticationException.class)
+    ResponseEntity<ApiError> authentication(HttpServletRequest req) {
+        return build(HttpStatus.UNAUTHORIZED, "INVALID_CREDENTIALS", "Invalid email or password", req, List.of());
     }
 
     @ExceptionHandler(NoResourceFoundException.class)

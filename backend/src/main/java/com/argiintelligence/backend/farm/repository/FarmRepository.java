@@ -10,10 +10,11 @@ import java.util.UUID;
 
 public interface FarmRepository extends JpaRepository<Farm, UUID> {
 
+    // Every lookup is scoped to the owner, so another user's farm is indistinguishable from a missing one.
     // Location and soil are always returned with the farm, so fetch them in the same query (no N+1).
     @EntityGraph(attributePaths = {"location", "soilProfile"})
-    Optional<Farm> findWithDetailsById(UUID id);
+    Optional<Farm> findWithDetailsByIdAndOwnerId(UUID id, UUID ownerId);
 
     @EntityGraph(attributePaths = {"location", "soilProfile"})
-    List<Farm> findAllByOrderByCreatedAtDesc();
+    List<Farm> findAllByOwnerIdOrderByCreatedAtDesc(UUID ownerId);
 }

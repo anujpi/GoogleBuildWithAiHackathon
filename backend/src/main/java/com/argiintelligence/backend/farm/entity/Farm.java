@@ -9,9 +9,11 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
+import com.argiintelligence.backend.user.entity.User;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -57,6 +59,11 @@ public class Farm {
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST, orphanRemoval = true)
     @JoinColumn(name = "soil_profile_id")
     private SoilProfile soilProfile;
+
+    /** Set once from the authenticated user on create; never transferred. Null only for pre-auth legacy rows. */
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "owner_id", updatable = false)
+    private User owner;
 
     @Column(updatable = false)
     private Instant createdAt;

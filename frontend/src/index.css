@@ -3,6 +3,9 @@
 @import "shadcn/tailwind.css";
 @import "@fontsource-variable/inter";
 
+/* Only a .dark ancestor enables dark: styles. Without this, shadcn components half-switch with the OS theme. */
+@custom-variant dark (&:is(.dark *));
+
 @theme inline {
     --font-sans: 'Inter Variable', ui-sans-serif, system-ui, sans-serif;
     --font-heading: var(--font-sans);

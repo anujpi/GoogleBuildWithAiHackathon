@@ -27,7 +27,7 @@ export function ModulePage({ item }: { item: NavItem }) {
             </p>
           </div>
           <Button asChild variant="outline" size="sm">
-            <Link to="/">Back to dashboard</Link>
+            <Link to="/dashboard">Back to dashboard</Link>
           </Button>
         </div>
       </Panel>
@@ -42,7 +42,7 @@ export function NotFoundPage() {
       <PageHeader title="Page not found" description="This address does not match any module." />
       <div>
         <Button asChild variant="outline" size="sm">
-          <Link to="/">Back to dashboard</Link>
+          <Link to="/dashboard">Back to dashboard</Link>
         </Button>
       </div>
     </div>

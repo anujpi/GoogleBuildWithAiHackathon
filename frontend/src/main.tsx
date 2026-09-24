@@ -3,10 +3,11 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { RouterProvider } from 'react-router/dom'
 import { router } from '@/app/router'
+import { shouldRetry } from '@/lib/api/client'
 import './index.css'
 
 const queryClient = new QueryClient({
-  defaultOptions: { queries: { staleTime: 60_000, retry: 1 } },
+  defaultOptions: { queries: { staleTime: 60_000, retry: shouldRetry } },
 })
 
 createRoot(document.getElementById('root')!).render(

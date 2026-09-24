@@ -1,8 +1,10 @@
-import { FlaskConical, Menu } from 'lucide-react'
+import { FlaskConical, LogOut, Menu } from 'lucide-react'
 import { useState } from 'react'
 import { Outlet, useLocation } from 'react-router'
 import { navigation } from '@/app/navigation'
 import { Button } from '@/components/ui/button'
+import { roleLabel } from '@/features/auth/api'
+import { useAuth } from '@/features/auth/context'
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from '@/components/ui/sheet'
 import { TooltipProvider } from '@/components/ui/tooltip'
 import { ProductMark, Sidebar, SidebarNav } from './Sidebar'
@@ -11,8 +13,24 @@ function useCurrentModule() {
   const { pathname } = useLocation()
   for (const group of navigation)
     for (const item of group.items)
-      if (item.path === '/' ? pathname === '/' : pathname.startsWith(item.path)) return { group: group.label, item }
+      if (pathname === item.path || pathname.startsWith(`${item.path}/`)) return { group: group.label, item }
   return null
+}
+
+function UserMenu() {
+  const { currentUser, logout } = useAuth()
+  if (!currentUser) return null
+  return (
+    <div className="flex items-center gap-2 border-l pl-3">
+      <div className="hidden min-w-0 text-right leading-tight sm:block">
+        <div className="max-w-48 truncate text-sm font-medium">{currentUser.fullName}</div>
+        <div className="text-[11px] text-muted-foreground">{roleLabel(currentUser.role)}</div>
+      </div>
+      <Button variant="ghost" size="sm" onClick={logout} aria-label={`Sign out ${currentUser.fullName}`}>
+        <LogOut aria-hidden /> <span className="hidden md:inline">Sign out</span>
+      </Button>
+    </div>
+  )
 }
 
 function TopBar() {
@@ -43,11 +61,14 @@ function TopBar() {
         </ol>
       </nav>
 
-      <div className="ml-auto flex items-center gap-2">
-        <span className="inline-flex h-6 items-center gap-1.5 rounded-sm border border-caution/30 bg-caution/12 px-2 text-xs font-medium text-caution">
-          <FlaskConical className="size-3.5" aria-hidden />
-          <span className="hidden sm:inline">Prototype ·</span> Synthetic data
-        </span>
+      <div className="ml-auto flex items-center gap-3">
+        {current?.item.synthetic && (
+          <span className="inline-flex h-6 items-center gap-1.5 rounded-sm border border-caution/30 bg-caution/12 px-2 text-xs font-medium text-caution">
+            <FlaskConical className="size-3.5" aria-hidden />
+            <span className="hidden sm:inline">Prototype ·</span> Synthetic data
+          </span>
+        )}
+        <UserMenu />
       </div>
     </header>
   )

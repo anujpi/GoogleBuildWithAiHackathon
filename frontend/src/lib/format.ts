@@ -6,6 +6,8 @@ const relative = new Intl.RelativeTimeFormat('en', { numeric: 'auto' })
 export const formatNumber = (n: number) => number.format(n)
 export const formatDate = (iso: string) => date.format(new Date(iso))
 export const formatDateTime = (iso: string) => dateTime.format(new Date(iso))
+/** For date-only values (YYYY-MM-DD): format in UTC so the day never shifts with the viewer's timezone. */
+export const formatDay = (isoDate: string) => new Intl.DateTimeFormat('en-IN', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' }).format(new Date(isoDate))
 export const formatPercent = (fraction: number) => `${Math.round(fraction * 100)}%`
 
 const units: [Intl.RelativeTimeFormatUnit, number][] = [

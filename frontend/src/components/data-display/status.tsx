@@ -64,12 +64,12 @@ const origin: Record<DataOrigin, Meta> = {
   observed: { label: 'Observed', icon: Eye, tone: 'neutral' },
   forecast: { label: 'Forecast', icon: TrendingUp, tone: 'neutral' },
   model: { label: 'Model prediction', icon: Sigma, tone: 'neutral' },
-  estimate: { label: 'Regional estimate', icon: CircleDashed, tone: 'neutral' },
+  estimate: { label: 'Estimate', icon: CircleDashed, tone: 'caution' },
   synthetic: { label: 'Synthetic', icon: FlaskConical, tone: 'caution' },
 }
 
-export function DataOriginBadge({ origin: o }: { origin: DataOrigin }) {
-  return <Pill meta={origin[o]} className="h-5 px-1.5 text-[11px]" />
+export function DataOriginBadge({ origin: o, label }: { origin: DataOrigin; label?: string }) {
+  return <Pill meta={label ? { ...origin[o], label } : origin[o]} className="h-5 px-1.5 text-[11px]" />
 }
 
 const availability: Record<Availability, Meta> = {

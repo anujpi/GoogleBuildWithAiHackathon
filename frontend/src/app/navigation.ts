@@ -20,6 +20,8 @@ export type NavItem = {
   summary: string
   /** Build phase from CLAUDE.md §29. */
   phase: number
+  /** The module still renders mock data, so the top bar flags it as synthetic. */
+  synthetic?: boolean
 }
 
 export type NavGroup = { label: string; items: NavItem[] }
@@ -29,7 +31,7 @@ export const navigation: NavGroup[] = [
   {
     label: 'Intelligence',
     items: [
-      { path: '/', label: 'Dashboard', icon: LayoutGrid, phase: 0, summary: 'What is happening right now across the selected region and farm.' },
+      { path: '/dashboard', label: 'Dashboard', icon: LayoutGrid, phase: 0, synthetic: true, summary: 'What is happening right now across the selected region and farm.' },
       { path: '/farms', label: 'Farms', icon: MapPinned, phase: 1, summary: 'Farm onboarding, location, soil profile, irrigation and crop history.' },
       { path: '/crops', label: 'Crop Intelligence', icon: ChartScatter, phase: 4, summary: 'Compare candidate crops across suitability, yield, water, risk and market gap.' },
       { path: '/supply-demand', label: 'Supply & Demand', icon: ArrowLeftRight, phase: 7, summary: 'Historical and forecast supply against demand, with projected gaps by region.' },

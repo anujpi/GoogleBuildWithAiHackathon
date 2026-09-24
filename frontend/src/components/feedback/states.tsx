@@ -41,13 +41,15 @@ export function AsyncContent<T>(p: {
   loadingMessage: string
   errorMessage: string
   emptyMessage?: string
+  /** Replaces the default empty state, e.g. to add a call to action. */
+  empty?: ReactNode
   isEmpty?: (data: T) => boolean
   children: (data: T) => ReactNode
 }) {
   const { data, isPending, error, refetch } = p.query
   if (isPending) return <LoadingState message={p.loadingMessage} />
   if (error || data === undefined) return <ErrorState message={p.errorMessage} onRetry={() => refetch()} />
-  if (p.isEmpty?.(data)) return <EmptyState message={p.emptyMessage ?? 'Nothing to show yet.'} />
+  if (p.isEmpty?.(data)) return p.empty ?? <EmptyState message={p.emptyMessage ?? 'Nothing to show yet.'} />
   return p.children(data)
 }
 

@@ -1,16 +1,9 @@
-import * as maplibregl from 'maplibre-gl'
-import 'maplibre-gl/dist/maplibre-gl.css'
-// MapLibre resolves its worker relative to its own module URL, which breaks once Vite pre-bundles it.
-// Letting Vite bundle the worker and handing MapLibre the URL works in dev and build.
-import workerUrl from 'maplibre-gl/dist/maplibre-gl-worker.mjs?worker&url'
 import { ChevronDown, Layers } from 'lucide-react'
 import { useEffect, useEffectEvent, useRef, useState } from 'react'
 import { cn } from 'cn'
 import { ErrorState, LoadingState } from '@/components/feedback/states'
 import type { GapState } from '@/types/status'
-
-const STYLE_URL = 'https://tiles.openfreemap.org/styles/positron'
-maplibregl.setWorkerUrl(workerUrl)
+import { BASEMAP_STYLE_URL, maplibregl, prefersReducedMotion } from './maplibre'
 
 export type MapTone = GapState | 'farm'
 export type MapMarker = { id: string; lon: number; lat: number; label: string; tone: MapTone }
@@ -47,7 +40,7 @@ export function MapPanel({ layers, selectedId, onSelect, center, zoom, className
   useEffect(() => {
     const map = new maplibregl.Map({
       container: container.current!,
-      style: STYLE_URL,
+      style: BASEMAP_STYLE_URL,
       ...initialView.current,
       attributionControl: { compact: true },
       cooperativeGestures: true,
@@ -102,8 +95,7 @@ export function MapPanel({ layers, selectedId, onSelect, center, zoom, className
     const map = mapRef.current
     const target = layers.flatMap((l) => l.markers).find((m) => m.id === selectedId)
     if (!map || status !== 'ready' || !target) return
-    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-    map.easeTo({ center: [target.lon, target.lat], duration: reduce ? 0 : 600 })
+    map.easeTo({ center: [target.lon, target.lat], duration: prefersReducedMotion() ? 0 : 600 })
   }, [layers, selectedId, status])
 
   const toggle = (id: string) =>

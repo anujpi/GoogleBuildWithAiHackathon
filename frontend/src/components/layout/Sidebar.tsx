@@ -31,7 +31,6 @@ export function SidebarNav({ onNavigate }: { onNavigate?: () => void }) {
               <li key={path}>
                 <NavLink
                   to={path}
-                  end={path === '/'}
                   onClick={onNavigate}
                   className={({ isActive }) =>
                     cn(
@@ -64,7 +63,7 @@ export function Sidebar() {
       <SidebarNav />
       <div className="mt-auto flex items-start gap-2 rounded-sm border border-sidebar-border p-2.5 text-[11px] text-sidebar-foreground/80">
         <FlaskConical className="mt-px size-3.5 shrink-0 text-caution" aria-hidden />
-        <p>Prototype build. All values shown are synthetic and labelled as such.</p>
+        <p>Prototype build. Synthetic values are always labelled; farm records come from the backend.</p>
       </div>
     </aside>
   )

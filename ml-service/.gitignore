@@ -1,0 +1,26 @@
+# Python
+.venv
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
+build/
+dist/
+
+# Notebooks
+.ipynb_checkpoints/
+
+# Data and model binaries never go into Git (see CLAUDE.md)
+data/
+artifacts/
+mlruns/
+mlartifacts/
+mlflow.db
+*.pkl
+*.joblib
+*.onnx
+*.pt
+*.pth
+*.parquet
+*.h5

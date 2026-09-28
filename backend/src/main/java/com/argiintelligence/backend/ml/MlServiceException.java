@@ -11,13 +11,13 @@ public class MlServiceException extends ApiException {
     }
 
     /** Connection refused, DNS failure or timeout. */
-    static MlServiceException unavailable() {
+    public static MlServiceException unavailable() {
         return new MlServiceException(HttpStatus.SERVICE_UNAVAILABLE, "ML_SERVICE_UNAVAILABLE",
                 "Prediction service is currently unavailable");
     }
 
     /** ML service answered with 4xx/5xx or a response we cannot use. */
-    static MlServiceException badResponse() {
+    public static MlServiceException badResponse() {
         return new MlServiceException(HttpStatus.BAD_GATEWAY, "ML_SERVICE_ERROR",
                 "Prediction service returned an invalid response");
     }

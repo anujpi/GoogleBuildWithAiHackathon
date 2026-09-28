@@ -103,11 +103,12 @@ Current backend stack (installed and in use):
 - PostgreSQL + PostGIS (postgis/postgis:17-3.5)
 - Lombok
 - Testcontainers (spring-boot-testcontainers + testcontainers-postgresql) for integration tests
+- Spring Security + OAuth2 Resource Server (stateless JWT via Nimbus, HS256), BCrypt
+- Spring `RestClient` (JDK HttpClient), used only by `ml/MlClient` to reach the ML service
 
-NOT installed: Spring Security, JWT, Hibernate Spatial, Redis, Kafka, Spring AI, external-provider HTTP clients.
+NOT installed: Hibernate Spatial, Redis, Kafka, Spring AI.
 
 Planned later:
-- Spring Security + JWT
 - Redis
 - Kafka/RabbitMQ
 - object storage
@@ -291,8 +292,10 @@ Example:
 interface WeatherProvider
 
 Possible implementations:
-- MockWeatherProvider
-- RealWeatherProvider
+- RealWeatherProvider (IMD, Open-Meteo, NASA POWER, ...)
+- a test double, in tests only
+
+Weather exception: production must never contain a mock weather provider. With no real provider, weather answers 503 `WEATHER_UNAVAILABLE`. For other domains, any mock provider must label its output `SYNTHETIC`.
 
 Business logic depends on the abstraction, not a specific external API.
 
@@ -421,7 +424,7 @@ Domain errors should have meaningful application-level codes.
 
 Use PostgreSQL as the primary database.
 
-Flyway owns the schema. Migrations live in `src/main/resources/db/migration` (currently V1__create_farm.sql, V2__optional_soil_profile.sql).
+Flyway owns the schema. Migrations live in `src/main/resources/db/migration` (currently V1__create_farm.sql, V2__optional_soil_profile.sql, V3__users_and_farm_ownership.sql).
 
 - `spring.jpa.hibernate.ddl-auto=validate`: Hibernate only checks the schema, never generates it.
 - Every schema change is a new versioned migration. Never edit an applied migration.
@@ -469,25 +472,17 @@ Use @Transactional at service/application boundaries when a business operation n
 
 ## 18. Security
 
-Current status: NOT implemented.
-- Spring Security is not installed.
-- JWT is not implemented.
-- Login/register do not exist.
-- No User entity or roles exist.
-- All current endpoints (including /api/farms) are public.
-
-Security will be introduced in its own phase, when explicitly instructed.
-
-Planned stack:
-- Spring Security
-- JWT
-- role-based authorization
-
-Expected roles may include:
-- FARMER
-- FPO
-- AGRICULTURAL_OFFICER
-- ADMIN
+Current status: IMPLEMENTED (Phase 1). Contract: `docs/auth-api.md`.
+- Spring Security, stateless JWT (HS256) through the OAuth2 resource server, BCrypt password hashing.
+- Endpoints: `POST /api/auth/register`, `POST /api/auth/login`, `GET /api/auth/me`. There are no refresh tokens, password reset or email verification.
+- Public: register, login, `GET /actuator/health`. `/api/farms/**` requires FARMER or FPO. Everything else requires a valid token.
+- Roles: FARMER, FPO, AGRICULTURAL_OFFICER, ADMIN.
+  - Public registration always creates FARMER.
+  - ADMIN and AGRICULTURAL_OFFICER have no broader permissions yet (403 on farms).
+- The principal is `AuthenticatedUser`, reloaded from the database on every request, so disabled accounts and role changes apply immediately.
+- Ownership: resources derive their owner from the principal, never from client input. Another user's resource is reported as 404, not 403.
+- 401/403 responses use the standard `ApiError` shape and never reveal why a token failed.
+- `JWT_SECRET` is required at startup (≥ 32 bytes). Tests inject their own secret in `TestcontainersConfiguration`.
 
 Never store plaintext passwords.
 
@@ -886,23 +881,27 @@ Optimize after understanding access patterns.
 
 ## 36. Current backend phase
 
-COMPLETED: Phase 0 (Backend Foundation) and Phase 2 (Farm + soil).
+COMPLETED: Phase 0 (foundation), Phase 1 (auth and ownership), Phase 2 (farm and soil).
+IN PROGRESS: Phase 3 (weather: provider boundary only, no data source), Phases 5/14 (the ML boundary: supply forecast is wired, other intelligence endpoints are contract only).
 
 Implemented and tested:
 1. Spring Boot startup and `/actuator/health`.
-2. Package structure: `common`, `configuration`, `farm`.
-3. PostgreSQL + PostGIS connection, Flyway migrations.
-4. Common error handling: `ApiError`, `ApiException`, `GlobalExceptionHandler`.
-5. CORS for `/api/**` (origins from `app.cors.allowed-origins`, default http://localhost:5173).
-6. Farm domain with FarmLocation (lat/lon plus a generated PostGIS `geog` column with GiST index) and an optional SoilProfile.
-7. Farm API: POST, GET list (unpaged), GET by id and PUT on `/api/farms` (public; no DELETE). `FarmResponse` includes `soilDataAvailable`.
-8. Soil provenance validation (`INCONSISTENT_SOIL_PROVENANCE`).
-9. Testcontainers integration tests (18 passing at last run).
-10. Frontend contract: `docs/farm-api.md`.
+2. Packages: `common`, `configuration`, `auth`, `user`, `farm`, `weather`, `ml`, `intelligence`.
+3. PostgreSQL + PostGIS, Flyway migrations V1–V3.
+4. Common error handling: `ApiError`, `ApiException`, `GlobalExceptionHandler`, and a JSON 401/403 handler.
+5. CORS for `/api/**` through a `CorsConfigurationSource` (default origin http://localhost:5173).
+6. Farm, FarmLocation (lat/lon plus a generated PostGIS `geog` column) and an optional SoilProfile, all owner-scoped.
+7. Farm API: POST, GET list (unpaged), GET by id, PUT (FARMER or FPO; no DELETE). Soil provenance validation.
+8. Auth: register, login and me, with stateless JWT and BCrypt.
+9. Weather: the `WeatherProvider` boundary has no implementation, so `/api/weather*` answers 503 `WEATHER_UNAVAILABLE`. Product rule: Spring Boot never generates weather data. `WeatherService` refuses `SYNTHETIC` reports, and weather mocks belong only in tests.
+10. ML boundary: `MlClient` → `POST /v1/predict/supply` (provisional contract). `/api/intelligence/supply-forecast` returns data only when ML answers. Demand-forecast, supply-demand, crop-recommendations and agricultural-risk answer 503 `PREDICTION_UNAVAILABLE`.
+11. `common/api/DataClassification`; `MODEL_PREDICTION` is used only for values returned by ML.
+12. Tests: 63 passing at the last recorded run (2026-09-28).
+13. Contracts: `docs/auth-api.md`, `docs/farm-api.md`, `docs/intelligence-api.md`.
 
 The repository-root `PROJECT_STATE.md` is the source of truth for what is implemented.
 
-NEXT: not yet decided. Candidates are Phase 1 (User/auth) and Phase 3 (Weather/environmental providers). Wait for explicit instruction.
+NEXT: not yet decided. Wait for explicit instruction.
 
 Still do NOT implement without instruction:
 - ML
@@ -921,9 +920,9 @@ Still do NOT implement without instruction:
 ## 37. Backend development phases
 
 Phase 0 — Backend foundation (done)
-Phase 1 — User/auth foundation (not started)
+Phase 1 — User/auth foundation (done)
 Phase 2 — Farm + soil (done, delivered before Phase 1)
-Phase 3 — Weather/environmental providers
+Phase 3 — Weather/environmental providers (in progress: provider boundary only, no data source)
 Phase 4 — Crop intelligence
 Phase 5 — Supply forecasting contract
 Phase 6 — Demand forecasting contract

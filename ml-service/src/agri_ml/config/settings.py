@@ -18,6 +18,8 @@ class Settings(BaseSettings):
     mlflow_artifact_root: str = (SERVICE_ROOT / "mlartifacts").as_uri()
     artifacts_dir: Path = SERVICE_ROOT / "artifacts"
     data_dir: Path = SERVICE_ROOT / "data"
+    # Versioned supply model served by POST /v1/predict/supply.
+    supply_model_dir: Path = SERVICE_ROOT / "artifacts" / "supply" / "supply-xgb-v1"
 
 
 @lru_cache

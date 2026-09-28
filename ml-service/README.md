@@ -7,7 +7,9 @@ Spring Boot backend. It does not make the final decision about what to plant, an
 produce advisory text. See [`CLAUDE.md`](CLAUDE.md) for the engineering rules and
 [`ML_TEAM_PLAN.md`](ML_TEAM_PLAN.md) for the staged roadmap.
 
-Current stage: **Stage 0 — foundation**. No models, datasets or prediction endpoints exist yet.
+Current stage: **Stage 1: dataset audit** (first pass done; see `docs/datasets/`). No models,
+downloaded datasets or prediction endpoints exist yet. For a shareable summary, see
+`docs/PROGRESS_REPORT.md`.
 See [`ML_STATE.md`](ML_STATE.md).
 
 ## Setup
@@ -60,6 +62,14 @@ curl localhost:8000/health
 Port 8000 avoids the backend (8080), the frontend (5173) and Postgres (5433). Interactive docs
 are at `/docs`. Don't expose this service publicly. Only the backend should call it.
 
+## Data
+
+Raw files live under `data/raw/`, which is git-ignored. They are placed manually and never committed.
+
+| File | Expected path | Catalogue | Audit |
+|---|---|---|---|
+| `crop_yield.csv` (historical, 1997–2020) | `data/raw/crop_yield.csv` | `docs/datasets/crop_yield.md` | `python scripts/audit_crop_yield.py` |
+
 ## Test and lint
 
 ```bash
@@ -99,18 +109,20 @@ ml-service/
 ├── src/agri_ml/
 │   ├── api/        FastAPI app (currently only /health)
 │   ├── config/     settings
+│   ├── datasets/   loaders + schema validation, one module per catalogued dataset
 │   └── schemas/    shared Pydantic types (DataClassification, health)
-├── scripts/        runnable utilities (MLflow check)
+├── data/raw/       local raw files (git-ignored), e.g. crop_yield.csv
+├── scripts/        runnable utilities (MLflow check, data audits)
 ├── tests/
 ├── notebooks/      exploratory/ and experiments/ (see notebooks/README.md)
 └── docs/
-    ├── datasets/     dataset catalogue (one file per dataset, from _TEMPLATE.md)
+    ├── datasets/     DATASET_CATALOGUE.md, DATASET_PRIORITY.md, per-dataset entries
     ├── model-cards/  one card per production-capable model
     └── ml-contracts/ ML ⇄ Spring Boot API contracts
 ```
 
 These packages from the planned layout get added when their phase starts, not before:
-`common/`, `datasets/`, `features/`, `models/{supply,demand,crop,disease,anomaly}/`,
+`common/`, `features/`, `models/{supply,demand,crop,disease,anomaly}/`,
 `training/`, `evaluation/`, `inference/`.
 
 `data/`, `artifacts/`, `mlflow.db` and `mlartifacts/` are git-ignored. Never commit datasets, model binaries or credentials.

@@ -42,7 +42,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(ApiException.class)
     ResponseEntity<ApiError> domain(ApiException ex, HttpServletRequest req) {
-        return build(ex.getStatus(), ex.getCode(), ex.getMessage(), req, List.of());
+        return build(ex.getStatus(), ex.getCode(), ex.getMessage(), req, ex.getDetails());
     }
 
     /** Login failures. One generic message whether the email is unknown, the password wrong or the account disabled. */

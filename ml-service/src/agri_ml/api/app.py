@@ -96,7 +96,8 @@ def create_app(supply_model_dir: Path | None = None) -> FastAPI:
             data_classification=DataClassification.MODEL_PREDICTION,
             prediction=SupplyPredictionValue(
                 value=result.value,
-                unit=meta["target"]["unit"],
+                # Coconut is in nuts and fibre crops in bales; everything else in tonnes.
+                unit=meta.get("unitsByCrop", {}).get(body.crop, meta["target"]["unit"]),
                 period=f"crop year {body.crop_year}, {body.season} season",
                 interval=interval,
             ),

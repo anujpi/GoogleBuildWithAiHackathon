@@ -81,6 +81,25 @@ def test_clean_normalises_and_drops_invalid_rows():
     assert len(out) == 2
 
 
+def test_clean_reads_des_export_headers_and_drops_aggregates():
+    raw = pd.DataFrame({
+        "State": ["Bihar"] * 3,
+        "District ": ["PATNA"] * 3,
+        "Crop": ["Groundnut", "Oilseeds total", ""],
+        "Crop_Year": ["2019"] * 3,
+        "Season": ["Kharif     "] * 3,
+        "Area ": ["10", "10", "5"],
+        "Production": ["20", "20", "5"],
+        "Yield": ["2", "2", "1"],
+    })
+    out, report = clean(raw)
+    assert report["dropped_aggregate_crop_rows"] == 1
+    assert report["dropped_missing_name"] == 1
+    assert out[["state_name", "district_name", "crop"]].values.tolist() == [
+        ["Bihar", "Patna", "Groundnut"]
+    ]
+
+
 def test_features_use_only_previous_years():
     df = synthetic_clean_frame()
     base = build_features(df, SERIES_KEYS)

@@ -45,8 +45,8 @@ Dependency groups in `pyproject.toml`:
 
 | Group | Contents | Install |
 |---|---|---|
-| core | FastAPI, Uvicorn, Pydantic, pydantic-settings | `pip install -e .` |
-| `ml` | pandas, NumPy, scikit-learn, XGBoost, MLflow, matplotlib, seaborn | `.[ml]` |
+| core | FastAPI, Uvicorn, Pydantic, pydantic-settings, NumPy, pandas, XGBoost (needed to serve predictions) | `pip install -e .` |
+| `ml` | scikit-learn, MLflow, matplotlib, seaborn | `.[ml]` |
 | `dev` | pytest, httpx, ruff | `.[dev]` |
 
 PyTorch/torchvision and the geospatial libraries (Earth Engine, GeoPandas, rasterio) are left out

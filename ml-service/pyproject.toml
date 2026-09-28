@@ -8,23 +8,23 @@ version = "0.1.0"
 description = "ML/Data Science service for the Agricultural Intelligence Platform"
 readme = "README.md"
 requires-python = ">=3.11"
-# Runtime needed to serve the API. Kept separate from the ML stack so the
-# service skeleton stays lightweight.
+# Runtime needed to serve the API, including what inference imports (numpy, pandas,
+# xgboost). The rest of the training stack stays in the `ml` extra.
 dependencies = [
     "fastapi>=0.115",
     "uvicorn[standard]>=0.30",
     "pydantic>=2.7",
     "pydantic-settings>=2.3",
+    "numpy>=1.26",
+    "pandas>=2.2",
+    "xgboost>=2.1",
 ]
 
 [project.optional-dependencies]
 # Data science / training stack. Deep learning (PyTorch) and geospatial
 # (Earth Engine, GeoPandas, rasterio) are intentionally absent until a phase needs them.
 ml = [
-    "numpy>=1.26",
-    "pandas>=2.2",
     "scikit-learn>=1.5",
-    "xgboost>=2.1",
     "mlflow>=2.16",
     "matplotlib>=3.9",
     "seaborn>=0.13",

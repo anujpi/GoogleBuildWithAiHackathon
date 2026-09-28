@@ -24,13 +24,13 @@ def synthetic_clean_frame() -> pd.DataFrame:
     """SYNTHETIC test data only; never used for training a served model."""
     rng = np.random.default_rng(0)
     rows = []
-    for district in ["A", "B", "C", "D"]:
+    for state in ["A", "B", "C", "D"]:
         for crop, season, base_yield in [("Potato", "Rabi", 25.0), ("Wheat", "Rabi", 3.0)]:
             area = rng.uniform(5_000, 20_000)
             for year in range(1998, 2015):
                 y = base_yield * rng.uniform(0.8, 1.2)
                 a = area * rng.uniform(0.9, 1.1)
-                rows.append({"state_name": "Synthetic", "district_name": district, "crop": crop,
+                rows.append({"state_name": f"Synthetic {state}", "crop": crop,
                              "season": season, "crop_year": year, "area": a, "production": a * y})
     return pd.DataFrame(rows)
 
@@ -91,7 +91,8 @@ def test_features_use_only_previous_years():
     # Changing 2012 production must not affect 2012 features, only later years.
     pd.testing.assert_frame_equal(base.loc[base.crop_year <= 2012, cols],
                                   after.loc[after.crop_year <= 2012, cols])
-    assert not base.loc[base.crop_year == 2013, cols].equals(after.loc[after.crop_year == 2013, cols])
+    in_2013 = after.loc[after.crop_year == 2013, cols]
+    assert not base.loc[base.crop_year == 2013, cols].equals(in_2013)
 
 
 def test_missing_previous_year_is_not_filled_from_older_years():
@@ -152,7 +153,11 @@ def test_predict_supply_valid_request(client):
     assert set(body["prediction"]["interval"]) == {
         "lower", "upper", "nominalCoverage", "method", "testEmpiricalCoverage"}
     assert set(body["provenance"]) == {"datasetVersion", "featureVersion", "trainedAt",
-                                       "trainingPeriod", "evaluationPeriod"}
+                                       "trainingPeriod", "evaluationPeriod",
+                                       "trainingDataSource", "spatialGranularity"}
+    assert body["provenance"]["spatialGranularity"] == "state x crop x season x crop_year"
+    # The synthetic test artifact has no trainingData block, so the source is null, not invented.
+    assert body["provenance"]["trainingDataSource"] is None
 
 
 @pytest.mark.parametrize("patch", [
@@ -173,11 +178,34 @@ def test_predict_supply_returns_503_without_model(tmp_path):
     assert client.post("/v1/predict/supply", json=VALID).status_code == 503
 
 
+REAL_MODEL_DIR = get_settings().supply_model_dir
+real_model_only = pytest.mark.skipif(
+    not (REAL_MODEL_DIR / "model.json").is_file(),
+    reason=f"real supply artifact not built at {REAL_MODEL_DIR}",
+)
+
+
+@real_model_only
 def test_real_artifact_serves_prediction():
-    model_dir = get_settings().supply_model_dir
-    if not (model_dir / "model.json").is_file():
-        pytest.skip(f"real supply artifact not built at {model_dir}")
-    client = TestClient(create_app(supply_model_dir=model_dir))
+    client = TestClient(create_app(supply_model_dir=REAL_MODEL_DIR))
     response = client.post("/v1/predict/supply", json=VALID)
     assert response.status_code == 200
-    assert response.json()["prediction"]["value"] > 0
+    body = response.json()
+    assert body["prediction"]["value"] > 0
+    assert body["provenance"]["trainingDataSource"].startswith("Kaggle")
+    assert body["provenance"]["spatialGranularity"].startswith("state")
+
+
+@real_model_only
+def test_real_artifact_metadata_is_chronological_and_kaggle_sourced():
+    meta = SupplyModel.load(REAL_MODEL_DIR).metadata
+    split = meta["split"]
+    assert split["train_end"] < split["val_start"] <= split["val_end"] < split["test_start"]
+    assert split["test_end"] <= 2019  # 2020 covers one state only
+    assert meta["datasetVersion"].startswith("crop_yield-sha256-")
+    assert meta["trainingData"]["spatialGranularity"] == "state"
+    assert "Coconut" not in meta["features"]["categories"]["crop"]
+    # Baselines are always reported next to the model.
+    for part in ("validation", "test"):
+        assert {"model", "naive_last_year_production", "area_x_last_year_yield",
+                "area_x_mean3_yield"} <= set(meta["metrics"][part])

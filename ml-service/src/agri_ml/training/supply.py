@@ -1,6 +1,7 @@
 """Train and evaluate the district supply (production) model against simple baselines.
 
-Target: production (tonnes) of one district x crop x season in crop year t.
+Target: production of one state x crop x season in crop year t (training data: the Kaggle
+state-level crop_yield dataset; see docs/datasets/crop_yield.md).
 Horizon: one crop year ahead, given the target season's cultivated (sown/planned) area and the
 series' reported history for t-1..t-3.
 
@@ -27,7 +28,8 @@ from agri_ml.features.supply import (
 )
 
 MODEL_NAME = "supply-production-xgb"
-SERIES_KEYS = ["state_name", "district_name", "crop", "season"]
+SERIES_KEYS = ["state_name", "crop", "season"]
+GRANULARITY = "state x crop x season x crop_year"
 INTERVAL_QUANTILES = (0.1, 0.9)  # nominal 80% interval
 
 
@@ -161,12 +163,13 @@ def train_and_evaluate(
 
     metadata = {
         "modelName": MODEL_NAME,
-        "modelType": "xgboost.Booster (gradient-boosted trees), target = log(yield_t / mean yield t-1..t-3)",
+        "modelType": "xgboost.Booster (gradient-boosted trees), "
+                     "target = log(yield_t / mean yield t-1..t-3)",
         "featureVersion": FEATURE_VERSION,
         "datasetVersion": dataset_version,
         "trainedAt": datetime.now(UTC).isoformat(timespec="seconds"),
         "target": {"name": "production", "unit": "tonnes",
-                   "granularity": "district x crop x season x crop_year",
+                   "granularity": GRANULARITY,
                    "horizon": "1 crop year ahead"},
         "features": {"numeric": NUMERIC_FEATURES, "categorical": CATEGORICAL_FEATURES,
                      "categories": categories},
@@ -215,8 +218,8 @@ def error_analysis(scored: pd.DataFrame) -> dict:
         "byCrop": by("crop"),
         "bySeason": by("season"),
         "byYear": by("crop_year"),
-        "worstDistrictsByModelWape": sorted(by("district_name"),
-                                            key=lambda r: -r["wape_model"])[:10],
+        "worstStatesByModelWape": sorted(by("state_name"),
+                                         key=lambda r: -r["wape_model"])[:10],
         "worst10Predictions": worst.round(3).to_dict(orient="records"),
     }
 

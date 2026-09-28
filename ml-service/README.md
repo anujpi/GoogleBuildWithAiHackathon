@@ -7,9 +7,10 @@ Spring Boot backend. It does not make the final decision about what to plant, an
 produce advisory text. See [`CLAUDE.md`](CLAUDE.md) for the engineering rules and
 [`ML_TEAM_PLAN.md`](ML_TEAM_PLAN.md) for the staged roadmap.
 
-Current stage: **Stage 1: dataset audit** (first pass done; see `docs/datasets/`). No models,
-downloaded datasets or prediction endpoints exist yet. For a shareable summary, see
-`docs/PROGRESS_REPORT.md`.
+Current stage: **MVP supply model.** A state-level supply model (`supply-xgb-v1`) is trained on
+the Kaggle `crop_yield.csv` and served at `POST /v1/predict/supply`. See
+`docs/model-cards/supply.md` and `docs/ml-contracts/supply.md`. To rebuild the model, run
+`python scripts/train_supply.py`. (`docs/PROGRESS_REPORT.md` describes the earlier audit stage.)
 See [`ML_STATE.md`](ML_STATE.md).
 
 ## Setup
@@ -66,9 +67,9 @@ are at `/docs`. Don't expose this service publicly. Only the backend should call
 
 Raw files live under `data/raw/`, which is git-ignored. They are placed manually and never committed.
 
-| File | Expected path | Catalogue | Audit |
-|---|---|---|---|
-| `crop_yield.csv` (historical, 1997–2020) | `data/raw/crop_yield.csv` | `docs/datasets/crop_yield.md` | `python scripts/audit_crop_yield.py` |
+| File | Expected path | Catalogue | Audit | Preprocess |
+|---|---|---|---|---|
+| `crop_yield.csv` (historical, 1997–2020; 2020 covers one state only) | `data/raw/crop_yield.csv` | `docs/datasets/crop_yield.md` | `python scripts/audit_crop_yield.py` | `python scripts/prepare_crop_yield.py` → `data/processed/crop_yield/<datasetVersion>/<prepVersion>/` |
 
 ## Test and lint
 

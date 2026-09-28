@@ -111,6 +111,8 @@ def create_app(supply_model_dir: Path | None = None) -> FastAPI:
                 trained_at=meta["trainedAt"],
                 training_period=meta["trainingPeriod"],
                 evaluation_period=meta["testPeriod"],
+                training_data_source=meta.get("trainingData", {}).get("source"),
+                spatial_granularity=meta["target"].get("granularity"),
             ),
             generated_at=datetime.now(UTC),
         )

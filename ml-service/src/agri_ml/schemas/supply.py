@@ -19,7 +19,9 @@ class SupplyHistoryPoint(_CamelModel):
 
 class SupplyPredictionRequest(_CamelModel):
     crop: str = Field(examples=["Potato"])
-    season: str = Field(examples=["Rabi"], description="S01 season label, e.g. Kharif, Rabi, Whole Year")
+    season: str = Field(
+        examples=["Rabi"], description="Season label from the training data, e.g. Kharif, Rabi"
+    )
     crop_year: int = Field(ge=1950, le=2100, description="Crop year to forecast")
     area_hectares: float = Field(gt=0, description="Sown/planned area for the target season (ha)")
     history: list[SupplyHistoryPoint] = Field(
@@ -57,6 +59,11 @@ class SupplyProvenance(_CamelModel):
     trained_at: str
     training_period: str
     evaluation_period: str
+    # Added for the Kaggle state-level model. Optional so older artifacts still load.
+    training_data_source: str | None = None
+    spatial_granularity: str | None = Field(
+        default=None, description="Granularity the model was trained at, e.g. state x crop x season"
+    )
 
 
 class SupplyPredictionResponse(_CamelModel):

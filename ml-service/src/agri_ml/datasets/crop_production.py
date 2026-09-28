@@ -48,6 +48,7 @@ def clean(df: pd.DataFrame) -> tuple[pd.DataFrame, dict[str, int]]:
     7. If a key (district, crop, season, year) still repeats with different values, drop all
        copies of it: we cannot tell which one is correct.
     """
+    df = df.rename(columns=_normalise_column)
     validate_raw(df)
     report: dict[str, int] = {"raw_rows": len(df)}
     out = df[REQUIRED_COLUMNS].copy()

@@ -32,7 +32,9 @@ def yield_consistency(df: pd.DataFrame) -> dict:
         "rows_compared": int(len(ratio)),
         "within_1pct": int((rel <= 0.01).sum()),
         "within_10pct": int((rel <= 0.10).sum()),
-        "ratio_quantiles": {str(q): float(ratio.quantile(q)) for q in (0.01, 0.25, 0.5, 0.75, 0.99)},
+        "ratio_quantiles": {
+            str(q): float(ratio.quantile(q)) for q in (0.01, 0.25, 0.5, 0.75, 0.99)
+        },
     }
 
 
@@ -54,12 +56,40 @@ def main() -> None:
     report = cy.validate(df)
 
     area_pos = df["Area"] > 0
+    flagged = cy.quality_flags(df)
+    flag_cols = [c for c in flagged.columns if c.startswith("flag_")]
+    gaps = cy.series_year_gaps(df)
+    label_changes = cy.season_label_changes(df)
+    states_per_year = df.groupby("Crop_Year")["State"].nunique()
     extra = {
         "file": str(path),
+        "file_bytes": path.stat().st_size,
+        "sha256": cy.file_sha256(path),
         "dataset_version": cy.dataset_version(path),
+        # What pandas infers with no dtype hints, i.e. what the CSV text itself supports.
+        "inferred_dtypes": {c: str(t) for c, t in pd.read_csv(path).dtypes.items()},
+        "loaded_dtypes": {c: str(t) for c, t in df.dtypes.items()},
+        "non_integer_values": {c: int((df[c] % 1 != 0).sum()) for c in ["Area", "Production"]},
+        "states_per_year": {int(k): int(v) for k, v in states_per_year.items()},
+        "flag_counts": {c: int(flagged[c].sum()) for c in flag_cols},
+        "series": {
+            "count": int(len(gaps)),
+            "with_missing_years": int((gaps["missing_years"] > 0).sum()),
+            "single_year": int((gaps["n_years"] == 1).sum()),
+        },
+        "season_label_changes": label_changes.to_dict(orient="records"),
+        "extreme_rows": {
+            f"{col}_{end}": getattr(df, end)(5, col)[cy.KEY_COLUMNS + [col]].to_dict(
+                orient="records"
+            )
+            for col in ["Area", "Production", "Yield"]
+            for end in ("nlargest", "nsmallest")
+        },
         "whitespace_padded_rows": whitespace_padding(raw),
         "distinct_before_strip": {c: int(raw[c].nunique()) for c in cy.TEXT_COLUMNS},
-        "rows_per_year": {int(k): int(v) for k, v in df["Crop_Year"].value_counts().sort_index().items()},
+        "rows_per_year": {
+            int(k): int(v) for k, v in df["Crop_Year"].value_counts().sort_index().items()
+        },
         "rows_per_season": {k: int(v) for k, v in df["Season"].value_counts().items()},
         "rows_per_state": {k: int(v) for k, v in df["State"].value_counts().items()},
         "state_year_span": {
@@ -79,7 +109,8 @@ def main() -> None:
         ),
         "top_median_yield_by_crop": {
             k: float(v)
-            for k, v in df.groupby("Crop")["Yield"].median().sort_values(ascending=False).head(8).items()
+            for k, v in df.groupby("Crop")["Yield"].median()
+            .sort_values(ascending=False).head(8).items()
         },
     }
 
@@ -106,10 +137,19 @@ def main() -> None:
         "fertilizer_per_area_constant_per_year",
         "pesticide_per_area_constant_per_year",
         "top_median_yield_by_crop",
+        "inferred_dtypes",
+        "non_integer_values",
+        "flag_counts",
+        "series",
     ):
         print(f"{key:<17}: {extra[key]}")
     print(f"rows_per_year    : {extra['rows_per_year']}")
     print(f"state_year_span  : {extra['state_year_span']}  [first, last, n_years]")
+    print(f"states_per_year  : {extra['states_per_year']}")
+    print(f"season_label_changes ({len(label_changes)} State x Crop pairs), Uttar Pradesh:")
+    print(label_changes[label_changes["State"] == "Uttar Pradesh"].to_string(index=False))
+    for key, rows in extra["extreme_rows"].items():
+        print(f"{key}: {rows}")
 
     if args.json_out:
         args.json_out.parent.mkdir(parents=True, exist_ok=True)

@@ -3,8 +3,13 @@
 Write a contract here, and get the backend team to agree to it, before you implement any
 prediction endpoint. You can't move to implementation until the contract is agreed.
 
-There are no contracts yet. The only live endpoint is `GET /health`, and you can see its
-response in the service README.
+Contracts:
+
+| Contract | Endpoint | Status |
+|---|---|---|
+| [`supply.md`](supply.md) | `POST /v1/predict/supply` | implemented; awaiting backend agreement |
+
+`GET /health` is documented in the service README.
 
 ## Conventions
 

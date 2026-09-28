@@ -1,34 +1,34 @@
-"""Train, evaluate and save the supply (district production) model, logging to MLflow.
+"""Train, evaluate and save the state-level supply (production) model, logging to MLflow.
 
-    python scripts/download_s01_crop_production.py   # once
     python scripts/train_supply.py --model-version supply-xgb-v1
 
-Reads data/raw/s01_crop_production/, writes data/processed/s01_clean.csv and
-artifacts/supply/<model-version>/ (model.json, metadata.json, error_analysis.json, scored.csv).
+Training data: the Kaggle crop_yield.csv at data/raw/crop_yield.csv (docs/datasets/crop_yield.md).
+Writes artifacts/supply/<model-version>/ (model.json, metadata.json, error_analysis.json,
+scored.csv). An existing model version is never overwritten.
 """
 
 import argparse
-import hashlib
 import json
 
 import mlflow
 
 from agri_ml.config import get_settings
-from agri_ml.datasets.crop_production import clean, load_raw
+from agri_ml.datasets import crop_yield as cy
 from agri_ml.training.supply import Split, error_analysis, save_artifact, train_and_evaluate
 
 EXPERIMENT_NAME = "supply-forecasting"
-# S01 is complete up to 2014; 2015 has only ~2% of a normal year's rows (partial), so it is excluded.
-LAST_COMPLETE_YEAR = 2014
-SPLIT = Split(train_end=2010, val_start=2011, val_end=2012, test_start=2013, test_end=2014)
-
-
-def dataset_version(raw_dir) -> str:
-    digest = hashlib.sha256()
-    for path in sorted(raw_dir.glob("*.csv")):
-        digest.update(path.name.encode())
-        digest.update(path.read_bytes())
-    return f"s01-{digest.hexdigest()[:12]}"
+# 2020 covers one state only (flag_incomplete_year), so the last usable year is 2019.
+SPLIT = Split(train_end=2013, val_start=2014, val_end=2016, test_start=2017, test_end=2019)
+TRAINING_DATA = {
+    "source": "Kaggle: Agricultural Crop Yield in Indian States Dataset (akshatgupta7)",
+    "url": "https://www.kaggle.com/datasets/akshatgupta7/crop-yield-in-indian-states-dataset",
+    "license": "CC-BY-SA-4.0",
+    "dataClassification": "OBSERVED (official statistics republished by a third party)",
+    "spatialGranularity": "state",
+    "catalogue": "docs/datasets/crop_yield.md",
+    "units": "Area hectares and Production metric tons as stated by the publisher; "
+             "not verified against the upstream government source",
+}
 
 
 def main() -> None:
@@ -38,25 +38,27 @@ def main() -> None:
     args = parser.parse_args()
 
     settings = get_settings()
-    raw_dir = settings.data_dir / "raw" / "s01_crop_production"
-    raw = load_raw(raw_dir)
-    cleaned, clean_report = clean(raw)
-    cleaned = cleaned[cleaned["crop_year"] <= LAST_COMPLETE_YEAR]
-    clean_report["rows_after_year_filter"] = len(cleaned)
-    processed = settings.data_dir / "processed"
-    processed.mkdir(parents=True, exist_ok=True)
-    cleaned.to_csv(processed / "s01_clean.csv", index=False)
+    path = cy.default_path()
+    cleaned = cy.load(path)
+    report = cy.validate(cleaned)
+    if report.problems:
+        raise SystemExit(f"crop_yield validation failed: {report.problems}")
+    supply, clean_report = cy.to_supply_frame(cleaned)
+    if supply["crop_year"].max() > SPLIT.test_end:
+        raise SystemExit(f"supply data reaches {supply['crop_year'].max()}, past the test period")
 
-    version = dataset_version(raw_dir)
-    manifest = json.loads((raw_dir / "manifest.json").read_text())
-    result = train_and_evaluate(cleaned, SPLIT, dataset_version=version, seed=args.seed)
+    version = cy.dataset_version(path)
+    result = train_and_evaluate(supply, SPLIT, dataset_version=version, seed=args.seed)
     analysis = error_analysis(result.scored)
 
     out_dir = settings.artifacts_dir / "supply" / args.model_version
     save_artifact(result, out_dir, args.model_version,
-                  extra={"cleaningReport": clean_report, "sourceManifest": manifest,
-                         "scope": {"states": sorted(cleaned["state_name"].unique()),
-                                   "crops": sorted(cleaned["crop"].unique())}})
+                  extra={"trainingData": {**TRAINING_DATA, "preprocessingVersion":
+                                          cy.PREPROCESSING_VERSION},
+                         "cleaningReport": clean_report,
+                         "excludedCrops": sorted(cy.SUPPLY_EXCLUDED_CROPS),
+                         "scope": {"states": sorted(supply["state_name"].unique()),
+                                   "crops": sorted(supply["crop"].unique())}})
     (out_dir / "error_analysis.json").write_text(json.dumps(analysis, indent=2, default=str))
     result.scored.to_csv(out_dir / "scored.csv", index=False)
 

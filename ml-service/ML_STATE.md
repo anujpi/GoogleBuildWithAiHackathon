@@ -1,13 +1,18 @@
 # ML_STATE
 
-Last updated: 2026-09-24. Branch: `ml-branch`. Foundation committed in `0ec3b77`; the Stage 1 docs are not committed yet.
+Last updated: 2026-09-28. Branch: `ml-branch`. Last commit `37f7aa6`. The crop_yield and
+MVP supply work described below is **not committed**.
 
 ## Current stage
 
 - **Stage 0: ML foundation.** Done.
 - **Stage 1: Dataset catalogue + data source audit.** First pass done (2026-09-24). See
-  `docs/datasets/DATASET_CATALOGUE.md` and `docs/datasets/DATASET_PRIORITY.md`. Open items are
-  access actions only a team member can take (listed below).
+  `docs/datasets/DATASET_CATALOGUE.md` and `docs/datasets/DATASET_PRIORITY.md`.
+- **MVP supply model.** A state-level model is trained on the Kaggle crop_yield dataset and
+  served at `POST /v1/predict/supply` (see the sections below). Backend agreement on the
+  contract is pending.
+
+The S01/API-key blocking actions listed under Stage 1 no longer block the MVP supply model.
 
 ---
 
@@ -99,10 +104,50 @@ Last updated: 2026-09-24. Branch: `ml-branch`. Foundation committed in `0ec3b77`
 4. Decide commercial vs. non-commercial use (affects Open-Meteo, Earth Engine, IMD).
 5. Request IMD API access if official forecasts are required.
 
+## crop_yield dataset prepared (2026-09-28, not committed)
+- Source identified: Kaggle "Agricultural Crop Yield in Indian States Dataset" (`akshatgupta7`),
+  CC-BY-SA-4.0. The local file matches Kaggle's listed size exactly (1,620,945 bytes).
+- Audit of the real file: 19,689 rows × 10 columns, 0 NaN, 0 duplicate rows or keys, 30 states,
+  55 crops, 6 seasons, 1997–2020 (**2020 = Uttarakhand only**).
+- Main findings:
+  - Fertilizer and Pesticide are Area × a per-year rate (ESTIMATED)
+  - Yield ≠ Production ÷ Area for about 80% of rows
+  - Coconut uses a different Production unit
+  - 111 State × Crop pairs switch season label (UP Potato: Whole Year → Rabi in 2004)
+- Units are stated by the publisher only; none are verified.
+- Added `quality_flags()`, `season_label_changes()` and `series_year_gaps()` to
+  `datasets/crop_yield.py`, plus `scripts/prepare_crop_yield.py`. The prepare script writes
+  cleaned and flagged output; it drops no rows and never overwrites.
+- The audit script is extended. The tests cover the flags, the prepare script, and invariants
+  checked against the real file.
+- Full details: `docs/datasets/crop_yield.md`.
+- The original CSV lives in a team member's `~/Downloads/`, and a copy is at
+  `data/raw/crop_yield.csv` (git-ignored).
+
+## MVP supply model trained (2026-09-28, not committed)
+- **Decision (team):** the Kaggle crop_yield dataset is the MVP supply-training source. S01 and
+  the data.gov.in API key are no longer blockers.
+- **Pipeline:** the existing supply code, changed from district to **state** series keys. The
+  new `crop_yield.to_supply_frame()` maps the columns and applies the documented exclusions
+  (1,194 rows).
+- **Training:** `scripts/train_supply.py` now reads the Kaggle CSV. Split: train ≤ 2013,
+  validate 2014–16, test 2017–19.
+- **Artifact:** `artifacts/supply/supply-xgb-v1/`, MLflow run `09afff2f322842c7ac51aef6c4c12e76`.
+- **Test results:** WAPE 9.27% against 9.53% for the best baseline (area × last year's yield).
+  RMSE is about 2.6% worse. The model beats that baseline on only 46.8% of rows, so the gain is
+  **marginal** and whether to adopt the model is open for the team. The 80% interval covers 81.9%
+  on test.
+- **API:** the response is unchanged, apart from two optional provenance fields
+  (`trainingDataSource`, `spatialGranularity`).
+- **Docs:** contract `docs/ml-contracts/supply.md`; model card `docs/model-cards/supply.md`.
+- **Fixes:** the S01 `clean()` now normalises column names (the test that was failing passes).
+  The S01 code is kept but no longer used for training.
+- **Tests:** 45 pass, including tests against the real artifact.
+
 ## Not done (intentionally)
-- No datasets downloaded; no synthetic data created.
-- No models, baselines or inference wrappers.
-- No prediction endpoints; no Spring Boot integration.
+- No synthetic data used in place of real data (the test fixtures are labelled SYNTHETIC).
+- No Spring Boot integration. There is no `MlClient` in the repository yet.
+- No leave-state-out evaluation, and no weather or price features.
 
 ## Decisions
 1. **Resolved:** `REGIONAL_ESTIMATE` (backend) is a **source**, not a data classification.

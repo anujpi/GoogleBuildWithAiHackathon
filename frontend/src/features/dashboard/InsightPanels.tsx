@@ -12,7 +12,9 @@ import {
 import { EmptyState } from '@/components/feedback/states'
 import { Panel } from '@/components/layout/Panel'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
+import { originOf } from '@/features/intelligence/shared/types'
 import { formatNumber, formatRelative } from '@/lib/format'
+import type { DataOrigin } from '@/types/status'
 import type { Alert, CropPreview, SourceStatus } from './types'
 
 const category: Record<Alert['category'], string> = {
@@ -70,7 +72,7 @@ export function SourcesPanel({ sources }: { sources: SourceStatus[] }) {
             </div>
             <div className="flex items-center justify-between gap-2">
               <DataFreshness updatedAt={s.updatedAt} />
-              <DataOriginBadge origin={s.origin} />
+              <DataOriginBadge origin={originOf(s.dataClassification)} />
             </div>
           </li>
         ))}
@@ -81,14 +83,14 @@ export function SourcesPanel({ sources }: { sources: SourceStatus[] }) {
 
 const level = { high: 'High', medium: 'Medium', low: 'Low' } as const
 
-export function CropPreviewPanel({ crops }: { crops: CropPreview[] }) {
+export function CropPreviewPanel({ crops, origin }: { crops: CropPreview[]; origin: DataOrigin }) {
   return (
     <Panel
       title="Crop intelligence preview"
       description="Trade-offs for candidate crops on this farm. Not a ranking — rows are alphabetical."
       actions={
         <>
-          <DataOriginBadge origin="synthetic" />
+          <DataOriginBadge origin={origin} />
           <Link to="/crops" className="inline-flex items-center gap-1 rounded-sm text-xs font-medium text-primary hover:underline focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none">
             Compare crops <ArrowRight className="size-3.5" aria-hidden />
           </Link>

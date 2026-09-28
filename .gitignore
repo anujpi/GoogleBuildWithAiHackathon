@@ -6,7 +6,6 @@ frontend/.env.*
 
 # Backend
 backend/target/
-backend/.mvn/
 backend/.env
 
 # IntelliJ

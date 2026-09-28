@@ -3,35 +3,14 @@ import { MetricPanel } from '@/components/data-display/MetricPanel'
 import { ConfidenceBadge, DataFreshness, DataOriginBadge, RiskIndicator, TrendLabel } from '@/components/data-display/status'
 import { AsyncContent, ErrorState } from '@/components/feedback/states'
 import { PageHeader } from '@/components/layout/PageHeader'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { ContextSelect } from '@/components/forms/ContextSelect'
+import { originOf } from '@/features/intelligence/shared/types'
 import { formatNumber } from '@/lib/format'
 import { AlertsPanel, CropPreviewPanel, SourcesPanel } from './InsightPanels'
 import { RegionalWorkspace } from './RegionalWorkspace'
 import { SupplyDemandChart } from './SupplyDemandChart'
 import { useDashboardContext, useDashboardSummary } from './hooks'
-import type { DashboardQuery, DashboardSummary, Option, Signal } from './types'
-
-function ContextSelect({ id, label, value, options, onChange }: { id: string; label: string; value: string; options: Option[]; onChange: (v: string) => void }) {
-  return (
-    <div className="flex flex-col gap-1">
-      <label htmlFor={id} className="text-xs font-medium text-muted-foreground">
-        {label}
-      </label>
-      <Select value={value} onValueChange={onChange}>
-        <SelectTrigger id={id} size="sm" className="min-w-40 bg-card">
-          <SelectValue />
-        </SelectTrigger>
-        <SelectContent>
-          {options.map((o) => (
-            <SelectItem key={o.id} value={o.id}>
-              {o.label}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
-    </div>
-  )
-}
+import type { DashboardQuery, DashboardSummary, Signal } from './types'
 
 function SignalCell({ signal, signed }: { signal: Signal; signed?: boolean }) {
   const value = `${signed && signal.value > 0 ? '+' : ''}${formatNumber(signal.value)}`
@@ -52,7 +31,7 @@ function SignalCell({ signal, signed }: { signal: Signal; signed?: boolean }) {
           <span>{signal.note}</span>
           <span className="flex flex-wrap items-center gap-2">
             <ConfidenceBadge value={signal.confidence} />
-            <DataOriginBadge origin={signal.origin} />
+            <DataOriginBadge origin={originOf(signal.dataClassification)} />
           </span>
         </span>
       }
@@ -129,12 +108,12 @@ export function DashboardPage() {
               <SignalStrip signals={data.signals} />
               {/* Main workspace on the left, a fixed-width insight rail on the right. */}
               <div className="grid grid-cols-1 gap-4 xl:grid-cols-[minmax(0,1fr)_22rem]">
-                <RegionalWorkspace districts={data.districts} farm={data.farm} />
+                <RegionalWorkspace districts={data.districts} farm={data.farm} origin={originOf(data.provenance.dataClassification)} />
                 <AlertsPanel alerts={data.alerts} />
-                <SupplyDemandChart series={data.series} />
+                <SupplyDemandChart regionId={query!.regionId} />
                 <SourcesPanel sources={data.sources} />
               </div>
-              <CropPreviewPanel crops={data.crops} />
+              <CropPreviewPanel crops={data.crops} origin={originOf(data.provenance.dataClassification)} />
             </>
           )}
         </AsyncContent>

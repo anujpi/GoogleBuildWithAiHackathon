@@ -1,10 +1,10 @@
-import type { Availability, Confidence, DataOrigin, GapState, RiskLevel, Trend } from '@/types/status'
+import type { Availability, Confidence, GapState, RiskLevel, Trend } from '@/types/status'
+import type { DataClassification, Option, Provenance } from '@/features/intelligence/shared/types'
 
 // Shapes are written as the backend contract we expect, so the mock can be swapped without touching UI.
 
-export type Provenance = { origin: DataOrigin; source: string; updatedAt: string }
-
-export type Option = { id: string; label: string }
+/** Per-signal source. Classification uses the backend enum so badges derive from data, never from the component. */
+export type SignalSource = { dataClassification: DataClassification; source: string; updatedAt: string }
 
 export type DashboardContext = {
   regions: Option[]
@@ -14,7 +14,7 @@ export type DashboardContext = {
 
 export type DashboardQuery = { regionId: string; farmId: string; seasonId: string }
 
-export type Signal = Provenance & {
+export type Signal = SignalSource & {
   label: string
   value: number
   unit: string
@@ -34,10 +34,6 @@ export type DistrictSignal = {
   gapKt: number
   confidence: Confidence
 }
-
-export type SeriesPoint = { period: string; supply: number; demand: number; kind: 'historical' | 'forecast' }
-
-export type CropSeries = Provenance & { cropId: string; crop: string; unit: string; points: SeriesPoint[] }
 
 export type CropPreview = {
   cropId: string
@@ -62,14 +58,15 @@ export type Alert = {
   raisedAt: string
 }
 
-export type SourceStatus = { id: string; name: string; availability: Availability; updatedAt: string; origin: DataOrigin }
+export type SourceStatus = { id: string; name: string; availability: Availability; updatedAt: string; dataClassification: DataClassification }
 
 export type DashboardSummary = {
   generatedAt: string
+  /** Classifies the district map and crop preview, which have no per-row source. */
+  provenance: Provenance
   farm: { id: string; name: string; district: string; lon: number; lat: number; areaHa: number }
   signals: { supply: Signal; demand: Signal; marketPressure: Signal; weatherRisk: Signal; diseaseRisk: Signal }
   districts: DistrictSignal[]
-  series: CropSeries[]
   crops: CropPreview[]
   alerts: Alert[]
   sources: SourceStatus[]

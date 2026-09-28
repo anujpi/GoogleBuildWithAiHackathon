@@ -3,80 +3,57 @@ import { CartesianGrid, ComposedChart, Line, ReferenceArea, ReferenceLine, Respo
 import { ChartContainer } from '@/components/charts/ChartContainer'
 import { DataOriginBadge } from '@/components/data-display/status'
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { originOf } from '@/features/intelligence/shared/types'
+import { useSupplyDemandForecast } from '@/features/intelligence/supply-demand/hooks'
+import { forecastOptions } from '@/features/intelligence/supply-demand/options'
+import { toChartRows } from '@/features/intelligence/supply-demand/series'
+import { SupplyDemandLegend } from '@/features/intelligence/supply-demand/SupplyDemandLegend'
+import { describeError } from '@/lib/api/client'
 import { formatNumber } from '@/lib/format'
-import type { CropSeries } from './types'
 
-const month = new Intl.DateTimeFormat('en-IN', { month: 'short', year: 'numeric' })
-
-/** Splits each series into historical + forecast keys so forecast can be drawn dashed. The boundary point sits in both. */
-function toChartRows(series: CropSeries) {
-  const lastHist = series.points.findLastIndex((p) => p.kind === 'historical')
-  return series.points.map((p, i) => ({
-    label: month.format(new Date(p.period)),
-    kind: p.kind,
-    supply: i <= lastHist ? p.supply : undefined,
-    demand: i <= lastHist ? p.demand : undefined,
-    supplyForecast: i >= lastHist ? p.supply : undefined,
-    demandForecast: i >= lastHist ? p.demand : undefined,
-  }))
-}
-
-function Legend() {
-  const item = (label: string, color: string, dashed?: boolean) => (
-    <li className="flex items-center gap-1.5">
-      <svg width="18" height="6" aria-hidden>
-        <line x1="0" y1="3" x2="18" y2="3" stroke={color} strokeWidth="2" strokeDasharray={dashed ? '4 3' : undefined} />
-      </svg>
-      {label}
-    </li>
-  )
-  return (
-    <ul className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-muted-foreground" aria-label="Legend">
-      {item('Supply', 'var(--supply)')}
-      {item('Demand', 'var(--demand)')}
-      {item('Forecast (dashed)', 'var(--muted-foreground)', true)}
-    </ul>
-  )
-}
-
-export function SupplyDemandChart({ series }: { series: CropSeries[] }) {
-  const [cropId, setCropId] = useState(series[0]?.cropId)
-  const active = series.find((s) => s.cropId === cropId) ?? series[0]
-  const rows = active ? toChartRows(active) : []
+/** Dashboard widget. Reads the same supply-demand endpoint (and cache) as the Supply & Demand page. */
+export function SupplyDemandChart({ regionId }: { regionId: string }) {
+  const crops = forecastOptions.crops
+  const [cropId, setCropId] = useState(crops[0].id)
+  const query = useSupplyDemandForecast({ regionId, cropId, horizonMonths: 6 })
+  const d = query.data
+  const rows = d ? toChartRows(d) : []
   const firstForecast = rows.find((r) => r.kind === 'forecast')?.label
   const today = rows.findLast((r) => r.kind === 'historical')
   const range = rows.length ? `${rows[0].label} – ${rows[rows.length - 1].label}` : undefined
+  const origin = d && originOf(d.provenance.dataClassification)
 
   return (
     <ChartContainer
       title="Supply vs demand"
-      unit={active?.unit ?? 'thousand tonnes / month'}
+      unit={d?.unit ?? 'thousand tonnes / month'}
       timeContext={range}
       summary={
-        active && today
-          ? `${active.crop}, Maharashtra: ${rows.filter((r) => r.kind === 'historical').length} months of history and ${rows.filter((r) => r.kind === 'forecast').length} months of forecast. Latest month (${today.label}): supply ${formatNumber(today.supply ?? 0)}, demand ${formatNumber(today.demand ?? 0)} thousand tonnes. Synthetic prototype data.`
+        d && today
+          ? `${d.crop.label}, ${d.region.label}: ${d.historical.length} months of history and ${d.forecast.length} months of forecast. Latest month (${today.label}): supply ${formatNumber(today.supply ?? 0)}, demand ${formatNumber(today.demand ?? 0)} thousand tonnes.${origin === 'synthetic' ? ' Synthetic prototype data.' : ''}`
           : ''
       }
       actions={
         <>
           <Tabs value={cropId} onValueChange={setCropId}>
             <TabsList aria-label="Crop">
-              {series.map((s) => (
-                <TabsTrigger key={s.cropId} value={s.cropId} className="text-xs">
-                  {s.crop}
+              {crops.map((c) => (
+                <TabsTrigger key={c.id} value={c.id} className="text-xs">
+                  {c.label}
                 </TabsTrigger>
               ))}
             </TabsList>
           </Tabs>
-          {active && <DataOriginBadge origin={active.origin} />}
+          {origin && <DataOriginBadge origin={origin} />}
         </>
       }
-      legend={<Legend />}
-      isLoading={false}
-      error={null}
+      legend={<SupplyDemandLegend />}
+      isLoading={query.isPending}
+      error={query.error}
+      onRetry={() => query.refetch()}
       isEmpty={rows.length === 0}
       loadingMessage="Loading supply and demand series..."
-      errorMessage="Supply and demand series are temporarily unavailable."
+      errorMessage={describeError(query.error, 'supply and demand series')}
       emptyMessage="No supply forecast is available for this region yet."
     >
       <ResponsiveContainer width="100%" height="100%" minHeight={240}>

@@ -878,39 +878,30 @@ Do not assume generated code looks correct.
 
 # 27. Current phase
 
-CURRENT PHASE: **Phase 0 — Frontend Design System + Application Shell**
+Current state (2026-09-28). `../PROJECT_STATE.md` is the source of truth.
 
-Build only:
-- design tokens
-- typography
-- colors
-- layout primitives
-- app shell
-- sidebar
-- top bar
-- navigation
-- routing
-- reusable status/metric/data components
-- dashboard visual shell
-- map placeholder/workspace
-- mock visualization examples
+DONE:
+- Phase 0: design system, app shell, navigation and routing, mock dashboard.
+- Phases 1–2: farm onboarding wizard, farm list and profile, optional soil with provenance labels. All wired to the real backend.
+- Authentication UI:
+  - login and register pages, `AuthProvider`, `RequireAuth` / `PublicOnly` guards;
+  - bearer token handling in `lib/api/client.ts`: a 401 on a request that carried a token ends the session.
 
-Do NOT yet implement:
-- authentication
-- real APIs
-- PostgreSQL
-- ML
-- forecasting
-- disease model
-- real agricultural calculations
-- real external data integrations
-- business decisions
+IN PROGRESS:
+- The intelligence API layer (`features/intelligence/`: weather, supply-demand, crop recommendations, risk), validated with Zod.
+- Supply & Demand page (labelled mock by default).
+- See `docs/intelligence-api.md`.
 
-Use realistic but clearly marked mock data for visual development.
+Still do NOT implement without instruction:
+- ML or forecasting logic in the browser
+- agricultural calculations or business decisions
+- direct calls to the ML service or any external data provider (everything goes through Spring Boot)
+- mock data that is not labelled synthetic
+- a mock fallback when a real request fails
 
 ---
 
-# 28. Phase 0 completion criteria
+# 28. Phase 0 completion criteria (met; kept as the quality bar for new screens)
 
 Phase 0 is complete only when:
 

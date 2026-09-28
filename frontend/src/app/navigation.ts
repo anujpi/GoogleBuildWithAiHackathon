@@ -11,6 +11,7 @@ import {
   SlidersHorizontal,
   type LucideIcon,
 } from 'lucide-react'
+import { intelligenceSource } from '@/features/intelligence/shared/http'
 
 export type NavItem = {
   path: string
@@ -34,7 +35,7 @@ export const navigation: NavGroup[] = [
       { path: '/dashboard', label: 'Dashboard', icon: LayoutGrid, phase: 0, synthetic: true, summary: 'What is happening right now across the selected region and farm.' },
       { path: '/farms', label: 'Farms', icon: MapPinned, phase: 1, summary: 'Farm onboarding, location, soil profile, irrigation and crop history.' },
       { path: '/crops', label: 'Crop Intelligence', icon: ChartScatter, phase: 4, summary: 'Compare candidate crops across suitability, yield, water, risk and market gap.' },
-      { path: '/supply-demand', label: 'Supply & Demand', icon: ArrowLeftRight, phase: 7, summary: 'Historical and forecast supply against demand, with projected gaps by region.' },
+      { path: '/supply-demand', label: 'Supply & Demand', icon: ArrowLeftRight, phase: 7, synthetic: intelligenceSource === 'mock', summary: 'Historical and forecast supply against demand, with projected gaps by region.' },
       { path: '/market', label: 'Market Intelligence', icon: ChartCandlestick, phase: 7, summary: 'Mandi price trends, arrivals, seasonality and anomalous market signals.' },
     ],
   },

@@ -1,8 +1,9 @@
-// MOCK DATA PROVIDER — every value here is synthetic and tagged origin: 'synthetic'.
+// MOCK DATA PROVIDER — every value here is synthetic and classified SYNTHETIC. There is no dashboard backend endpoint yet;
+// the supply-demand chart does not use this file (it reads features/intelligence/supply-demand).
 // Replace the bodies of these functions with API client calls when the backend is ready;
 // hooks and components depend only on the types, not on this file's internals.
 
-import type { CropSeries, DashboardContext, DashboardQuery, DashboardSummary, SeriesPoint } from './types'
+import type { DashboardContext, DashboardQuery, DashboardSummary } from './types'
 
 const SOURCE = 'Prototype dataset (synthetic)'
 const MONTH = 30 * 86_400_000
@@ -35,39 +36,17 @@ const farms: Record<string, DashboardSummary['farm']> = {
   'farm-ausa': { id: 'farm-ausa', name: 'Ausa block 7', district: 'Latur', lon: 76.5, lat: 18.25, areaHa: 5.8 },
 }
 
-/** Deterministic seasonal curve so the mock looks plausible and stays stable between reloads. */
-function seasonal(
-  cropId: string,
-  crop: string,
-  s: { base: number; amp: number; peak: number },
-  d: { base: number; amp: number; peak: number; growth: number },
-): CropSeries {
-  const now = new Date()
-  const points: SeriesPoint[] = []
-  for (let i = -18; i <= 6; i++) {
-    const t = new Date(now.getFullYear(), now.getMonth() + i, 1)
-    const m = t.getMonth()
-    const wave = (peak: number) => Math.cos((2 * Math.PI * (m - peak)) / 12)
-    points.push({
-      period: t.toISOString(),
-      supply: Math.round((s.base + s.amp * wave(s.peak)) * 10) / 10,
-      demand: Math.round((d.base + d.amp * wave(d.peak) + d.growth * (i + 18)) * 10) / 10,
-      kind: i <= 0 ? 'historical' : 'forecast',
-    })
-  }
-  return { cropId, crop, unit: 'thousand tonnes / month', points, origin: 'synthetic', source: SOURCE, updatedAt: hoursAgo(5) }
-}
-
 export function getDashboardContext() {
   return respond(context, 200)
 }
 
 export function getDashboardSummary(q: DashboardQuery): Promise<DashboardSummary> {
   const farm = farms[q.farmId] ?? farms['farm-niphad']
-  const signal = { origin: 'synthetic' as const, source: SOURCE }
+  const signal = { dataClassification: 'SYNTHETIC' as const, source: SOURCE }
 
   return respond({
     generatedAt: new Date().toISOString(),
+    provenance: { source: SOURCE, dataClassification: 'SYNTHETIC', retrievedAt: new Date().toISOString(), confidence: null },
     farm,
     signals: {
       supply: { ...signal, updatedAt: hoursAgo(5), label: 'Onion supply outlook', value: 1.42, unit: 'Mt next 90 days', trend: 'up', confidence: 0.71, risk: 'high', note: 'Late-kharif arrivals above 5-year median' },
@@ -87,11 +66,6 @@ export function getDashboardSummary(q: DashboardQuery): Promise<DashboardSummary
       { id: 'mumbai', name: 'Mumbai', lon: 72.88, lat: 19.08, gap: 'shortage', gapKt: -132, confidence: 0.74 },
       { id: 'nagpur', name: 'Nagpur', lon: 79.09, lat: 21.15, gap: 'shortage', gapKt: -37, confidence: 0.5 },
     ],
-    series: [
-      seasonal('onion', 'Onion', { base: 105, amp: 45, peak: 3 }, { base: 92, amp: 8, peak: 9, growth: 0.4 }),
-      seasonal('soybean', 'Soybean', { base: 95, amp: 90, peak: 10 }, { base: 88, amp: 6, peak: 1, growth: 0.3 }),
-      seasonal('tomato', 'Tomato', { base: 60, amp: 22, peak: 0 }, { base: 58, amp: 5, peak: 6, growth: 0.2 }),
-    ],
     crops: [
       { cropId: 'onion', crop: 'Onion (rabi)', suitability: 'high', expectedYield: { value: 24, unit: 't/ha' }, waterNeed: 'medium', weatherRisk: 'moderate', supplyPressure: 'high', demandTrend: 'flat', projectedGap: 'surplus', confidence: 0.68 },
       { cropId: 'soybean', crop: 'Soybean', suitability: 'medium', expectedYield: { value: 1.9, unit: 't/ha' }, waterNeed: 'low', weatherRisk: 'moderate', supplyPressure: 'moderate', demandTrend: 'up', projectedGap: 'balanced', confidence: 0.61 },
@@ -104,10 +78,10 @@ export function getDashboardSummary(q: DashboardQuery): Promise<DashboardSummary
       { id: 'a4', severity: 'low', category: 'data', title: 'Mandi feed delayed', detail: 'Two APMC arrival reports not yet received today.', district: 'Solapur', raisedAt: hoursAgo(14) },
     ],
     sources: [
-      { id: 's1', name: 'Mandi arrivals & prices', availability: 'delayed', updatedAt: hoursAgo(14), origin: 'synthetic' },
-      { id: 's2', name: 'Weather forecast', availability: 'healthy', updatedAt: hoursAgo(1), origin: 'synthetic' },
-      { id: 's3', name: 'Satellite vegetation index', availability: 'healthy', updatedAt: hoursAgo(30), origin: 'synthetic' },
-      { id: 's4', name: 'Soil health cards', availability: 'degraded', updatedAt: new Date(Date.now() - 4 * MONTH).toISOString(), origin: 'synthetic' },
+      { id: 's1', name: 'Mandi arrivals & prices', availability: 'delayed', updatedAt: hoursAgo(14), dataClassification: 'SYNTHETIC' },
+      { id: 's2', name: 'Weather forecast', availability: 'healthy', updatedAt: hoursAgo(1), dataClassification: 'SYNTHETIC' },
+      { id: 's3', name: 'Satellite vegetation index', availability: 'healthy', updatedAt: hoursAgo(30), dataClassification: 'SYNTHETIC' },
+      { id: 's4', name: 'Soil health cards', availability: 'degraded', updatedAt: new Date(Date.now() - 4 * MONTH).toISOString(), dataClassification: 'SYNTHETIC' },
     ],
   })
 }

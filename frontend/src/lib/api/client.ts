@@ -89,6 +89,9 @@ export async function api<T>(path: string, { method = 'GET', body, signal }: Req
 /** A user-facing sentence for any error, phrased for the thing that failed ("the farm list"). */
 export function describeError(error: unknown, subject: string): string {
   if (!(error instanceof ApiError)) return `Something went wrong while loading ${subject}.`
+  // MALFORMED_RESPONSE comes from intelligence/shared/http.ts; PREDICTION_UNAVAILABLE is the backend's 503 when no
+  // prediction source is connected. Both messages are already user-facing.
+  if (error.code === 'MALFORMED_RESPONSE' || error.code === 'PREDICTION_UNAVAILABLE') return error.message
   if (error.status === 0) return `Could not reach the server. Check that the backend is running at ${API_BASE_URL}.`
   if (error.status === 401) return 'Your session has ended. Sign in again to continue.'
   if (error.status === 403) return `You do not have access to ${subject}.`

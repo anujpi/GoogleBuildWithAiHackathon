@@ -10,10 +10,12 @@ import { DashboardPage } from '@/features/dashboard/DashboardPage'
 import { EditFarmPage, NewFarmPage } from '@/features/farms/FarmFormPages'
 import { FarmProfilePage } from '@/features/farms/FarmProfilePage'
 import { FarmsPage } from '@/features/farms/FarmsPage'
+import { SupplyDemandPage } from '@/features/supply-demand/SupplyDemandPage'
 
 // Modules with real screens. Every other navigation entry gets its "scheduled for phase N" page.
 const built: Record<string, { path: string; element: ReactNode }[]> = {
   '/dashboard': [{ path: '/dashboard', element: <DashboardPage /> }],
+  '/supply-demand': [{ path: '/supply-demand', element: <SupplyDemandPage /> }],
   '/farms': [
     { path: '/farms', element: <FarmsPage /> },
     { path: '/farms/new', element: <NewFarmPage /> },

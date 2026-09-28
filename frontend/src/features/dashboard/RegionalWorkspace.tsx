@@ -4,11 +4,12 @@ import { ConfidenceBadge, DataOriginBadge, GapBadge } from '@/components/data-di
 import { Panel } from '@/components/layout/Panel'
 import { MapPanel, type MapLayer } from '@/components/maps/MapPanel'
 import { formatNumber } from '@/lib/format'
+import type { DataOrigin } from '@/types/status'
 import type { DashboardSummary, DistrictSignal } from './types'
 
 const MAHARASHTRA: [number, number] = [75.7, 19.2]
 
-export function RegionalWorkspace({ districts, farm }: { districts: DistrictSignal[]; farm: DashboardSummary['farm'] }) {
+export function RegionalWorkspace({ districts, farm, origin }: { districts: DistrictSignal[]; farm: DashboardSummary['farm']; origin: DataOrigin }) {
   const [selectedId, setSelectedId] = useState<string | null>(null)
   const sorted = useMemo(() => [...districts].sort((a, b) => b.gapKt - a.gapKt), [districts])
   const layers = useMemo<MapLayer[]>(
@@ -27,7 +28,7 @@ export function RegionalWorkspace({ districts, farm }: { districts: DistrictSign
     <Panel
       title="Regional supply–demand workspace"
       description="Onion · projected season gap by district · thousand tonnes"
-      actions={<DataOriginBadge origin="synthetic" />}
+      actions={<DataOriginBadge origin={origin} />}
       bodyClassName="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_16rem]"
     >
       <MapPanel

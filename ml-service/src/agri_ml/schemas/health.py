@@ -1,16 +1,28 @@
+from enum import StrEnum
 from typing import Literal
 
-from pydantic import BaseModel, ConfigDict
-from pydantic.alias_generators import to_camel
+from agri_ml.schemas.common import CamelModel
 
 
-class HealthResponse(BaseModel):
-    # camelCase on the wire to match the Spring Boot JSON conventions.
-    model_config = ConfigDict(alias_generator=to_camel, populate_by_name=True)
+class ModelReadiness(StrEnum):
+    READY = "READY"
+    NOT_READY = "NOT_READY"
 
+
+class ModelStatus(CamelModel):
+    capability: Literal["SUPPLY"]
+    status: ModelReadiness
+    model_version: str | None
+    dataset_version: str | None
+    feature_version: str | None
+    # Error code when NOT_READY: MODEL_NOT_LOADED (no artifact) or ARTIFACT_LOAD_ERROR.
+    reason: str | None
+
+
+class HealthResponse(CamelModel):
+    # The process is up. Whether predictions are available is per model, in `models`.
     status: Literal["UP"]
     service: str
     version: str
     environment: str
-    # No models are served yet; this list fills in as inference wrappers are added.
-    loaded_models: list[str]
+    models: list[ModelStatus]

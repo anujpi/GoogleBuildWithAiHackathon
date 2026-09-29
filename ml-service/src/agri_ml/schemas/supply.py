@@ -1,69 +1,124 @@
-from datetime import datetime
+from enum import StrEnum
 
-from pydantic import BaseModel, ConfigDict, Field
-from pydantic.alias_generators import to_camel
+from pydantic import Field, StrictInt
 
-from agri_ml.schemas.common import DataClassification
-
-
-class _CamelModel(BaseModel):
-    # camelCase on the wire to match the Spring Boot JSON conventions.
-    model_config = ConfigDict(alias_generator=to_camel, populate_by_name=True, extra="forbid")
-
-
-class SupplyHistoryPoint(_CamelModel):
-    crop_year: int = Field(ge=1950, le=2100)
-    area_hectares: float = Field(gt=0, description="Reported cultivated area (ha)")
-    production_tonnes: float = Field(ge=0, description="Reported production (tonnes)")
+from agri_ml.reference import ID_PATTERN
+from agri_ml.schemas.common import (
+    CamelModel,
+    Provenance,
+    Quantity,
+    QuantityWithInterval,
+    Season,
+    Unit,
+)
 
 
-class SupplyPredictionRequest(_CamelModel):
-    crop: str = Field(examples=["Potato"])
-    season: str = Field(examples=["Rabi"], description="S01 season label, e.g. Kharif, Rabi, Whole Year")
-    crop_year: int = Field(ge=1950, le=2100, description="Crop year to forecast")
-    area_hectares: float = Field(gt=0, description="Sown/planned area for the target season (ha)")
-    history: list[SupplyHistoryPoint] = Field(
-        min_length=1,
-        max_length=3,
-        description="Reported area and production for up to the 3 previous crop years; "
-        "must include cropYear - 1",
+class ServedMethod(StrEnum):
+    MODEL = "MODEL"
+    BASELINE = "BASELINE"
+
+
+class BaselineMethod(StrEnum):
+    NAIVE_LAST_YEAR_PRODUCTION = "NAIVE_LAST_YEAR_PRODUCTION"
+    AREA_X_LAST_YEAR_YIELD = "AREA_X_LAST_YEAR_YIELD"
+    AREA_X_MEAN_YIELD_3Y = "AREA_X_MEAN_YIELD_3Y"
+
+
+class AreaSource(StrEnum):
+    REQUEST = "REQUEST"  # areaHectares supplied by the caller
+    REPORTED = "REPORTED"  # S01 reported area of the target crop year
+    LAST_REPORTED = "LAST_REPORTED"  # S01 reported area of cropYear - 1
+
+
+class SupplyRequest(CamelModel):
+    district_id: str = Field(pattern=ID_PATTERN, examples=["up-agra"])
+    crop_id: str = Field(pattern=ID_PATTERN, examples=["potato"])
+    season: Season
+    crop_year: StrictInt = Field(description="S01 crop year to estimate")
+    area_hectares: float | None = Field(
+        default=None,
+        gt=0,
+        allow_inf_nan=False,
+        description="Cultivated area of the target season; null = use the reported area",
     )
 
 
-class PredictionInterval(_CamelModel):
-    lower: float
-    upper: float
-    nominal_coverage: float
-    method: str
-    test_empirical_coverage: float
+class SupplyTarget(CamelModel):
+    district_id: str
+    crop_id: str
+    season: Season
+    crop_year: int
 
 
-class SupplyPredictionValue(_CamelModel):
-    value: float
-    unit: str
-    period: str
-    interval: PredictionInterval | None
+class AreaQuantity(Quantity):
+    area_source: AreaSource
 
 
-class SupplyEvidence(_CamelModel):
-    baseline_value: float = Field(description="area x mean reported yield of the history years")
-    baseline_method: str
-    history_years_used: int
+class SupplyEstimate(CamelModel):
+    production: QuantityWithInterval
+    yield_: QuantityWithInterval = Field(alias="yield")
+    area: AreaQuantity
+    served_method: ServedMethod
+    history_years_used: list[int]
+    provenance: Provenance
 
 
-class SupplyProvenance(_CamelModel):
-    dataset_version: str
-    feature_version: str
-    trained_at: str
+class SupplyBaseline(CamelModel):
+    method: BaselineMethod
+    production: Quantity
+
+
+class ReportedValues(CamelModel):
+    area: Quantity
+    production: Quantity
+    yield_: Quantity = Field(alias="yield")
+
+
+class HistoryUnits(CamelModel):
+    area: Unit
+    production: Unit
+    yield_: Unit = Field(alias="yield")
+
+
+class HistoryPoint(CamelModel):
+    crop_year: int
+    area: float
+    production: float
+    yield_: float = Field(alias="yield")
+
+
+class SupplyHistory(CamelModel):
+    units: HistoryUnits
+    points: list[HistoryPoint]
+    provenance: Provenance
+
+
+class HistoricalYieldStats(CamelModel):
+    years_observed: int
+    mean_yield: Quantity
+    coefficient_of_variation: float | None
+    downside_year_share: float | None
+    years_assessed_for_downside: int
+    downside_definition: str
+
+
+class ModelEvaluation(CamelModel):
     training_period: str
-    evaluation_period: str
+    validation_period: str
+    test_period: str
+    served_method: ServedMethod
+    test_wape: float
+    best_baseline: BaselineMethod
+    best_baseline_test_wape: float
+    test_interval_coverage: float | None
 
 
-class SupplyPredictionResponse(_CamelModel):
-    model_name: str
-    model_version: str
-    data_classification: DataClassification
-    prediction: SupplyPredictionValue
-    evidence: SupplyEvidence
-    provenance: SupplyProvenance
-    generated_at: datetime
+class SupplyResponse(CamelModel):
+    target: SupplyTarget
+    estimate: SupplyEstimate
+    baseline: SupplyBaseline
+    reported: ReportedValues | None
+    history: SupplyHistory
+    historical_yield_stats: HistoricalYieldStats
+    model_evaluation: ModelEvaluation
+    limitations: list[str]

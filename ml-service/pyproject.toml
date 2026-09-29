@@ -26,6 +26,7 @@ ml = [
     "scikit-learn>=1.5",
     "xgboost>=2.1",
     "mlflow>=2.16",
+    "pyarrow>=16",  # series.parquet in the supply artifact
     "matplotlib>=3.9",
     "seaborn>=0.13",
 ]

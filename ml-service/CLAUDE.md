@@ -516,21 +516,8 @@ Suggested branches:
 ---
 
 ## Current task
-Do not train a model immediately.
-
-First:
-1. inspect the repository
-2. create the ML service directory if needed
-3. create `CLAUDE.md`
-4. create Python project setup
-5. create package structure
-6. create `ML_STATE.md`
-7. create `docs/ml-contracts/`
-8. create dataset catalogue template
-9. create README
-10. report the plan
-
-Wait before choosing or training a model.
+The product scope, the ML contract and the phase plan are in `../MASTER_SPEC.md`, which wins over
+this file wherever the two differ. The ML status and next steps are in `ML_STATE.md`.
 
 ---
 

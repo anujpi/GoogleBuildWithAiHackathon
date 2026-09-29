@@ -1,29 +1,30 @@
 """Download S01 (data.gov.in district-wise season-wise crop production) for one state and crops.
 
 Pulls from the official data.gov.in API, filtered on state and crop, and writes the raw rows
-unchanged to data/raw/s01_crop_production/ with a manifest recording provenance.
+unchanged to data/raw/s01_crop_production/ with a manifest recording provenance (MASTER_SPEC §9.6).
 
-    python scripts/download_s01_crop_production.py --state "Uttar Pradesh" --crops Potato Wheat
+    DATA_GOV_IN_API_KEY=<registered key> python scripts/download_s01_crop_production.py
 
-The API key is read from AGRI_ML_DATA_GOV_API_KEY. Without it the public data.gov.in sample key
-is used, which is shared and rate-limited (see docs/datasets/DATASET_CATALOGUE.md).
+A registered key is required: register at https://data.gov.in (My Account > API key). The
+manifest is written only after every crop has been downloaded completely (rows == API total), so
+training never starts from a partial pull.
 """
 
 import argparse
 import csv
 import json
 import os
+import sys
 import time
 import urllib.parse
 import urllib.request
 from datetime import UTC, datetime
 
 from agri_ml.config import get_settings
+from agri_ml.datasets.crop_production import S01_RESOURCE_ID
 
-RESOURCE_ID = "35be999b-0208-4354-b557-f6ca9a5355de"
-API_URL = f"https://api.data.gov.in/resource/{RESOURCE_ID}"
-# Published by data.gov.in for demos; not a secret.
-PUBLIC_SAMPLE_KEY = "579b464db66ec23bdd000001cdd3946e44ce4aad7209ff7b23ac571b"
+API_URL = f"https://api.data.gov.in/resource/{S01_RESOURCE_ID}"
+KEY_ENV = "DATA_GOV_IN_API_KEY"
 PAGE_SIZE = 1000
 
 
@@ -43,7 +44,9 @@ def fetch_page(api_key: str, state: str, crop: str, offset: int) -> dict:
                 payload = json.load(resp)
             if "records" in payload:
                 return payload
-            print(f"  unexpected payload ({payload.get('error') or payload.get('message')}), retrying")
+            print(
+                f"  unexpected payload ({payload.get('error') or payload.get('message')}), retrying"
+            )
         except Exception as exc:  # network errors and rate-limit HTTP codes
             print(f"  attempt {attempt + 1} failed: {exc}")
         time.sleep(2 * (attempt + 1))
@@ -69,24 +72,30 @@ def download(state: str, crop: str, api_key: str) -> tuple[list[dict], int]:
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--state", default="Uttar Pradesh")
-    parser.add_argument("--crops", nargs="+", default=["Potato", "Wheat", "Onion", "Rice"])
+    parser.add_argument("--crops", nargs="+", default=["Potato", "Wheat", "Onion", "Maize"])
     args = parser.parse_args()
 
-    api_key = os.environ.get("AGRI_ML_DATA_GOV_API_KEY", PUBLIC_SAMPLE_KEY)
+    api_key = os.environ.get(KEY_ENV, "").strip()
+    if not api_key:
+        sys.exit(f"{KEY_ENV} is not set. Register a data.gov.in API key and export it; "
+                 "no shared or sample key is used.")
     out_dir = get_settings().data_dir / "raw" / "s01_crop_production"
     out_dir.mkdir(parents=True, exist_ok=True)
 
     manifest = {
         "source": "S01 data.gov.in district-wise season-wise crop production statistics",
-        "resourceId": RESOURCE_ID,
+        "resourceId": S01_RESOURCE_ID,
         "apiUrl": API_URL,
         "license": "Government Open Data License - India (GODL)",
         "accessedAt": datetime.now(UTC).isoformat(timespec="seconds"),
-        "usedSampleKey": api_key == PUBLIC_SAMPLE_KEY,
+        "keyType": "REGISTERED",
         "files": {},
     }
     for crop in args.crops:
         rows, total = download(args.state, crop, api_key)
+        if not rows or len(rows) != total:
+            sys.exit(f"incomplete download for {crop}: {len(rows)} rows, API total {total}; "
+                     "no manifest written, rerun the download")
         path = out_dir / f"{args.state.lower().replace(' ', '_')}_{crop.lower()}.csv"
         fields = sorted({k for r in rows for k in r})
         with path.open("w", newline="") as fh:
@@ -94,7 +103,10 @@ def main() -> None:
             writer.writeheader()
             writer.writerows(rows)
         manifest["files"][path.name] = {
-            "state": args.state, "crop": crop, "rows": len(rows), "apiTotal": total,
+            "state": args.state,
+            "crop": crop,
+            "rows": len(rows),
+            "apiTotal": total,
         }
         print(f"wrote {path} ({len(rows)} rows, api total {total})")
 

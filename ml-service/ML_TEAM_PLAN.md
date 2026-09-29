@@ -1,3 +1,7 @@
+> **SUPERSEDED (2026-09-29).** This is the original staged plan, kept for history. Its examples
+> (for instance `regionId`, tomato, suitability scores) do not reflect the product. Scope, contract and
+> phases are in [`../MASTER_SPEC.md`](../MASTER_SPEC.md); status is in [`ML_STATE.md`](ML_STATE.md).
+
 # ML TEAM PLAN — Agricultural Intelligence Platform
 
 ## 0. Mission

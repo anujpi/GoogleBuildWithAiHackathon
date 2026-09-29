@@ -2,127 +2,128 @@
 
 The prediction layer of the platform. **ML predicts. Spring Boot decides. LLM explains.**
 
-This service returns structured predictions with provenance and version metadata to the
-Spring Boot backend. It does not make the final decision about what to plant, and it doesn't
-produce advisory text. See [`CLAUDE.md`](CLAUDE.md) for the engineering rules and
-[`ML_TEAM_PLAN.md`](ML_TEAM_PLAN.md) for the staged roadmap.
+This service serves structured predictions with provenance to the Spring Boot backend (and only to
+it). It never makes the planting decision and never produces advisory text. The engineering rules
+are in [`CLAUDE.md`](CLAUDE.md), the current status is in [`ML_STATE.md`](ML_STATE.md), and the
+API contract is `MASTER_SPEC.md` §9 (repo root), implemented as in [`docs/ml-contracts/`](docs/ml-contracts/README.md).
 
-Current stage: **Stage 1: dataset audit** (first pass done; see `docs/datasets/`). No models,
-downloaded datasets or prediction endpoints exist yet. For a shareable summary, see
-`docs/PROGRESS_REPORT.md`.
-See [`ML_STATE.md`](ML_STATE.md).
+| Capability | Status |
+|---|---|
+| District supply estimate (`POST /v1/predict/supply`) | Pipeline, API and tests done. **No artifact yet: waiting for S01 data (API key)** |
+| Market prices / anomalies | Not started (milestone M4) |
 
-## Setup
+## Setup (Windows, macOS, Linux)
 
-Requires Python 3.11+.
+This needs Python 3.11 or newer. It was verified on Windows 11 with Python 3.14.7.
 
 ```bash
 cd ml-service
-python3 -m venv .venv
-source .venv/bin/activate
-pip install -e ".[ml,dev]"
+python -m venv .venv
+# Windows (Git Bash):  source .venv/Scripts/activate      PowerShell: .venv\Scripts\Activate.ps1
+# macOS / Linux:       source .venv/bin/activate
+pip install -r requirements.lock      # exact, verified versions (platform markers inside)
+pip install -e . --no-deps
 ```
 
-On macOS, XGBoost needs the OpenMP runtime: `brew install libomp`.
+`pip install -e ".[ml,dev]"` also works, but it resolves the newest versions allowed by `pyproject.toml`.
 
-`requirements.lock` has the exact versions that were verified (`pip freeze`). To reproduce that
-environment, run `pip install -r requirements.lock && pip install -e . --no-deps`.
+- **macOS:** XGBoost needs `brew install libomp`.
+- **iCloud:** if the repo lives in an iCloud-synced folder and `import agri_ml` fails after an
+  editable install, iCloud has hidden the `.pth` file. Keep the venv outside the synced folder and
+  symlink it.
 
-**`ModuleNotFoundError: No module named 'agri_ml'` after `pip install -e .` (macOS):**
-Python 3.13+ skips any `.pth` file that has the macOS `hidden` flag (see `site.py`), and every
-editable install relies on one (`_editable_impl_agri_ml.pth`). To confirm, run
-`python -v -c pass 2>&1 | grep "Skipping hidden"`. If the project sits in an iCloud-synced
-folder (Desktop or Documents), the sync keeps re-applying that flag. Running `chflags` only fixes
-it until the next sync. Instead, keep the venv outside the synced folder and link it:
+## Data
+
+Raw data goes under `data/`, which is git-ignored and never committed. The only dataset is S01
+([`docs/datasets/s01_up.md`](docs/datasets/s01_up.md)).
 
 ```bash
-python3 -m venv ~/.venvs/agri-ml-service
-ln -s ~/.venvs/agri-ml-service .venv      # .venv/bin/python keeps working
-.venv/bin/pip install -r requirements.lock && .venv/bin/pip install -e . --no-deps
+# A registered data.gov.in key is required (https://data.gov.in, My Account > API key).
+export DATA_GOV_IN_API_KEY=<your key>              # PowerShell: $env:DATA_GOV_IN_API_KEY="<key>"
+python scripts/download_s01_crop_production.py     # UP; Potato Wheat Onion Maize -> data/raw/s01_crop_production/
 ```
 
-Dependency groups in `pyproject.toml`:
+## Train and evaluate
 
-| Group | Contents | Install |
-|---|---|---|
-| core | FastAPI, Uvicorn, Pydantic, pydantic-settings | `pip install -e .` |
-| `ml` | pandas, NumPy, scikit-learn, XGBoost, MLflow, matplotlib, seaborn | `.[ml]` |
-| `dev` | pytest, httpx, ruff | `.[dev]` |
+```bash
+python scripts/train_supply.py --model-version supply-xgb-v1
+```
 
-PyTorch/torchvision and the geospatial libraries (Earth Engine, GeoPandas, rasterio) are left out
-on purpose. Add them in the phase that needs them.
+The download script exits without writing anything if `DATA_GOV_IN_API_KEY` is unset, and it writes the
+manifest only after every crop is complete. Training (`agri_ml.training.pipeline`) aborts with a
+clear message if the manifest is missing, incomplete or not from a registered key, or if a scope
+crop has no rows. It never trains a served model from test fixtures.
+
+This cleans the data, scopes it, trains, evaluates against the baselines, selects the served
+method, and writes the artifact to `artifacts/supply/supply-xgb-v1/`:
+
+| File | Contents |
+|---|---|
+| `model.json` | XGBoost booster |
+| `metadata.json` | Versions, periods, metrics, selection, interval, scope, cleaning report, source manifest |
+| `series.parquet` | The exact cleaned series used, also served as history |
+| `scored.csv` | Validation and test predictions of every method |
+| `error_analysis.json` | Error breakdowns |
+| `evaluation_report.md` | Generated evaluation report |
+
+The script also logs a run to MLflow (`mlflow.db`, `mlartifacts/`). It never overwrites an existing
+version: bump `--model-version` instead. Artifacts are git-ignored; the demo artifact is produced
+by these two commands and isn't committed.
 
 ## Run
 
 ```bash
-uvicorn agri_ml.api.app:app --reload --port 8000
-curl localhost:8000/health
+uvicorn agri_ml.api.app:app --port 8000
+curl localhost:8000/health        # status UP + per-model READY / NOT_READY
 ```
 
-Port 8000 avoids the backend (8080), the frontend (5173) and Postgres (5433). Interactive docs
-are at `/docs`. Don't expose this service publicly. Only the backend should call it.
-
-## Data
-
-Raw files live under `data/raw/`, which is git-ignored. They are placed manually and never committed.
-
-| File | Expected path | Catalogue | Audit |
-|---|---|---|---|
-| `crop_yield.csv` (historical, 1997–2020) | `data/raw/crop_yield.csv` | `docs/datasets/crop_yield.md` | `python scripts/audit_crop_yield.py` |
+Port 8000 is what the backend expects (`ML_SERVICE_BASE_URL`). Interactive docs are at `/docs`.
+Don't expose this service publicly.
 
 ## Test and lint
 
 ```bash
-pytest
+pytest            # the real-artifact test is skipped until an artifact exists
 ruff check .
 ```
 
-## MLflow
-
-Tracking uses a local SQLite store by default: `ml-service/mlflow.db`, with artifacts in
-`ml-service/mlartifacts/`. Both are git-ignored. MLflow 3 refuses the old `./mlruns` file store.
+To test against the real service end to end from the backend (with the ML service running):
 
 ```bash
-python scripts/check_mlflow.py     # creates an experiment and an empty run
-mlflow ui --backend-store-uri sqlite:///mlflow.db --port 5000
+cd ../backend && ML_E2E_BASE_URL=http://localhost:8000 ./mvnw -Dtest=MlServiceLiveTest test
 ```
 
-To use a tracking server, set `AGRI_ML_MLFLOW_TRACKING_URI`.
+The backend rejects a served history that isn't `OBSERVED`, so this only passes fully against a
+real S01 artifact.
 
 ## Configuration
 
-Environment variables use the `AGRI_ML_` prefix. You can also put them in `ml-service/.env`,
-which is git-ignored.
+Environment variables use the `AGRI_ML_` prefix. They can also go in `ml-service/.env`, which is git-ignored.
 
 | Variable | Default |
 |---|---|
 | `AGRI_ML_ENVIRONMENT` | `local` |
+| `AGRI_ML_DATA_DIR` | `ml-service/data` |
+| `AGRI_ML_ARTIFACTS_DIR` | `ml-service/artifacts` |
+| `AGRI_ML_SUPPLY_MODEL_DIR` | `ml-service/artifacts/supply/supply-xgb-v1` |
 | `AGRI_ML_MLFLOW_TRACKING_URI` | `sqlite:///…/ml-service/mlflow.db` |
 | `AGRI_ML_MLFLOW_ARTIFACT_ROOT` | `file://…/ml-service/mlartifacts` |
-| `AGRI_ML_ARTIFACTS_DIR` | `ml-service/artifacts` |
-| `AGRI_ML_DATA_DIR` | `ml-service/data` |
+| `DATA_GOV_IN_API_KEY` | none (read by the download script only; MASTER_SPEC §14) |
 
 ## Layout
 
 ```text
-ml-service/
-├── src/agri_ml/
-│   ├── api/        FastAPI app (currently only /health)
-│   ├── config/     settings
-│   ├── datasets/   loaders + schema validation, one module per catalogued dataset
-│   └── schemas/    shared Pydantic types (DataClassification, health)
-├── data/raw/       local raw files (git-ignored), e.g. crop_yield.csv
-├── scripts/        runnable utilities (MLflow check, data audits)
-├── tests/
-├── notebooks/      exploratory/ and experiments/ (see notebooks/README.md)
-└── docs/
-    ├── datasets/     DATASET_CATALOGUE.md, DATASET_PRIORITY.md, per-dataset entries
-    ├── model-cards/  one card per production-capable model
-    └── ml-contracts/ ML ⇄ Spring Boot API contracts
+src/agri_ml/
+  reference.py     canonical ids (stateId, districtId, cropId, Season) and scope
+  datasets/        S01 loading, validation, cleaning, dataset version
+  features/        supply features (shared by training and inference)
+  models/          supply methods: MODEL + baselines (shared by evaluation and serving)
+  training/        pipeline.py (stage order, manifest gate), supply.py (split, training,
+                   acceptance rule, interval, spatial check, artifact)
+  evaluation/      generated evaluation report
+  inference/       artifact loading, request validation, prediction, provenance
+  schemas/         Pydantic contract (common, supply, reference, health, errors)
+  api/             FastAPI app and error envelope
+scripts/           download_s01_crop_production.py, train_supply.py
+docs/              ml-contracts/, datasets/, model-cards/
 ```
-
-These packages from the planned layout get added when their phase starts, not before:
-`common/`, `features/`, `models/{supply,demand,crop,disease,anomaly}/`,
-`training/`, `evaluation/`, `inference/`.
-
-`data/`, `artifacts/`, `mlflow.db` and `mlartifacts/` are git-ignored. Never commit datasets, model binaries or credentials.

@@ -2,6 +2,7 @@ package com.argiintelligence.backend.farm.mapper;
 
 import com.argiintelligence.backend.farm.dto.FarmRequest;
 import com.argiintelligence.backend.farm.dto.FarmResponse;
+import com.argiintelligence.backend.farm.dto.FarmSummary;
 import com.argiintelligence.backend.farm.entity.Farm;
 import com.argiintelligence.backend.farm.entity.FarmLocation;
 import com.argiintelligence.backend.farm.entity.SoilProfile;
@@ -20,6 +21,7 @@ public final class FarmMapper {
         farm.setCurrentCrop(req.currentCrop());
         farm.setPreviousCrop(req.previousCrop());
         farm.setSeason(req.season());
+        farm.setDistrictId(req.districtId());
 
         FarmLocation location = farm.getLocation() != null ? farm.getLocation() : new FarmLocation();
         FarmRequest.Location l = req.location();
@@ -56,7 +58,7 @@ public final class FarmMapper {
         farm.setSoilProfile(soil);
     }
 
-    public static FarmResponse toResponse(Farm farm) {
+    public static FarmResponse toResponse(Farm farm, String districtLabel, boolean intelligenceSupported) {
         FarmLocation l = farm.getLocation();
         SoilProfile s = farm.getSoilProfile();
         return new FarmResponse(
@@ -68,6 +70,9 @@ public final class FarmMapper {
                 farm.getCurrentCrop(),
                 farm.getPreviousCrop(),
                 farm.getSeason(),
+                farm.getDistrictId(),
+                districtLabel,
+                intelligenceSupported,
                 new FarmResponse.Location(l.getId(), l.getLatitude(), l.getLongitude(),
                         l.getState(), l.getDistrict(), l.getTaluk(), l.getAddressLabel()),
                 s == null ? null : new FarmResponse.Soil(s.getId(), s.getPh(), s.getElectricalConductivity(),
@@ -76,6 +81,12 @@ public final class FarmMapper {
                         s.getDataClassification(), s.getMeasuredAt(), s.getConfidence()),
                 s != null,
                 farm.getCreatedAt(),
+                farm.getUpdatedAt());
+    }
+
+    public static FarmSummary toSummary(Farm farm, String districtLabel) {
+        return new FarmSummary(farm.getId(), farm.getName(), farm.getDistrictId(), districtLabel, farm.getArea(),
+                farm.getAreaUnit(), farm.getCurrentCrop(), farm.getSeason(), farm.getSoilProfile() != null,
                 farm.getUpdatedAt());
     }
 }

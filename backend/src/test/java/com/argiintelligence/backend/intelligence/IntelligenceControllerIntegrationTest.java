@@ -5,7 +5,8 @@ import com.argiintelligence.backend.auth.AuthTestSupport;
 import com.argiintelligence.backend.ml.MlClient;
 import com.argiintelligence.backend.ml.MlServiceException;
 import com.argiintelligence.backend.ml.dto.MlSupplyRequest;
-import com.argiintelligence.backend.ml.dto.ScopeResponse;
+import com.argiintelligence.backend.reference.ReferenceTestSupport;
+import com.argiintelligence.backend.reference.service.ReferenceSyncService;
 import com.argiintelligence.backend.ml.dto.SupplyPredictionResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -21,12 +22,12 @@ import tools.jackson.databind.json.JsonMapper;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
-import java.util.List;
 
 import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.nullValue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -41,13 +42,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class IntelligenceControllerIntegrationTest {
 
     private static final String AUTH = "Authorization";
-    private static final ScopeResponse SCOPE = new ScopeResponse(
-            List.of(new ScopeResponse.State("up", "Uttar Pradesh")),
-            List.of(new ScopeResponse.District("up-agra", "up", "Agra")),
-            List.of(new ScopeResponse.Crop("potato", "Potato")),
-            List.of("RABI"),
-            List.of(new ScopeResponse.SupplySeries("up-agra", "potato", "RABI", 1997, 2014, 18)),
-            List.of(), List.of(new ScopeResponse.Dataset("DES_S01_DATA_GOV_IN", "s01-x", "2014")));
 
     @Autowired
     MockMvc mvc;
@@ -55,12 +49,16 @@ class IntelligenceControllerIntegrationTest {
     @MockitoBean
     MlClient mlClient;
 
+    @Autowired
+    ReferenceSyncService referenceSync;
+
     private String bearer;
 
     @BeforeEach
     void signIn() throws Exception {
         bearer = AuthTestSupport.newUserBearer(mvc);
-        when(mlClient.scope()).thenReturn(SCOPE);
+        // Scope comes from the synced reference tables, as in production (MASTER_SPEC §6.3).
+        ReferenceTestSupport.sync(mlClient, referenceSync);
     }
 
     /** The golden ML response (src/test/resources/contracts/ml) as a real artifact serves it. */
@@ -145,7 +143,7 @@ class IntelligenceControllerIntegrationTest {
                 .andExpect(status().isServiceUnavailable())
                 .andExpect(jsonPath("$.code").value("ML_PREDICTION_UNAVAILABLE"));
 
-        when(mlClient.scope()).thenThrow(MlServiceException.unavailable());
+        doThrow(MlServiceException.unavailable()).when(mlClient).predictSupply(any());
         mvc.perform(supply("2015").header(AUTH, bearer))
                 .andExpect(status().isServiceUnavailable())
                 .andExpect(jsonPath("$.code").value("ML_UNAVAILABLE"));

@@ -40,9 +40,11 @@ class SecurityConfig {
                 .logout(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(a -> a
                         .requestMatchers(HttpMethod.POST, "/api/auth/register", "/api/auth/login").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/actuator/health").permitAll()
-                        // ADMIN / AGRICULTURAL_OFFICER farm permissions are not defined yet, so they get 403.
+                        .requestMatchers(HttpMethod.GET, "/actuator/health", "/actuator/health/**").permitAll()
+                        // MASTER_SPEC §4.2. Coarse role gates only; ownership and district checks are in services.
                         .requestMatchers("/api/farms/**").hasAnyRole("FARMER", "FPO")
+                        .requestMatchers("/api/regional/**").hasAnyRole("FPO", "AGRICULTURAL_OFFICER", "ADMIN")
+                        .requestMatchers("/api/admin/**").hasRole("ADMIN")
                         .anyRequest().authenticated())
                 .oauth2ResourceServer(o -> o
                         .jwt(j -> j.jwtAuthenticationConverter(jwtConverter))

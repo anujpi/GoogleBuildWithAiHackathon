@@ -295,7 +295,7 @@ Possible implementations:
 - RealWeatherProvider (IMD, Open-Meteo, NASA POWER, ...)
 - a test double, in tests only
 
-Weather exception: production must never contain a mock weather provider. With no real provider, weather answers 503 `WEATHER_UNAVAILABLE`. For other domains, any mock provider must label its output `SYNTHETIC`.
+Weather exception: production must never contain a mock weather provider. The only provider is `OpenMeteoWeatherProvider`; when it fails, weather answers 503 `UPSTREAM_UNAVAILABLE` / `UPSTREAM_RATE_LIMITED` or 502 `UPSTREAM_INVALID_RESPONSE`, never a fallback. For other domains, any mock provider must label its output `SYNTHETIC`.
 
 Business logic depends on the abstraction, not a specific external API.
 
@@ -321,12 +321,12 @@ Distinguish:
 OBSERVED
 FORECAST
 MODEL_PREDICTION
-REGIONAL_ESTIMATE
+ESTIMATED
 SYNTHETIC
 
 Never present synthetic or simulated data as observed real-world data.
 
-Current implementation: SoilProfile uses a farm-specific `SoilDataClassification` (OBSERVED, ESTIMATED, SYNTHETIC) plus `SoilDataSource`. `SoilDataSource.permits` rejects contradictory pairs (e.g. REGIONAL_ESTIMATE + OBSERVED, LAB_REPORT/SOIL_HEALTH_CARD + anything but OBSERVED) with `INCONSISTENT_SOIL_PROVENANCE`. Whether to unify it with the platform-wide list above is an open decision.
+This is `common/api/DataClassification` (MASTER_SPEC D4). SoilProfile keeps its own `SoilDataClassification` (OBSERVED, ESTIMATED, SYNTHETIC), a subset of it, plus `SoilDataSource`. `SoilDataSource.permits` rejects contradictory pairs (e.g. REGIONAL_ESTIMATE + OBSERVED, LAB_REPORT/SOIL_HEALTH_CARD + anything but OBSERVED) with `INCONSISTENT_SOIL_PROVENANCE`. `REGIONAL_ESTIMATE` is a soil *source*, not a classification.
 
 If required data is unavailable:
 - reduce confidence
@@ -424,7 +424,7 @@ Domain errors should have meaningful application-level codes.
 
 Use PostgreSQL as the primary database.
 
-Flyway owns the schema. Migrations live in `src/main/resources/db/migration` (currently V1__create_farm.sql, V2__optional_soil_profile.sql, V3__users_and_farm_ownership.sql).
+Flyway owns the schema. Migrations live in `src/main/resources/db/migration` (currently V1–V7; see MASTER_SPEC §5.1).
 
 - `spring.jpa.hibernate.ddl-auto=validate`: Hibernate only checks the schema, never generates it.
 - Every schema change is a new versioned migration. Never edit an applied migration.
@@ -881,28 +881,24 @@ Optimize after understanding access patterns.
 
 ## 36. Current backend phase
 
-COMPLETED: Phase 0 (foundation), Phase 1 (auth and ownership), Phase 2 (farm and soil).
-IN PROGRESS: Phase 3 (weather: provider boundary only, no data source), Phases 5/14 (the ML boundary: supply forecast is wired, other intelligence endpoints are contract only).
+`MASTER_SPEC.md` (repository root) is the canonical specification; `PROJECT_STATE.md` records what is implemented.
 
-Implemented and tested:
-1. Spring Boot startup and `/actuator/health`.
-2. Packages: `common`, `configuration`, `auth`, `user`, `farm`, `weather`, `ml`, `intelligence`.
-3. PostgreSQL + PostGIS, Flyway migrations V1–V3.
-4. Common error handling: `ApiError`, `ApiException`, `GlobalExceptionHandler`, and a JSON 401/403 handler.
-5. CORS for `/api/**` through a `CorsConfigurationSource` (default origin http://localhost:5173).
-6. Farm, FarmLocation (lat/lon plus a generated PostGIS `geog` column) and an optional SoilProfile, all owner-scoped.
-7. Farm API: POST, GET list (unpaged), GET by id, PUT (FARMER or FPO; no DELETE). Soil provenance validation.
-8. Auth: register, login and me, with stateless JWT and BCrypt.
-9. Weather: the `WeatherProvider` boundary has no implementation, so `/api/weather*` answers 503 `WEATHER_UNAVAILABLE`. Product rule: Spring Boot never generates weather data. `WeatherService` refuses `SYNTHETIC` reports, and weather mocks belong only in tests.
-10. ML boundary: `MlClient` → `POST /v1/predict/supply` (provisional contract). `/api/intelligence/supply-forecast` returns data only when ML answers. Demand-forecast, supply-demand, crop-recommendations and agricultural-risk answer 503 `PREDICTION_UNAVAILABLE`.
-11. `common/api/DataClassification`; `MODEL_PREDICTION` is used only for values returned by ML.
-12. Tests: 63 passing at the last recorded run (2026-09-28).
-13. Contracts: `docs/auth-api.md`, `docs/farm-api.md`, `docs/intelligence-api.md`.
+COMPLETED (MASTER_SPEC phases): P2 (foundation), P3 (intelligence) and P4 (roles), on top of the earlier auth, farm and soil work.
+- **Data model and API:** reference sync, farm districts, district assignments, audit and admin bootstrap; migrations V1–V7.
+- **Weather:** Open-Meteo, split provenance, cache.
+- **Supply:** the typed ML contract, scope-checked against the synced tables.
+- **Crop evidence and risk:** `crop-evidence-v1`, `risk-rules-v1`.
+- **Access:** the regional view, the admin API, and the RBAC matrix of §4.2.
+- **Cross-cutting:** correlation ids and health indicators.
+- **Tests:** 156 run, 0 failures, 3 skipped (the live ML test).
 
-The repository-root `PROJECT_STATE.md` is the source of truth for what is implemented.
+BLOCKED by spec blockers:
+- **B1:** no trained ML artifact.
+- **B2:** FAO EcoCrop values not transcribed.
 
-NEXT: not yet decided. Wait for explicit instruction.
+The code is done; the affected data answers honestly as unavailable.
 
+NEXT: P5 (frontend) and P6 (end to end), when instructed. M4 and M5 are STRETCH.
 Still do NOT implement without instruction:
 - ML
 - forecasting
@@ -922,7 +918,7 @@ Still do NOT implement without instruction:
 Phase 0 — Backend foundation (done)
 Phase 1 — User/auth foundation (done)
 Phase 2 — Farm + soil (done, delivered before Phase 1)
-Phase 3 — Weather/environmental providers (in progress: provider boundary only, no data source)
+Phase 3 — Weather/environmental providers (done: Open-Meteo)
 Phase 4 — Crop intelligence
 Phase 5 — Supply forecasting contract
 Phase 6 — Demand forecasting contract

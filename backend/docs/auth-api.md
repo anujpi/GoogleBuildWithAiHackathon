@@ -35,7 +35,8 @@ An unknown email, a wrong password and a disabled account all return the same `4
   "accessToken": "eyJ...",
   "tokenType": "Bearer",
   "expiresIn": 3600,
-  "user": { "id": "uuid", "fullName": "Anuj Sharma", "email": "anuj@example.com", "role": "FARMER" }
+  "user": { "id": "uuid", "fullName": "Anuj Sharma", "email": "anuj@example.com", "role": "FARMER",
+            "enabled": true, "assignedDistrictIds": [] }
 }
 ```
 
@@ -43,7 +44,12 @@ An unknown email, a wrong password and a disabled account all return the same `4
 
 ## UserResponse
 
-`{ "id", "fullName", "email", "role" }`. `role` is one of `FARMER`, `FPO`, `AGRICULTURAL_OFFICER` or `ADMIN`. No password or password hash is ever returned.
+`{ "id", "fullName", "email", "role", "enabled", "assignedDistrictIds" }`:
+- `role` is one of `FARMER`, `FPO`, `AGRICULTURAL_OFFICER` or `ADMIN`. Only an ADMIN can change it (see `admin-api.md`).
+- `assignedDistrictIds` lists the districts an ADMIN assigned (FPO and AGRICULTURAL_OFFICER only). It is empty otherwise.
+- No password or password hash is ever returned.
+
+Every auth event is audited: registration, successful login, and failed login (which records the normalized email only, never the password).
 
 ## Token behaviour
 

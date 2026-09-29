@@ -11,6 +11,7 @@ import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PastOrPresent;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
 import jakarta.validation.constraints.Size;
@@ -27,6 +28,8 @@ public record FarmRequest(
         @Size(max = 100) String currentCrop,
         @Size(max = 100) String previousCrop,
         @NotNull Season season,
+        /** Optional canonical district id; it must exist in the synced reference scope. */
+        @Pattern(regexp = "[a-z0-9][a-z0-9-]{0,49}", message = "must be a lower-case district id") String districtId,
         @NotNull @Valid Location location,
         @Valid Soil soilProfile) {
 

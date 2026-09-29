@@ -20,6 +20,10 @@ public record FarmResponse(
         String currentCrop,
         String previousCrop,
         Season season,
+        String districtId,
+        String districtLabel,
+        /** District set and in the served scope (it has at least one supply series). */
+        boolean intelligenceSupported,
         Location location,
         Soil soilProfile,
         boolean soilDataAvailable,

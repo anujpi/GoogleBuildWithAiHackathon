@@ -51,6 +51,9 @@ public class Farm {
     @Enumerated(EnumType.STRING)
     private Season season;
 
+    /** Canonical district (ref_district); null when not given or outside the scope. Never guessed. */
+    private String districtId;
+
     @OneToOne(fetch = FetchType.LAZY, optional = false, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "location_id")
     private FarmLocation location;
@@ -60,9 +63,14 @@ public class Farm {
     @JoinColumn(name = "soil_profile_id")
     private SoilProfile soilProfile;
 
-    /** Set once from the authenticated user on create; never transferred. Null only for pre-auth legacy rows. */
+    /**
+     * Set from the authenticated user on create and never transferred. Null only for legacy rows from before V3,
+     * which an ADMIN may give a first owner (MASTER_SPEC D13). The column must stay updatable for that one case;
+     * the never-transferred rule lives in the service layer: FarmMapper never touches the owner, and
+     * FarmService.assignOwner refuses any farm that already has one (409 CONFLICT).
+     */
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "owner_id", updatable = false)
+    @JoinColumn(name = "owner_id")
     private User owner;
 
     @Column(updatable = false)

@@ -1,7 +1,8 @@
 package com.argiintelligence.backend.intelligence.controller;
 
 import com.argiintelligence.backend.intelligence.dto.SupplyEstimateResponse;
-import com.argiintelligence.backend.intelligence.service.IntelligenceService;
+import com.argiintelligence.backend.intelligence.service.CanonicalSeason;
+import com.argiintelligence.backend.intelligence.service.SupplyService;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.Pattern;
@@ -13,8 +14,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * Contract: docs/intelligence-api.md, MASTER_SPEC §6.5 and §8. The old demand/supply-demand/risk/recommendation
- * placeholders and supply-forecast were removed (§6.9); crop evidence and risk move to /api/farms/{id}/... (P3).
+ * GET /api/intelligence/supply (MASTER_SPEC §6.5, §8). The old demand/supply-demand/risk/recommendation
+ * placeholders and supply-forecast were removed (§6.9); crop evidence and risk live under /api/farms/{id}.
  */
 @RestController
 @RequestMapping("/api/intelligence")
@@ -22,18 +23,16 @@ import org.springframework.web.bind.annotation.RestController;
 public class IntelligenceController {
 
     /** Lower-case slug such as "up-agra" or "potato". */
-    private static final String ID = "[a-z0-9][a-z0-9-]{0,49}";
-    private static final String ID_MESSAGE = "must be a lower-case id (a-z, 0-9, '-'), at most 50 characters";
-    private static final String SEASON = "KHARIF|RABI|SUMMER|WHOLE_YEAR|AUTUMN|WINTER";
-    private static final String SEASON_MESSAGE = "must be one of KHARIF, RABI, SUMMER, WHOLE_YEAR, AUTUMN, WINTER";
+    static final String ID = "[a-z0-9][a-z0-9-]{0,49}";
+    static final String ID_MESSAGE = "must be a lower-case id (a-z, 0-9, '-'), at most 50 characters";
 
-    private final IntelligenceService service;
+    private final SupplyService service;
 
     @GetMapping("/supply")
     public SupplyEstimateResponse supply(
             @RequestParam @Pattern(regexp = ID, message = ID_MESSAGE) String districtId,
             @RequestParam @Pattern(regexp = ID, message = ID_MESSAGE) String cropId,
-            @RequestParam @Pattern(regexp = SEASON, message = SEASON_MESSAGE) String season,
+            @RequestParam @Pattern(regexp = CanonicalSeason.PATTERN, message = CanonicalSeason.MESSAGE) String season,
             @RequestParam @Min(1950) @Max(2100) int cropYear,
             @RequestParam(required = false) @Positive Double areaHectares) {
         return service.supply(districtId, cropId, season, cropYear, areaHectares);

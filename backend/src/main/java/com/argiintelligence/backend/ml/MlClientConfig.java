@@ -1,5 +1,6 @@
 package com.argiintelligence.backend.ml;
 
+import com.argiintelligence.backend.common.web.RequestIdPropagation;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -23,6 +24,7 @@ class MlClientConfig {
         JdkClientHttpRequestFactory factory = new JdkClientHttpRequestFactory(HttpClient.newBuilder()
                 .version(HttpClient.Version.HTTP_1_1).connectTimeout(props.connectTimeout()).build());
         factory.setReadTimeout(props.readTimeout());
-        return new MlClient(RestClient.builder().baseUrl(props.baseUrl()).requestFactory(factory).build());
+        return new MlClient(RestClient.builder().baseUrl(props.baseUrl()).requestFactory(factory)
+                .requestInterceptor(RequestIdPropagation.interceptor()).build());
     }
 }

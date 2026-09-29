@@ -29,6 +29,13 @@ Everything comes from environment variables. The defaults exist for local develo
 | `CORS_ALLOWED_ORIGINS` | `http://localhost:5173` | Comma-separated. Never `*`. |
 | `ML_SERVICE_BASE_URL` | `http://localhost:8000` | The FastAPI ML service. |
 | `ML_SERVICE_CONNECT_TIMEOUT` / `ML_SERVICE_READ_TIMEOUT` | `2s` / `10s` | |
+| `WEATHER_BASE_URL` | `https://api.open-meteo.com` | Open-Meteo Forecast API. No API key |
+| `WEATHER_CONNECT_TIMEOUT` / `WEATHER_READ_TIMEOUT` | `2s` / `5s` | |
+| `WEATHER_CACHE_TTL` | `PT30M` | Successful answers only; failures are never cached |
+| `REFERENCE_SYNC_ON_STARTUP` | `true` | Mirrors the ML scope into `ref_*`. A failure is logged and recorded; the app still starts |
+| `BOOTSTRAP_ADMIN_EMAIL` | unset | If set and no ADMIN exists, this already-registered user becomes ADMIN at startup |
+
+For local development, `JWT_SECRET` can live in the git-ignored `backend/application-local.properties`, which `application.properties` imports automatically. A real environment variable still takes priority.
 
 ## Modules (`src/main/java/com/argiintelligence/backend/`)
 
@@ -36,14 +43,18 @@ The package name is spelled `argiintelligence` on purpose.
 
 | Package | Contents |
 |---|---|
-| `common` | `ApiError` (the error body used everywhere), `ApiException`, `GlobalExceptionHandler`, `DataClassification` |
+| `common` | `ApiError`, `ApiException`, `GlobalExceptionHandler`, `DataClassification`, `Provenance`, `RiskLevel`, `PageResponse`, the `X-Request-Id` filter |
 | `configuration` | `CorsConfig` |
-| `auth` | Register, login and `/me`. `security/` holds the URL rules (`SecurityConfig`), `JwtService`, the JWT-to-user converter and the JSON 401/403 handler. |
-| `user` | `User` entity (table `users`), `Role` (FARMER, FPO, AGRICULTURAL_OFFICER, ADMIN) |
-| `farm` | Farm, FarmLocation and optional SoilProfile. Every query is scoped to the owner. |
-| `weather` | `WeatherProvider` interface with **no implementation yet**, so the endpoints return 503. `WeatherService` refuses any `SYNTHETIC` report. |
-| `ml` | `MlClient`, the only code that makes HTTP calls to the ML service |
-| `intelligence` | `/api/intelligence/supply` through `MlClient` (the old placeholder endpoints were removed, MASTER_SPEC §6.9) |
+| `auth` | Register, login and `/me`. `security/` holds the URL role gates (`SecurityConfig`), `JwtService`, the JWT-to-user converter and the JSON 401/403 handler. `AdminBootstrap` |
+| `user` | `User` (table `users`), `Role` (FARMER, FPO, AGRICULTURAL_OFFICER, ADMIN), district assignments |
+| `reference` | The ML scope mirrored into `ref_*` tables (sync at startup and on admin request), `crop_requirement`, `GET /api/reference/scope` |
+| `farm` | Farm, FarmLocation, optional SoilProfile, `districtId`. Every lookup is scoped (owner, district or legacy) |
+| `weather` | `OpenMeteoWeatherProvider` (the only provider), `WeatherService` (cache, refuses `SYNTHETIC`), health indicator |
+| `ml` | `MlClient`, the only code that makes HTTP calls to the ML service; health indicator |
+| `intelligence` | Supply (ML), crop evidence (`crop-evidence-v1`) and risk (`risk-rules-v1`) |
+| `regional` | Read-only view of assigned districts (FPO, AGRICULTURAL_OFFICER) or all districts (ADMIN) |
+| `admin` | Users, roles, districts, system and ML health, model and dataset metadata, reference sync, audit, legacy farms |
+| `audit` | `audit_event` writes and search |
 
 ## API
 
@@ -51,12 +62,22 @@ The package name is spelled `argiintelligence` on purpose.
 |---|---|---|
 | `POST /api/auth/register`, `POST /api/auth/login` | public | Working |
 | `GET /api/auth/me` | token | Working |
-| `POST/GET /api/farms`, `GET/PUT /api/farms/{id}` | token, FARMER or FPO | Working. No DELETE. |
-| `GET /api/weather`, `GET /api/weather/farms/{farmId}` | token | No source: 503 `WEATHER_UNAVAILABLE` after validation and the ownership check |
-| `GET /api/intelligence/supply` | token | District supply estimate from the ML service (`districtId`, `cropId`, `season`, `cropYear`, optional `areaHectares`); MASTER_SPEC §8 |
-| `GET /actuator/health` | public | Working |
+| `POST/GET /api/farms`, `GET/PUT /api/farms/{id}` | FARMER or FPO, own farms | Working. No DELETE |
+| `GET /api/farms/{id}/weather`, `/crop-evidence`, `/risk` | FARMER or FPO, own farms | Working (see blockers) |
+| `GET /api/reference/scope` | token | Working. Empty until ML serves an artifact (B1) |
+| `GET /api/weather` | token | Working: real Open-Meteo data |
+| `GET /api/intelligence/supply` | token | Working. 503 `ML_PREDICTION_UNAVAILABLE` until ML has a trained artifact (B1) |
+| `GET /api/regional/**` | FPO, AGRICULTURAL_OFFICER (assigned districts), ADMIN | Working. Read-only |
+| `/api/admin/**` | ADMIN | Working |
+| `GET /actuator/health` | public | Working. `DEGRADED` (not `DOWN`) when ML or weather is unavailable |
 
-Full contracts: [docs/auth-api.md](docs/auth-api.md), [docs/farm-api.md](docs/farm-api.md), [docs/intelligence-api.md](docs/intelligence-api.md).
+Full contracts: [docs/auth-api.md](docs/auth-api.md), [docs/farm-api.md](docs/farm-api.md), [docs/intelligence-api.md](docs/intelligence-api.md), [docs/admin-api.md](docs/admin-api.md).
+
+**Blockers** (MASTER_SPEC §20):
+- **B1:** there is no trained ML artifact yet. Supply is unavailable, the reference scope is empty, and the ML-based evidence is `UNAVAILABLE`.
+- **B2:** the FAO EcoCrop limits are not transcribed yet (`crop_requirement` is NULL), so the soil pH and temperature evidence is `UNAVAILABLE`.
+
+Nothing is ever substituted for missing data.
 
 Every error uses one shape: `{ timestamp, status, code, message, path, details[] }`. It never contains a stack trace.
 
@@ -68,7 +89,11 @@ Migrations are in `src/main/resources/db/migration`. Never edit one that has alr
 |---|---|
 | V1 | PostGIS extension; `farm`, `farm_location` (with a generated `geog` point and GiST index) and `soil_profile` |
 | V2 | Soil profile becomes optional |
-| V3 | `users` table; `farm.owner_id`. The column is nullable because farms created before accounts existed have no known owner, so they are kept but can't be reached through the API. |
+| V3 | `users` table; `farm.owner_id`. The column is nullable because farms created before accounts existed have no known owner. They are kept, and an ADMIN can give them a first owner |
+| V4 | Reference tables (`ref_state`, `ref_district`, `ref_crop`, `ref_supply_series`, `ref_dataset`) and `reference_sync` |
+| V5 | `farm.district_id` and `user_district_assignment` |
+| V6 | `audit_event` |
+| V7 | Seeds the four crops, plus `crop_requirement` with every limit NULL (blocker B2) |
 
 ## Tests
 
@@ -78,20 +103,25 @@ Migrations are in `src/main/resources/db/migration`. Never edit one that has alr
 
 Integration tests start their own `postgis/postgis:17-3.5` container through Testcontainers and apply the real migrations. They don't use the compose database or an H2 database. A test-only JWT secret is injected in `TestcontainersConfiguration`.
 
-The last run (2026-09-28) passed **63 of 63** tests:
+The last run (2026-09-29) had **156 tests: 0 failures, 0 errors, 3 skipped**. The 3 skipped tests are `MlServiceLiveTest`, which needs `ML_E2E_BASE_URL` and a live ML service with an artifact.
 
 | Class | Tests |
 |---|---|
-| `AuthControllerIntegrationTest` | 9 |
-| `FarmControllerIntegrationTest` | 17 |
-| `WeatherControllerIntegrationTest` (no provider) | 7 |
-| `WeatherProviderIntegrationTest` (provider test double) | 4 |
-| `IntelligenceControllerIntegrationTest` | 8 |
 | `MlClientTest` (golden ML contract files in `src/test/resources/contracts/ml`) | 31 |
+| `RiskRulesTest` (every threshold boundary) | 28 |
+| `FarmControllerIntegrationTest` | 17 |
+| `AccessControlIntegrationTest` (RBAC matrix, regional, admin, legacy farms, audit, request ids) | 14 |
+| `AuthControllerIntegrationTest` | 9 |
+| `IntelligenceControllerIntegrationTest` (supply) | 8 |
+| `OpenMeteoWeatherProviderTest` (mock HTTP: success, timeout, 429, 5xx, malformed) | 8 |
+| `WeatherControllerIntegrationTest` | 8 |
+| `CropEvidenceRiskIntegrationTest` | 7 |
+| `GlobalExceptionHandlerTest`, `CropEvidenceTierTest`, `WeatherServiceTest` | 5 each |
+| `BackendApplicationTests` (health, clean-DB migrations, V7 seed, legacy-row migration) | 4 |
+| `ReferenceIntegrationTest` | 4 |
 | `MlServiceLiveTest` (real HTTP; runs only with `ML_E2E_BASE_URL=http://localhost:8000`) | 3 |
-| `GlobalExceptionHandlerTest` | 5 |
-| `BackendApplicationTests` | 1 |
 
+Tests never reach the network: `TestcontainersConfiguration` turns off the startup sync and points ML and weather at a closed local port.
 ## Conventions
 
 These are in [CLAUDE.md](CLAUDE.md):

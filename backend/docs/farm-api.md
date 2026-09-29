@@ -28,6 +28,7 @@ PUT is a full replacement: send every field. An omitted or `null` optional field
 | `currentCrop` | string \| null | no | ≤ 100 chars, free text until the Crop domain exists |
 | `previousCrop` | string \| null | no | ≤ 100 chars |
 | `season` | `KHARIF` \| `RABI` \| `ZAID` \| `OTHER` | yes | |
+| `districtId` | string \| null | no | A canonical district id from `GET /api/reference/scope` (e.g. `up-agra`). An unknown id gives 400 `VALIDATION_ERROR` on `districtId`. Needed for crop evidence and risk |
 | `location` | object | yes | see below |
 | `soilProfile` | object \| null | no | see below. Omit or send `null` when no soil data exists. |
 
@@ -71,6 +72,9 @@ The API does not convert units. Values are stored and returned exactly as sent.
 Same fields as the request, plus:
 
 - `id`, `location.id`, `soilProfile.id`: UUID strings. Location and soil IDs stay the same across updates.
+- `districtLabel`: the label of `districtId`, or `null` when no district is set.
+- `intelligenceSupported`: `true` when the district is set **and** has at least one supply series in the served scope. When it's `false`, crop evidence and risk answer 422 `UNSUPPORTED_INPUT`; weather still works.
+- Weather, crop evidence and risk for a farm are at `/api/farms/{id}/weather`, `/crop-evidence` and `/risk` (see `intelligence-api.md`).
 - `createdAt`, `updatedAt`: ISO-8601 UTC instants, e.g. `2026-09-23T16:19:34.484313Z`. `updatedAt` changes on every PUT.
 - `soilDataAvailable`: boolean. `false` means no soil data exists for this farm, and `soilProfile` is then `null`. The UI must show soil as unavailable, not as zero or default values. Later intelligence calculations will treat missing soil as a missing input and lower confidence.
 - Every field is always present. Optional values come back as `null`, not omitted.

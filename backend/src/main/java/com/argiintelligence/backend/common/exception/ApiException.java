@@ -25,4 +25,26 @@ public class ApiException extends RuntimeException {
         this.code = code;
         this.details = details;
     }
+
+    /** 422: outside the D2 scope, series missing, farm without an in-scope district, or season OTHER. */
+    public static ApiException unsupportedInput(String field, String message) {
+        return new ApiException(HttpStatus.UNPROCESSABLE_CONTENT, "UNSUPPORTED_INPUT", message,
+                List.of(new FieldViolation(field, message)));
+    }
+
+    /** 400 on one named field, for rules checked outside Bean Validation. */
+    public static ApiException validation(String field, String message) {
+        return new ApiException(HttpStatus.BAD_REQUEST, "VALIDATION_ERROR", "Request validation failed",
+                List.of(new FieldViolation(field, message)));
+    }
+
+    /** 409: last-admin rule, owner already set, assignment for the wrong role. */
+    public static ApiException conflict(String message) {
+        return new ApiException(HttpStatus.CONFLICT, "CONFLICT", message);
+    }
+
+    /** 404 with a resource-specific code; used for resources that are missing or not visible to the caller. */
+    public static ApiException notFound(String code, String message) {
+        return new ApiException(HttpStatus.NOT_FOUND, code, message);
+    }
 }

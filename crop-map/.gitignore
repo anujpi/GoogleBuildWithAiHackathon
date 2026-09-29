@@ -1,0 +1,4 @@
+# Downloaded boundary files (~92 MB); scripts/build_geo.py downloads them again
+data/geo/raw/*.geojson
+data/geo/_districts_tmp.json
+__pycache__/

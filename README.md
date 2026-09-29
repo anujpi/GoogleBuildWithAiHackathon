@@ -36,6 +36,8 @@ An AI-powered agricultural decision intelligence platform combining:
 
 \- `backend/` — Spring Boot backend
 
+\- `crop-map/` — India crop database (DES 2019-20) and a static district crop map (see `crop-map/README.md`)
+
 
 
 \## Current Status

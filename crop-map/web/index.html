@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>India Crop Map</title>
+  <meta name="description" content="What every district in India grows: crop area, production and yield, 2019-20 (DES).">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%8C%BE%3C/text%3E%3C/svg%3E">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <h1 class="brand">India crop map <span class="brand-year" id="year"></span></h1>
+    <div class="controls">
+      <div class="search" role="combobox" aria-haspopup="listbox" aria-owns="search-results" aria-expanded="false">
+        <input id="search" type="search" placeholder="Search a district or state" autocomplete="off"
+               aria-label="Search a district or state" aria-controls="search-results">
+        <ul id="search-results" class="search-results" role="listbox" hidden></ul>
+      </div>
+      <label class="field">
+        <span>Crop</span>
+        <select id="crop"><option value="">All crops</option></select>
+      </label>
+      <label class="field">
+        <span>Colour by</span>
+        <select id="metric"></select>
+      </label>
+    </div>
+  </header>
+
+  <main class="layout">
+    <div id="map" aria-label="Map"></div>
+
+    <aside class="panel" id="panel" data-sheet="half" aria-label="Places in view">
+      <button class="sheet-handle" id="sheet-handle" aria-label="Resize panel"><span></span></button>
+
+      <section id="list-view">
+        <div class="panel-head">
+          <p class="panel-title" id="list-title">Loading…</p>
+          <p class="panel-sub" id="list-sub"></p>
+        </div>
+        <ol class="results" id="results"></ol>
+      </section>
+
+      <section id="detail-view" hidden>
+        <div class="panel-head detail-head">
+          <button class="back" id="back" aria-label="Back to list">← Back</button>
+          <div>
+            <h2 class="detail-title" id="d-title"></h2>
+            <p class="panel-sub" id="d-sub"></p>
+          </div>
+        </div>
+        <div class="detail-body" id="d-body"></div>
+      </section>
+    </aside>
+  </main>
+
+  <div class="tooltip" id="chart-tip" role="tooltip" hidden></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/topojson-client@3.1.0/dist/topojson-client.min.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

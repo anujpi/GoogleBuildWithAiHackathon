@@ -1,0 +1,137 @@
+{
+  "target": {
+    "districtId": "up-agra",
+    "cropId": "potato",
+    "season": "RABI",
+    "cropYear": 2013
+  },
+  "estimate": {
+    "production": {
+      "value": 303847.5,
+      "unit": "TONNES",
+      "interval": {
+        "lower": 243625.0368823808,
+        "upper": 345163.2896345239,
+        "nominalCoverage": 0.8,
+        "empiricalCoverage": 0.5,
+        "method": "EMPIRICAL_LOG_RESIDUAL_QUANTILES_VALIDATION"
+      }
+    },
+    "yield": {
+      "value": 19.991019264171797,
+      "unit": "TONNES_PER_HECTARE",
+      "interval": {
+        "lower": 16.028806574186852,
+        "upper": 22.709306386817985,
+        "nominalCoverage": 0.8,
+        "empiricalCoverage": 0.5,
+        "method": "EMPIRICAL_LOG_RESIDUAL_QUANTILES_VALIDATION"
+      }
+    },
+    "area": {
+      "value": 15199.2,
+      "unit": "HECTARES",
+      "areaSource": "REPORTED"
+    },
+    "servedMethod": "BASELINE",
+    "historyYearsUsed": [
+      2010,
+      2011,
+      2012
+    ],
+    "provenance": {
+      "source": "ML_SERVICE",
+      "dataClassification": "ESTIMATED",
+      "datasetVersion": "SYNTHETIC-EXAMPLE",
+      "modelName": "supply-baseline-naive-last-year-production",
+      "modelVersion": "SYNTHETIC-EXAMPLE",
+      "featureVersion": "supply-features-v2",
+      "dataThrough": "2014",
+      "generatedAt": "2026-09-28T17:24:54.713856Z"
+    }
+  },
+  "baseline": {
+    "method": "NAIVE_LAST_YEAR_PRODUCTION",
+    "production": {
+      "value": 303847.5,
+      "unit": "TONNES"
+    }
+  },
+  "reported": {
+    "area": {
+      "value": 15199.2,
+      "unit": "HECTARES"
+    },
+    "production": {
+      "value": 383832.5,
+      "unit": "TONNES"
+    },
+    "yield": {
+      "value": 25.253467287751985,
+      "unit": "TONNES_PER_HECTARE"
+    }
+  },
+  "history": {
+    "units": {
+      "area": "HECTARES",
+      "production": "TONNES",
+      "yield": "TONNES_PER_HECTARE"
+    },
+    "points": [
+      {
+        "cropYear": 2012,
+        "area": 14231.1,
+        "production": 303847.5,
+        "yield": 21.350949680629043
+      },
+      {
+        "cropYear": 2013,
+        "area": 15199.2,
+        "production": 383832.5,
+        "yield": 25.253467287751985
+      },
+      {
+        "cropYear": 2014,
+        "area": 14002.1,
+        "production": 348068.2,
+        "yield": 24.858285542882854
+      }
+    ],
+    "provenance": {
+      "source": "SYNTHETIC_EXAMPLE",
+      "dataClassification": "SYNTHETIC",
+      "datasetVersion": "SYNTHETIC-EXAMPLE",
+      "modelName": null,
+      "modelVersion": null,
+      "featureVersion": null,
+      "dataThrough": "2014",
+      "generatedAt": "2026-09-28T17:24:54.713856Z"
+    }
+  },
+  "historicalYieldStats": {
+    "yearsObserved": 18,
+    "meanYield": {
+      "value": 25.778934745999724,
+      "unit": "TONNES_PER_HECTARE"
+    },
+    "coefficientOfVariation": 0.11057118176553984,
+    "downsideYearShare": 0.17647058823529413,
+    "yearsAssessedForDownside": 17,
+    "downsideDefinition": "YIELD_BELOW_85PCT_OF_TRAILING_3Y_MEAN"
+  },
+  "modelEvaluation": {
+    "trainingPeriod": "1998-2010",
+    "validationPeriod": "2011-2012",
+    "testPeriod": "2013-2014",
+    "servedMethod": "BASELINE",
+    "testWape": 0.16028859822434813,
+    "bestBaseline": "NAIVE_LAST_YEAR_PRODUCTION",
+    "bestBaselineTestWape": 0.16028859822434813,
+    "testIntervalCoverage": 0.5
+  },
+  "limitations": [
+    "The interval has one width for every district, crop and season; it is not specific to this series.",
+    "The estimate uses reported area and production history only: no weather, soil or market data.",
+    "On held-out years the interval contained the actual value less often than its nominal coverage."
+  ]
+}

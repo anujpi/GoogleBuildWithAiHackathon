@@ -1,0 +1,13 @@
+{
+  "error": {
+    "code": "UNSUPPORTED_CROP",
+    "message": "crop 'tomato' is not supported",
+    "details": {
+      "cropId": "tomato",
+      "supported": [
+        "potato",
+        "wheat"
+      ]
+    }
+  }
+}

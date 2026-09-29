@@ -6,47 +6,39 @@ Errors use the standard body: `{ timestamp, status, code, message, path, details
 
 ## Status per endpoint
 
+The canonical contract is `MASTER_SPEC.md` (§6, §8, §13). This file describes what the code does today.
+
 | Endpoint | Status | Behaviour today |
 |---|---|---|
-| `GET /api/weather`, `GET /api/weather/farms/{farmId}` | NO SOURCE | 503 `WEATHER_UNAVAILABLE` after validation and the ownership check. No weather provider is configured, and the backend never generates weather. |
-| `GET /api/intelligence/supply-forecast` | WAITING_FOR_ML | Calls ML `POST /v1/predict/supply`. 200 when ML answers; 503/502 otherwise. Request body to ML is provisional. |
-| `GET /api/intelligence/demand-forecast` | CONTRACT_ONLY / UNAVAILABLE | 503 `PREDICTION_UNAVAILABLE` after validation. No ML endpoint agreed. |
-| `GET /api/intelligence/supply-demand` | CONTRACT_ONLY / UNAVAILABLE | 503 `PREDICTION_UNAVAILABLE`. No historical production/arrival data in the backend. |
-| `GET /api/intelligence/crop-recommendations` | CONTRACT_ONLY / UNAVAILABLE | Farm ownership checked, then 503 `PREDICTION_UNAVAILABLE`. |
-| `GET /api/intelligence/agricultural-risk` | CONTRACT_ONLY / UNAVAILABLE | 503 `PREDICTION_UNAVAILABLE`. |
-
-`PREDICTION_UNAVAILABLE` means "no real source is connected". The frontend must show an unavailable state, never a placeholder number.
+| `GET /api/weather`, `GET /api/weather/farms/{farmId}` | NO SOURCE | 503 `WEATHER_UNAVAILABLE` after validation and the ownership check. The Open-Meteo provider and split provenance (§7) are phase P3 |
+| `GET /api/intelligence/supply` | ML-BACKED (§8) | District supply estimate from ML `POST /v1/predict/supply` |
+| `/api/intelligence/{supply-forecast, demand-forecast, supply-demand, crop-recommendations, agricultural-risk}` | **REMOVED** (§6.9) | 404 |
+| `GET /api/reference/scope` | NOT YET (P2) | Served from synced reference tables (V4), never proxied live |
 
 ## Shared conventions
 
-**Ids.** `regionId`, `cropId`: lower-case slug, regex `[a-z0-9][a-z0-9-]{0,49}` (e.g. `ka`, `tomato`). The backend has no region/crop reference table yet, so any well-formed id is accepted; unknown ids are only detected by the ML service.
+**Ids** (D3): lower-case slugs matching `[a-z0-9][a-z0-9-]{0,49}`: `districtId` like `up-agra`, `cropId` like
+`potato`. The supported ones are the ML scope (`GET /v1/reference/scope`).
 
-**`horizonMonths`**: integer 1–12, default 3. Replaces the frontend's `periodId` (`next-3m` → `3`).
+**Provenance** (`common/api/Provenance`, §12): `{ source, dataClassification, retrievedAt, generatedAt,
+datasetVersion, modelName, modelVersion, featureVersion, dataThrough, notes[] }`. Unknown values are null.
+There is no `confidence` field. Weather still uses its own single `provenance` until P3.
 
-**Provenance** (`IntelligenceProvenance`), on every intelligence result:
+**Classification** (D4): `OBSERVED, FORECAST, MODEL_PREDICTION, ESTIMATED, SYNTHETIC`.
 
-| Field | Type | Meaning |
-|---|---|---|
-| `source` | string | Producer, e.g. `ML_SERVICE` |
-| `dataClassification` | `OBSERVED` \| `FORECAST` \| `MODEL_PREDICTION` \| `REGIONAL_ESTIMATE` \| `SYNTHETIC` | `MODEL_PREDICTION` only when a model produced the value |
-| `generatedAt` | ISO-8601 UTC | When the backend produced this response |
-| `modelVersion` | string \| null | null when no model was involved |
-| `confidence` | number 0..1 \| null | null unless the source reports it. Never invented. |
-| `limitations` | string[] | Human-readable caveats; may be empty |
-
-Weather predates this and keeps its own `provenance { source, dataClassification, retrievedAt, confidence }`.
-
-## Common errors (intelligence endpoints)
+## Errors used by these endpoints (§13)
 
 | Status | Code | When |
 |---|---|---|
-| 400 | `VALIDATION_ERROR` | Missing/blank/ill-formed parameter; `details[].field` names it |
-| 400 | `INVALID_PARAMETER` | Wrong type, e.g. `farmId` not a UUID |
-| 401 | `UNAUTHORIZED` | No/invalid token |
+| 400 | `VALIDATION_ERROR` | Missing, blank or ill-formed parameter; `details[].field` names it |
+| 401 | `UNAUTHORIZED` | No or invalid token |
 | 404 | `FARM_NOT_FOUND` | Farm missing **or owned by another user** (indistinguishable on purpose) |
-| 502 | `ML_SERVICE_ERROR` | ML answered 4xx/5xx, or with a malformed/incomplete body |
-| 503 | `ML_SERVICE_UNAVAILABLE` | ML unreachable or timed out (connect 2s, read 10s by default) |
-| 503 | `PREDICTION_UNAVAILABLE` | Endpoint has no prediction source connected yet |
+| 422 | `UNSUPPORTED_INPUT` | Outside the scope: unknown district or crop, no series for the season, crop year not estimable. `details[].field` names it |
+| 422 | `INSUFFICIENT_DATA` | ML `INSUFFICIENT_HISTORY` / `AREA_UNAVAILABLE` |
+| 502 | `ML_INVALID_RESPONSE` | ML returned bad or contract-breaking data: missing fields, classification not matching `servedMethod`, history not OBSERVED, wrong unit, negative production, value outside its interval, or an ML `VALIDATION_ERROR`/`INTERNAL_ERROR` |
+| 503 | `ML_UNAVAILABLE` | ML unreachable or timed out (connect 2s, read 10s by default) |
+| 503 | `ML_PREDICTION_UNAVAILABLE` | ML up but no model loaded (`MODEL_NOT_LOADED` / `ARTIFACT_LOAD_ERROR`) |
+| 503 | `WEATHER_UNAVAILABLE` | Weather only, until P3 replaces it with the `UPSTREAM_*` codes |
 
 ---
 
@@ -79,75 +71,71 @@ The response carries no `current` or `daily` values: the backend never generates
 ```
 Extra error: 503 `WEATHER_UNAVAILABLE` if the provider fails.
 
-## GET /api/intelligence/supply-forecast — WAITING_FOR_ML
+## GET /api/intelligence/supply — ML-BACKED (MASTER_SPEC §8)
 
-Query: `regionId`, `cropId` (required), `horizonMonths` (default 3).
+This is the estimated **reported production** of one district × crop × season for one crop year.
+**It is not a current-season forecast.** S01 ends in crop year 2014, so the newest estimable year is 2015.
 
-200 `SupplyForecastResponse`:
-```json
-{
-  "regionId": "ka", "cropId": "tomato", "horizonMonths": 6,
-  "predictedSupply": 812.4,
-  "unit": "tonnes",
-  "forecastPeriod": "2026-10/2027-03",
-  "provenance": { "source": "ML_SERVICE", "dataClassification": "MODEL_PREDICTION",
-                  "generatedAt": "...", "modelVersion": "supply-v0.1", "confidence": null,
-                  "limitations": ["The model reports no uncertainty, so confidence is not available."] },
-  "modelProvenance": { "datasetVersion": "ds-1", "featureVersion": "f-1", "trainedAt": "2026-09-20T10:00:00Z" }
-}
-```
-- `unit` and `forecastPeriod` come from the model unchanged; `forecastPeriod` may be null.
-- `modelProvenance` is null when the ML service sends none; `trainedAt` is the model's raw string.
+**Query parameters:**
+- `districtId`, `cropId`: required
+- `season`: required, one of `KHARIF, RABI, SUMMER, WHOLE_YEAR, AUTUMN, WINTER`
+- `cropYear`: required, 1950–2100
+- `areaHectares`: optional, > 0
 
-Backend → ML request (provisional, until the ML contract is final):
-`POST {ML_SERVICE_BASE_URL}/v1/predict/supply` body `{ "regionId": "...", "cropId": "...", "horizonMonths": 6 }`.
-Required in the ML response: `modelVersion`, `prediction.value`, `prediction.unit`; otherwise 502.
+**Flow:**
+1. Bean validation.
+2. Scope pre-check: the district, the crop and the (district, crop, season) series must exist, and
+   `cropYear` must be in `firstYear+1 … lastYear+1`. Otherwise 422 `UNSUPPORTED_INPUT`, and the
+   **predictor is not called**. INTERIM: the scope is read live from ML until the V4 reference sync (P2) exists.
+3. `POST /v1/predict/supply {districtId, cropId, season, cropYear, areaHectares|null}`.
+4. `MlClient` checks the contract rules, and the result is mapped to the body below.
 
-## GET /api/intelligence/demand-forecast — CONTRACT_ONLY
+**200 `SupplyEstimateResponse`** (the shape only):
 
-Query: as supply-forecast. Today: 503 `PREDICTION_UNAVAILABLE`.
-
-Planned 200 body (not served yet): same shape as supply-forecast with `predictedDemand` instead of `predictedSupply`, plus `signalType` (e.g. `MANDI_ARRIVALS`). Demand is a proxy signal, never retail sales.
-
-## GET /api/intelligence/supply-demand — CONTRACT_ONLY
-
-Query: as supply-forecast. Today: 503 `PREDICTION_UNAVAILABLE`.
-
-Planned 200 body (not served yet):
 ```jsonc
 {
-  "regionId": "ka", "cropId": "onion", "horizonMonths": 3, "unit": "tonnes",
-  "historical": [ { "month": "2026-06", "supply": 0, "demand": 0 } ],  // OBSERVED, own provenance
-  "forecast":   [ { "month": "2026-10", "supply": 0, "demand": 0 } ],  // MODEL_PREDICTION
-  "gap": { "supplyDemandGap": 0, "gapState": "SURPLUS|BALANCED|SHORTAGE" }, // gap = supply − demand
-  "historicalProvenance": { ... }, "forecastProvenance": { ... }
+  "target":   { "districtId": "up-agra", "districtLabel": "Agra", "cropId": "potato", "cropLabel": "Potato",
+                "season": "RABI", "cropYear": 2015 },
+  "estimate": { "production": { "value": 0, "unit": "TONNES", "interval": { "lower": 0, "upper": 0,
+                  "nominalCoverage": 0.8, "empiricalCoverage": 0.0, "method": "EMPIRICAL_LOG_RESIDUAL_QUANTILES_VALIDATION" } },
+                "yield": { "value": 0, "unit": "TONNES_PER_HECTARE", "interval": { } },
+                "area": { "value": 0, "unit": "HECTARES", "areaSource": "REQUEST|REPORTED|LAST_REPORTED" },
+                "servedMethod": "MODEL|BASELINE", "historyYearsUsed": [2012, 2013, 2014] },
+  "baseline": { "method": "AREA_X_MEAN_YIELD_3Y", "production": { "value": 0, "unit": "TONNES" } },
+  "reported": null,                  // the S01 actuals when cropYear is a reported (backtest) year
+  "history":  { "units": { "area": "HECTARES", "production": "TONNES", "yield": "TONNES_PER_HECTARE" },
+                "points": [ { "cropYear": 2014, "area": 0, "production": 0, "yield": 0 } ] },
+  "historicalYieldStats": { "yearsObserved": 18, "meanYield": { "value": 0, "unit": "TONNES_PER_HECTARE" },
+                            "coefficientOfVariation": 0.1, "downsideYearShare": 0.1, "yearsAssessedForDownside": 17,
+                            "downsideDefinition": "YIELD_BELOW_85PCT_OF_TRAILING_3Y_MEAN" },
+  "modelEvaluation": { "trainingPeriod": "1998-2010", "validationPeriod": "2011-2012", "testPeriod": "2013-2014",
+                       "servedMethod": "MODEL", "testWape": 0.0, "bestBaseline": "AREA_X_MEAN_YIELD_3Y",
+                       "bestBaselineTestWape": 0.0, "testIntervalCoverage": 0.0 },
+  "provenance": { "source": "ML_SERVICE", "dataClassification": "MODEL_PREDICTION|ESTIMATED", "retrievedAt": "…Z",
+                  "generatedAt": "…Z", "datasetVersion": "s01-…", "modelName": "…", "modelVersion": "…",
+                  "featureVersion": "supply-features-v2", "dataThrough": "2014", "notes": [] },
+  "historyProvenance": { "source": "DES_S01_DATA_GOV_IN", "dataClassification": "OBSERVED", "datasetVersion": "s01-…",
+                         "dataThrough": "2014", "retrievedAt": null, "generatedAt": null, "modelName": null,
+                         "modelVersion": null, "featureVersion": null, "notes": [] },
+  "limitations": [ "…ML sentences verbatim…",
+                   "Data ends in crop year 2014; this is not a current-season forecast.",
+                   "The trained model did not beat the baseline; the baseline estimate is served." ]
 }
 ```
-Every array may be empty; a series is omitted rather than filled with invented values.
 
-## GET /api/intelligence/crop-recommendations — CONTRACT_ONLY
-
-Query: `farmId` (UUID, required). Ownership is enforced first (404 for another user's farm), then 503 `PREDICTION_UNAVAILABLE`.
-
-Planned 200 body (not served yet): `{ farmId, candidates: [ { cropId, suitability, factors: [ { name, value, effect } ] } ], provenance }`. Facts per crop, no single winner; the decision engine owns the recommendation.
-
-## GET /api/intelligence/agricultural-risk — CONTRACT_ONLY
-
-Query: `regionId`, `cropId` (required). Today: 503 `PREDICTION_UNAVAILABLE`.
-
-Planned 200 body (not served yet): `{ regionId, cropId, risks: [ { category: WEATHER|CROP|SUPPLY|MARKET|ANOMALY, level, summary, factors[] } ], provenance }`. Production and market risks stay separate.
+- `dataClassification` is `MODEL_PREDICTION` when `servedMethod=MODEL` and `ESTIMATED` when `BASELINE`.
+- The baseline sentence appears only when `BASELINE` is served.
+- There is **no `confidence` field**: the interval is the uncertainty.
 
 ---
 
 ## Frontend (`frontend/src/features/intelligence/`) vs this contract
 
-| Topic | Frontend today | Backend | Action for frontend |
-|---|---|---|---|
-| Paths | `/intelligence/supply`, `/demand`, `/risk` | `/supply-forecast`, `/demand-forecast`, `/agricultural-risk` | Rename paths |
-| Period param | `periodId=next-3m` | `horizonMonths=3` | Map option → integer |
-| Supply field names | `crop`, `forecastPeriod`, `predictedSupply`, `modelVersion` top-level | `cropId`, `forecastPeriod`, `predictedSupply`, `provenance.modelVersion` | Read from provenance |
-| Provenance | `retrievedAt` | `generatedAt`, plus `limitations` | Rename; weather keeps `retrievedAt` |
-| Supply-demand | full body with `summary`, `risks`, `gapTrend`, `gapPercentage`, labels | 503 today; planned body smaller (no labels, no embedded risks, no trend) | Keep mock; handle 503 as unavailable |
-| Crop recs | `expectedYield`, `confidence` per candidate | `factors`, no invented yield/confidence | Adjust when served |
-| Unavailable | mock mode rejects with 501 `NOT_AVAILABLE` | 503 `PREDICTION_UNAVAILABLE` | Treat both as unavailable |
-| Weather | shape matches; no page uses it yet | 503 `WEATHER_UNAVAILABLE` until a real provider exists | When a weather UI is built, show 503 as "unavailable". `describeError` currently gives the generic 5xx text for it. |
+The final frontend contract is `MASTER_SPEC.md` §15 (phase P5). These gaps are live today:
+
+| Topic | Frontend today | Backend today |
+|---|---|---|
+| Supply | `getSupplyForecast` → removed `/intelligence/supply-forecast` (`regionId`, `horizonMonths`); no page uses it | `/intelligence/supply?districtId&cropId&season&cropYear[&areaHectares]` → `SupplyEstimateResponse` |
+| Demand, supply-demand, risk, crop recommendations clients | Call removed paths; the Supply & Demand page uses a SYNTHETIC mock by default | 404 (removed, §6.9). Crop evidence and risk arrive as `/api/farms/{id}/…` in P3 |
+| `DataClassification` | Includes `REGIONAL_ESTIMATE` | `ESTIMATED` (D4). The frontend must rename it |
+| Error codes | `describeError` has no text for the §13 codes | `UNSUPPORTED_INPUT`, `INSUFFICIENT_DATA`, `ML_UNAVAILABLE`, `ML_PREDICTION_UNAVAILABLE`, `ML_INVALID_RESPONSE` |

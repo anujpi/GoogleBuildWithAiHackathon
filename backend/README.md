@@ -43,7 +43,7 @@ The package name is spelled `argiintelligence` on purpose.
 | `farm` | Farm, FarmLocation and optional SoilProfile. Every query is scoped to the owner. |
 | `weather` | `WeatherProvider` interface with **no implementation yet**, so the endpoints return 503. `WeatherService` refuses any `SYNTHETIC` report. |
 | `ml` | `MlClient`, the only code that makes HTTP calls to the ML service |
-| `intelligence` | `/api/intelligence/*`. Supply forecast goes through `MlClient`; the other endpoints are contract only and return 503. |
+| `intelligence` | `/api/intelligence/supply` through `MlClient` (the old placeholder endpoints were removed, MASTER_SPEC §6.9) |
 
 ## API
 
@@ -53,8 +53,7 @@ The package name is spelled `argiintelligence` on purpose.
 | `GET /api/auth/me` | token | Working |
 | `POST/GET /api/farms`, `GET/PUT /api/farms/{id}` | token, FARMER or FPO | Working. No DELETE. |
 | `GET /api/weather`, `GET /api/weather/farms/{farmId}` | token | No source: 503 `WEATHER_UNAVAILABLE` after validation and the ownership check |
-| `GET /api/intelligence/supply-forecast` | token | Waiting for ML: 503/502 until the ML service answers |
-| `GET /api/intelligence/{demand-forecast, supply-demand, crop-recommendations, agricultural-risk}` | token | Contract only: 503 `PREDICTION_UNAVAILABLE` |
+| `GET /api/intelligence/supply` | token | District supply estimate from the ML service (`districtId`, `cropId`, `season`, `cropYear`, optional `areaHectares`); MASTER_SPEC §8 |
 | `GET /actuator/health` | public | Working |
 
 Full contracts: [docs/auth-api.md](docs/auth-api.md), [docs/farm-api.md](docs/farm-api.md), [docs/intelligence-api.md](docs/intelligence-api.md).
@@ -87,8 +86,9 @@ The last run (2026-09-28) passed **63 of 63** tests:
 | `FarmControllerIntegrationTest` | 17 |
 | `WeatherControllerIntegrationTest` (no provider) | 7 |
 | `WeatherProviderIntegrationTest` (provider test double) | 4 |
-| `IntelligenceControllerIntegrationTest` | 11 |
-| `MlClientTest` | 9 |
+| `IntelligenceControllerIntegrationTest` | 8 |
+| `MlClientTest` (golden ML contract files in `src/test/resources/contracts/ml`) | 31 |
+| `MlServiceLiveTest` (real HTTP; runs only with `ML_E2E_BASE_URL=http://localhost:8000`) | 3 |
 | `GlobalExceptionHandlerTest` | 5 |
 | `BackendApplicationTests` | 1 |
 

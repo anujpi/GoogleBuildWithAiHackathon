@@ -1,0 +1,14 @@
+{
+  "error": {
+    "code": "VALIDATION_ERROR",
+    "message": "request validation failed",
+    "details": {
+      "errors": [
+        {
+          "field": "horizonMonths",
+          "message": "Extra inputs are not permitted"
+        }
+      ]
+    }
+  }
+}

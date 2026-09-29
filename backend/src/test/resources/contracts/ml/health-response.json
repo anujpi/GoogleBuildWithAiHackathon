@@ -1,0 +1,16 @@
+{
+  "status": "UP",
+  "service": "agri-ml",
+  "version": "0.1.0",
+  "environment": "local",
+  "models": [
+    {
+      "capability": "SUPPLY",
+      "status": "READY",
+      "modelVersion": "SYNTHETIC-EXAMPLE",
+      "datasetVersion": "SYNTHETIC-EXAMPLE",
+      "featureVersion": "supply-features-v2",
+      "reason": null
+    }
+  ]
+}

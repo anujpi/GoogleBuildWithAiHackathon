@@ -1,0 +1,59 @@
+{
+  "states": [
+    {
+      "stateId": "up",
+      "label": "Uttar Pradesh"
+    }
+  ],
+  "districts": [
+    {
+      "districtId": "up-agra",
+      "stateId": "up",
+      "label": "Agra"
+    },
+    {
+      "districtId": "up-kanpur-nagar",
+      "stateId": "up",
+      "label": "Kanpur Nagar"
+    }
+  ],
+  "crops": [
+    {
+      "cropId": "potato",
+      "label": "Potato"
+    },
+    {
+      "cropId": "wheat",
+      "label": "Wheat"
+    }
+  ],
+  "seasons": [
+    "RABI"
+  ],
+  "supplySeries": [
+    {
+      "districtId": "up-agra",
+      "cropId": "potato",
+      "season": "RABI",
+      "firstYear": 1997,
+      "lastYear": 2014,
+      "yearsObserved": 18
+    },
+    {
+      "districtId": "up-agra",
+      "cropId": "wheat",
+      "season": "RABI",
+      "firstYear": 1997,
+      "lastYear": 2014,
+      "yearsObserved": 18
+    }
+  ],
+  "marketSeries": [],
+  "datasets": [
+    {
+      "source": "SYNTHETIC_EXAMPLE",
+      "datasetVersion": "SYNTHETIC-EXAMPLE",
+      "dataThrough": "2014"
+    }
+  ]
+}

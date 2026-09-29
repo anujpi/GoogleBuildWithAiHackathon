@@ -1,0 +1,13 @@
+{
+  "error": {
+    "code": "INSUFFICIENT_HISTORY",
+    "message": "no positive reported production for cropYear - 1 (2015)",
+    "details": {
+      "requiredYear": 2015,
+      "estimableYears": [
+        1998,
+        2015
+      ]
+    }
+  }
+}

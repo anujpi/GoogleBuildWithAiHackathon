@@ -27,4 +27,12 @@ public interface ProductionHistoryRepository extends Repository<ProductionHistor
             order by p.cropYear""")
     List<Integer> findSeriesYears(@Param("state") String state, @Param("crop") String crop,
                                   @Param("season") String season);
+
+    /** Every year of a series, oldest first; used for anomaly checks and the supply-forecast target year. */
+    @Query("""
+            select p from ProductionHistory p
+            where lower(p.state) = lower(:state) and lower(p.crop) = lower(:crop) and p.season = :season
+            order by p.cropYear""")
+    List<ProductionHistory> findFullSeries(@Param("state") String state, @Param("crop") String crop,
+                                           @Param("season") String season);
 }

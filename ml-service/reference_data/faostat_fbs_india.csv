@@ -1,0 +1,1087 @@
+item,element,unit,year,value
+Population,Total Population - Both sexes,1000 No,2010,1243481.560000
+Population,Total Population - Both sexes,1000 No,2011,1261224.950000
+Population,Total Population - Both sexes,1000 No,2012,1278674.500000
+Population,Total Population - Both sexes,1000 No,2013,1295829.510000
+Population,Total Population - Both sexes,1000 No,2014,1312277.190000
+Population,Total Population - Both sexes,1000 No,2015,1328024.500000
+Population,Total Population - Both sexes,1000 No,2016,1343944.300000
+Population,Total Population - Both sexes,1000 No,2017,1359657.400000
+Population,Total Population - Both sexes,1000 No,2018,1374659.060000
+Population,Total Population - Both sexes,1000 No,2019,1389030.310000
+Population,Total Population - Both sexes,1000 No,2020,1402617.700000
+Population,Total Population - Both sexes,1000 No,2021,1414203.900000
+Population,Total Population - Both sexes,1000 No,2022,1425423.210000
+Population,Total Population - Both sexes,1000 No,2023,1438069.600000
+Wheat and products,Production,1000 t,2010,80804.000000
+Wheat and products,Production,1000 t,2011,86874.000000
+Wheat and products,Production,1000 t,2012,94880.000000
+Wheat and products,Production,1000 t,2013,93510.000000
+Wheat and products,Production,1000 t,2014,95850.000000
+Wheat and products,Production,1000 t,2015,86530.000000
+Wheat and products,Production,1000 t,2016,92290.000000
+Wheat and products,Production,1000 t,2017,98510.000000
+Wheat and products,Production,1000 t,2018,99870.000000
+Wheat and products,Production,1000 t,2019,103596.000000
+Wheat and products,Production,1000 t,2020,107861.000000
+Wheat and products,Production,1000 t,2021,109587.000000
+Wheat and products,Production,1000 t,2022,107742.000000
+Wheat and products,Production,1000 t,2023,110554.000000
+Wheat and products,Import quantity,1000 t,2010,240.000000
+Wheat and products,Import quantity,1000 t,2011,40.000000
+Wheat and products,Import quantity,1000 t,2012,90.000000
+Wheat and products,Import quantity,1000 t,2013,61.000000
+Wheat and products,Import quantity,1000 t,2014,122.000000
+Wheat and products,Import quantity,1000 t,2015,588.000000
+Wheat and products,Import quantity,1000 t,2016,2000.000000
+Wheat and products,Import quantity,1000 t,2017,5460.000000
+Wheat and products,Import quantity,1000 t,2018,224.000000
+Wheat and products,Import quantity,1000 t,2019,178.000000
+Wheat and products,Import quantity,1000 t,2020,209.000000
+Wheat and products,Import quantity,1000 t,2021,154.000000
+Wheat and products,Import quantity,1000 t,2022,155.000000
+Wheat and products,Import quantity,1000 t,2023,389.000000
+Wheat and products,Export quantity,1000 t,2010,192.000000
+Wheat and products,Export quantity,1000 t,2011,833.000000
+Wheat and products,Export quantity,1000 t,2012,5094.000000
+Wheat and products,Export quantity,1000 t,2013,7217.000000
+Wheat and products,Export quantity,1000 t,2014,4609.000000
+Wheat and products,Export quantity,1000 t,2015,1221.000000
+Wheat and products,Export quantity,1000 t,2016,699.000000
+Wheat and products,Export quantity,1000 t,2017,675.000000
+Wheat and products,Export quantity,1000 t,2018,661.000000
+Wheat and products,Export quantity,1000 t,2019,704.000000
+Wheat and products,Export quantity,1000 t,2020,1507.000000
+Wheat and products,Export quantity,1000 t,2021,6914.000000
+Wheat and products,Export quantity,1000 t,2022,7988.000000
+Wheat and products,Export quantity,1000 t,2023,704.000000
+Wheat and products,Domestic supply quantity,1000 t,2010,81608.000000
+Wheat and products,Domestic supply quantity,1000 t,2011,81490.000000
+Wheat and products,Domestic supply quantity,1000 t,2012,85628.000000
+Wheat and products,Domestic supply quantity,1000 t,2013,92723.000000
+Wheat and products,Domestic supply quantity,1000 t,2014,91966.000000
+Wheat and products,Domestic supply quantity,1000 t,2015,88571.000000
+Wheat and products,Domestic supply quantity,1000 t,2016,98324.000000
+Wheat and products,Domestic supply quantity,1000 t,2017,99857.000000
+Wheat and products,Domestic supply quantity,1000 t,2018,95665.000000
+Wheat and products,Domestic supply quantity,1000 t,2019,95355.000000
+Wheat and products,Domestic supply quantity,1000 t,2020,103456.000000
+Wheat and products,Domestic supply quantity,1000 t,2021,103736.000000
+Wheat and products,Domestic supply quantity,1000 t,2022,109904.000000
+Wheat and products,Domestic supply quantity,1000 t,2023,112236.000000
+Wheat and products,Food,1000 t,2010,72539.000000
+Wheat and products,Food,1000 t,2011,72303.000000
+Wheat and products,Food,1000 t,2012,76158.000000
+Wheat and products,Food,1000 t,2013,80935.000000
+Wheat and products,Food,1000 t,2014,79451.000000
+Wheat and products,Food,1000 t,2015,77893.000000
+Wheat and products,Food,1000 t,2016,87599.000000
+Wheat and products,Food,1000 t,2017,87423.000000
+Wheat and products,Food,1000 t,2018,83581.000000
+Wheat and products,Food,1000 t,2019,83399.000000
+Wheat and products,Food,1000 t,2020,87408.000000
+Wheat and products,Food,1000 t,2021,87046.000000
+Wheat and products,Food,1000 t,2022,93958.000000
+Wheat and products,Food,1000 t,2023,95634.000000
+Wheat and products,Food supply quantity (kg/capita/yr),kg/cap,2010,58.340000
+Wheat and products,Food supply quantity (kg/capita/yr),kg/cap,2011,57.330000
+Wheat and products,Food supply quantity (kg/capita/yr),kg/cap,2012,59.560000
+Wheat and products,Food supply quantity (kg/capita/yr),kg/cap,2013,62.460000
+Wheat and products,Food supply quantity (kg/capita/yr),kg/cap,2014,60.540000
+Wheat and products,Food supply quantity (kg/capita/yr),kg/cap,2015,58.650000
+Wheat and products,Food supply quantity (kg/capita/yr),kg/cap,2016,65.180000
+Wheat and products,Food supply quantity (kg/capita/yr),kg/cap,2017,64.300000
+Wheat and products,Food supply quantity (kg/capita/yr),kg/cap,2018,60.800000
+Wheat and products,Food supply quantity (kg/capita/yr),kg/cap,2019,60.040000
+Wheat and products,Food supply quantity (kg/capita/yr),kg/cap,2020,62.320000
+Wheat and products,Food supply quantity (kg/capita/yr),kg/cap,2021,61.550000
+Wheat and products,Food supply quantity (kg/capita/yr),kg/cap,2022,65.920000
+Wheat and products,Food supply quantity (kg/capita/yr),kg/cap,2023,66.500000
+Rice and products,Production,1000 t,2010,143963.000000
+Rice and products,Production,1000 t,2011,157900.000000
+Rice and products,Production,1000 t,2012,157800.000000
+Rice and products,Production,1000 t,2013,159200.000000
+Rice and products,Production,1000 t,2014,157200.000000
+Rice and products,Production,1000 t,2015,156540.000000
+Rice and products,Production,1000 t,2016,163700.000000
+Rice and products,Production,1000 t,2017,168500.000000
+Rice and products,Production,1000 t,2018,174717.000000
+Rice and products,Production,1000 t,2019,174717.000000
+Rice and products,Production,1000 t,2020,186500.000000
+Rice and products,Production,1000 t,2021,194200.000000
+Rice and products,Production,1000 t,2022,203624.000000
+Rice and products,Production,1000 t,2023,206727.000000
+Rice and products,Import quantity,1000 t,2010,15.000000
+Rice and products,Import quantity,1000 t,2011,17.000000
+Rice and products,Import quantity,1000 t,2012,5.000000
+Rice and products,Import quantity,1000 t,2013,7.000000
+Rice and products,Import quantity,1000 t,2014,3.000000
+Rice and products,Import quantity,1000 t,2015,3.000000
+Rice and products,Import quantity,1000 t,2016,2.000000
+Rice and products,Import quantity,1000 t,2017,3.000000
+Rice and products,Import quantity,1000 t,2018,10.000000
+Rice and products,Import quantity,1000 t,2019,9.000000
+Rice and products,Import quantity,1000 t,2020,7.000000
+Rice and products,Import quantity,1000 t,2021,5.000000
+Rice and products,Import quantity,1000 t,2022,18.000000
+Rice and products,Import quantity,1000 t,2023,9.000000
+Rice and products,Export quantity,1000 t,2010,3341.000000
+Rice and products,Export quantity,1000 t,2011,7508.000000
+Rice and products,Export quantity,1000 t,2012,15696.000000
+Rice and products,Export quantity,1000 t,2013,16950.000000
+Rice and products,Export quantity,1000 t,2014,16634.000000
+Rice and products,Export quantity,1000 t,2015,16431.000000
+Rice and products,Export quantity,1000 t,2016,14801.000000
+Rice and products,Export quantity,1000 t,2017,18088.000000
+Rice and products,Export quantity,1000 t,2018,17367.000000
+Rice and products,Export quantity,1000 t,2019,14597.000000
+Rice and products,Export quantity,1000 t,2020,21693.000000
+Rice and products,Export quantity,1000 t,2021,31552.000000
+Rice and products,Export quantity,1000 t,2022,33107.000000
+Rice and products,Export quantity,1000 t,2023,26530.000000
+Rice and products,Domestic supply quantity,1000 t,2010,136140.000000
+Rice and products,Domestic supply quantity,1000 t,2011,148011.000000
+Rice and products,Domestic supply quantity,1000 t,2012,141509.000000
+Rice and products,Domestic supply quantity,1000 t,2013,146305.000000
+Rice and products,Domestic supply quantity,1000 t,2014,147981.000000
+Rice and products,Domestic supply quantity,1000 t,2015,140458.000000
+Rice and products,Domestic supply quantity,1000 t,2016,145681.000000
+Rice and products,Domestic supply quantity,1000 t,2017,147331.000000
+Rice and products,Domestic supply quantity,1000 t,2018,146992.000000
+Rice and products,Domestic supply quantity,1000 t,2019,153532.000000
+Rice and products,Domestic supply quantity,1000 t,2020,160166.000000
+Rice and products,Domestic supply quantity,1000 t,2021,167151.000000
+Rice and products,Domestic supply quantity,1000 t,2022,169035.000000
+Rice and products,Domestic supply quantity,1000 t,2023,169711.000000
+Rice and products,Food,1000 t,2010,127670.000000
+Rice and products,Food,1000 t,2011,136512.000000
+Rice and products,Food,1000 t,2012,130470.000000
+Rice and products,Food,1000 t,2013,133985.000000
+Rice and products,Food,1000 t,2014,136479.000000
+Rice and products,Food,1000 t,2015,130090.000000
+Rice and products,Food,1000 t,2016,133436.000000
+Rice and products,Food,1000 t,2017,134986.000000
+Rice and products,Food,1000 t,2018,133945.000000
+Rice and products,Food,1000 t,2019,140616.000000
+Rice and products,Food,1000 t,2020,146518.000000
+Rice and products,Food,1000 t,2021,144942.000000
+Rice and products,Food,1000 t,2022,140392.000000
+Rice and products,Food,1000 t,2023,145374.000000
+Rice and products,Food supply quantity (kg/capita/yr),kg/cap,2010,102.670000
+Rice and products,Food supply quantity (kg/capita/yr),kg/cap,2011,108.240000
+Rice and products,Food supply quantity (kg/capita/yr),kg/cap,2012,102.040000
+Rice and products,Food supply quantity (kg/capita/yr),kg/cap,2013,103.400000
+Rice and products,Food supply quantity (kg/capita/yr),kg/cap,2014,104.000000
+Rice and products,Food supply quantity (kg/capita/yr),kg/cap,2015,97.960000
+Rice and products,Food supply quantity (kg/capita/yr),kg/cap,2016,99.290000
+Rice and products,Food supply quantity (kg/capita/yr),kg/cap,2017,99.280000
+Rice and products,Food supply quantity (kg/capita/yr),kg/cap,2018,97.440000
+Rice and products,Food supply quantity (kg/capita/yr),kg/cap,2019,101.230000
+Rice and products,Food supply quantity (kg/capita/yr),kg/cap,2020,104.460000
+Rice and products,Food supply quantity (kg/capita/yr),kg/cap,2021,102.490000
+Rice and products,Food supply quantity (kg/capita/yr),kg/cap,2022,98.490000
+Rice and products,Food supply quantity (kg/capita/yr),kg/cap,2023,101.090000
+Barley and products,Production,1000 t,2010,1355.000000
+Barley and products,Production,1000 t,2011,1663.000000
+Barley and products,Production,1000 t,2012,1620.000000
+Barley and products,Production,1000 t,2013,1750.000000
+Barley and products,Production,1000 t,2014,1830.000000
+Barley and products,Production,1000 t,2015,1613.000000
+Barley and products,Production,1000 t,2016,1440.000000
+Barley and products,Production,1000 t,2017,1747.000000
+Barley and products,Production,1000 t,2018,1781.000000
+Barley and products,Production,1000 t,2019,1633.000000
+Barley and products,Production,1000 t,2020,1722.000000
+Barley and products,Production,1000 t,2021,1656.000000
+Barley and products,Production,1000 t,2022,1371.000000
+Barley and products,Production,1000 t,2023,1913.000000
+Barley and products,Import quantity,1000 t,2010,5.000000
+Barley and products,Import quantity,1000 t,2011,6.000000
+Barley and products,Import quantity,1000 t,2012,41.000000
+Barley and products,Import quantity,1000 t,2013,12.000000
+Barley and products,Import quantity,1000 t,2014,15.000000
+Barley and products,Import quantity,1000 t,2015,22.000000
+Barley and products,Import quantity,1000 t,2016,159.000000
+Barley and products,Import quantity,1000 t,2017,268.000000
+Barley and products,Import quantity,1000 t,2018,111.000000
+Barley and products,Import quantity,1000 t,2019,277.000000
+Barley and products,Import quantity,1000 t,2020,76.000000
+Barley and products,Import quantity,1000 t,2021,22.000000
+Barley and products,Import quantity,1000 t,2022,183.000000
+Barley and products,Import quantity,1000 t,2023,192.000000
+Barley and products,Export quantity,1000 t,2010,39.000000
+Barley and products,Export quantity,1000 t,2011,48.000000
+Barley and products,Export quantity,1000 t,2012,120.000000
+Barley and products,Export quantity,1000 t,2013,556.000000
+Barley and products,Export quantity,1000 t,2014,518.000000
+Barley and products,Export quantity,1000 t,2015,98.000000
+Barley and products,Export quantity,1000 t,2016,19.000000
+Barley and products,Export quantity,1000 t,2017,19.000000
+Barley and products,Export quantity,1000 t,2018,27.000000
+Barley and products,Export quantity,1000 t,2019,23.000000
+Barley and products,Export quantity,1000 t,2020,19.000000
+Barley and products,Export quantity,1000 t,2021,26.000000
+Barley and products,Export quantity,1000 t,2022,30.000000
+Barley and products,Export quantity,1000 t,2023,31.000000
+Barley and products,Domestic supply quantity,1000 t,2010,1339.000000
+Barley and products,Domestic supply quantity,1000 t,2011,1624.000000
+Barley and products,Domestic supply quantity,1000 t,2012,1537.000000
+Barley and products,Domestic supply quantity,1000 t,2013,1270.000000
+Barley and products,Domestic supply quantity,1000 t,2014,1268.000000
+Barley and products,Domestic supply quantity,1000 t,2015,1477.000000
+Barley and products,Domestic supply quantity,1000 t,2016,1499.000000
+Barley and products,Domestic supply quantity,1000 t,2017,1832.000000
+Barley and products,Domestic supply quantity,1000 t,2018,1811.000000
+Barley and products,Domestic supply quantity,1000 t,2019,2037.000000
+Barley and products,Domestic supply quantity,1000 t,2020,1925.000000
+Barley and products,Domestic supply quantity,1000 t,2021,2019.000000
+Barley and products,Domestic supply quantity,1000 t,2022,1518.000000
+Barley and products,Domestic supply quantity,1000 t,2023,1965.000000
+Barley and products,Food,1000 t,2010,970.000000
+Barley and products,Food,1000 t,2011,1185.000000
+Barley and products,Food,1000 t,2012,1123.000000
+Barley and products,Food,1000 t,2013,885.000000
+Barley and products,Food,1000 t,2014,973.000000
+Barley and products,Food,1000 t,2015,1121.000000
+Barley and products,Food,1000 t,2016,1157.000000
+Barley and products,Food,1000 t,2017,1459.000000
+Barley and products,Food,1000 t,2018,1453.000000
+Barley and products,Food,1000 t,2019,1245.000000
+Barley and products,Food,1000 t,2020,1305.000000
+Barley and products,Food,1000 t,2021,1266.000000
+Barley and products,Food,1000 t,2022,770.000000
+Barley and products,Food,1000 t,2023,1113.000000
+Barley and products,Food supply quantity (kg/capita/yr),kg/cap,2010,0.780000
+Barley and products,Food supply quantity (kg/capita/yr),kg/cap,2011,0.940000
+Barley and products,Food supply quantity (kg/capita/yr),kg/cap,2012,0.880000
+Barley and products,Food supply quantity (kg/capita/yr),kg/cap,2013,0.680000
+Barley and products,Food supply quantity (kg/capita/yr),kg/cap,2014,0.740000
+Barley and products,Food supply quantity (kg/capita/yr),kg/cap,2015,0.840000
+Barley and products,Food supply quantity (kg/capita/yr),kg/cap,2016,0.860000
+Barley and products,Food supply quantity (kg/capita/yr),kg/cap,2017,1.070000
+Barley and products,Food supply quantity (kg/capita/yr),kg/cap,2018,1.060000
+Barley and products,Food supply quantity (kg/capita/yr),kg/cap,2019,0.900000
+Barley and products,Food supply quantity (kg/capita/yr),kg/cap,2020,0.930000
+Barley and products,Food supply quantity (kg/capita/yr),kg/cap,2021,0.890000
+Barley and products,Food supply quantity (kg/capita/yr),kg/cap,2022,0.540000
+Barley and products,Food supply quantity (kg/capita/yr),kg/cap,2023,0.770000
+Maize and products,Production,1000 t,2010,21726.000000
+Maize and products,Production,1000 t,2011,21760.000000
+Maize and products,Production,1000 t,2012,22260.000000
+Maize and products,Production,1000 t,2013,24260.000000
+Maize and products,Production,1000 t,2014,24260.000000
+Maize and products,Production,1000 t,2015,24170.000000
+Maize and products,Production,1000 t,2016,22570.000000
+Maize and products,Production,1000 t,2017,25900.000000
+Maize and products,Production,1000 t,2018,28753.000000
+Maize and products,Production,1000 t,2019,27715.000000
+Maize and products,Production,1000 t,2020,28766.000000
+Maize and products,Production,1000 t,2021,31647.000000
+Maize and products,Production,1000 t,2022,33730.000000
+Maize and products,Production,1000 t,2023,38085.000000
+Maize and products,Import quantity,1000 t,2010,18.000000
+Maize and products,Import quantity,1000 t,2011,20.000000
+Maize and products,Import quantity,1000 t,2012,12.000000
+Maize and products,Import quantity,1000 t,2013,18.000000
+Maize and products,Import quantity,1000 t,2014,14.000000
+Maize and products,Import quantity,1000 t,2015,41.000000
+Maize and products,Import quantity,1000 t,2016,194.000000
+Maize and products,Import quantity,1000 t,2017,90.000000
+Maize and products,Import quantity,1000 t,2018,51.000000
+Maize and products,Import quantity,1000 t,2019,464.000000
+Maize and products,Import quantity,1000 t,2020,305.000000
+Maize and products,Import quantity,1000 t,2021,155.000000
+Maize and products,Import quantity,1000 t,2022,128.000000
+Maize and products,Import quantity,1000 t,2023,135.000000
+Maize and products,Export quantity,1000 t,2010,2391.000000
+Maize and products,Export quantity,1000 t,2011,4166.000000
+Maize and products,Export quantity,1000 t,2012,4595.000000
+Maize and products,Export quantity,1000 t,2013,5188.000000
+Maize and products,Export quantity,1000 t,2014,4069.000000
+Maize and products,Export quantity,1000 t,2015,1409.000000
+Maize and products,Export quantity,1000 t,2016,827.000000
+Maize and products,Export quantity,1000 t,2017,884.000000
+Maize and products,Export quantity,1000 t,2018,1728.000000
+Maize and products,Export quantity,1000 t,2019,736.000000
+Maize and products,Export quantity,1000 t,2020,2414.000000
+Maize and products,Export quantity,1000 t,2021,4853.000000
+Maize and products,Export quantity,1000 t,2022,4630.000000
+Maize and products,Export quantity,1000 t,2023,3693.000000
+Maize and products,Domestic supply quantity,1000 t,2010,19570.000000
+Maize and products,Domestic supply quantity,1000 t,2011,17892.000000
+Maize and products,Domestic supply quantity,1000 t,2012,18052.000000
+Maize and products,Domestic supply quantity,1000 t,2013,19349.000000
+Maize and products,Domestic supply quantity,1000 t,2014,19410.000000
+Maize and products,Domestic supply quantity,1000 t,2015,22113.000000
+Maize and products,Domestic supply quantity,1000 t,2016,23195.000000
+Maize and products,Domestic supply quantity,1000 t,2017,24619.000000
+Maize and products,Domestic supply quantity,1000 t,2018,26084.000000
+Maize and products,Domestic supply quantity,1000 t,2019,28426.000000
+Maize and products,Domestic supply quantity,1000 t,2020,26140.000000
+Maize and products,Domestic supply quantity,1000 t,2021,26765.000000
+Maize and products,Domestic supply quantity,1000 t,2022,28861.000000
+Maize and products,Domestic supply quantity,1000 t,2023,34264.000000
+Maize and products,Food,1000 t,2010,9196.000000
+Maize and products,Food,1000 t,2011,8319.000000
+Maize and products,Food,1000 t,2012,8560.000000
+Maize and products,Food,1000 t,2013,9199.000000
+Maize and products,Food,1000 t,2014,8508.000000
+Maize and products,Food,1000 t,2015,10535.000000
+Maize and products,Food,1000 t,2016,10185.000000
+Maize and products,Food,1000 t,2017,10189.000000
+Maize and products,Food,1000 t,2018,10760.000000
+Maize and products,Food,1000 t,2019,10429.000000
+Maize and products,Food,1000 t,2020,7105.000000
+Maize and products,Food,1000 t,2021,6853.000000
+Maize and products,Food,1000 t,2022,6927.000000
+Maize and products,Food,1000 t,2023,9380.000000
+Maize and products,Food supply quantity (kg/capita/yr),kg/cap,2010,7.400000
+Maize and products,Food supply quantity (kg/capita/yr),kg/cap,2011,6.600000
+Maize and products,Food supply quantity (kg/capita/yr),kg/cap,2012,6.690000
+Maize and products,Food supply quantity (kg/capita/yr),kg/cap,2013,7.100000
+Maize and products,Food supply quantity (kg/capita/yr),kg/cap,2014,6.480000
+Maize and products,Food supply quantity (kg/capita/yr),kg/cap,2015,7.930000
+Maize and products,Food supply quantity (kg/capita/yr),kg/cap,2016,7.580000
+Maize and products,Food supply quantity (kg/capita/yr),kg/cap,2017,7.490000
+Maize and products,Food supply quantity (kg/capita/yr),kg/cap,2018,7.830000
+Maize and products,Food supply quantity (kg/capita/yr),kg/cap,2019,7.510000
+Maize and products,Food supply quantity (kg/capita/yr),kg/cap,2020,5.070000
+Maize and products,Food supply quantity (kg/capita/yr),kg/cap,2021,4.850000
+Maize and products,Food supply quantity (kg/capita/yr),kg/cap,2022,4.860000
+Maize and products,Food supply quantity (kg/capita/yr),kg/cap,2023,6.520000
+Sorghum and products,Production,1000 t,2010,6698.000000
+Sorghum and products,Production,1000 t,2011,7003.000000
+Sorghum and products,Production,1000 t,2012,5980.000000
+Sorghum and products,Production,1000 t,2013,5280.000000
+Sorghum and products,Production,1000 t,2014,5540.000000
+Sorghum and products,Production,1000 t,2015,5450.000000
+Sorghum and products,Production,1000 t,2016,4240.000000
+Sorghum and products,Production,1000 t,2017,4568.000000
+Sorghum and products,Production,1000 t,2018,4803.000000
+Sorghum and products,Production,1000 t,2019,3475.000000
+Sorghum and products,Production,1000 t,2020,4772.000000
+Sorghum and products,Production,1000 t,2021,4812.000000
+Sorghum and products,Production,1000 t,2022,4151.000000
+Sorghum and products,Production,1000 t,2023,3814.000000
+Sorghum and products,Import quantity,1000 t,2010,0.000000
+Sorghum and products,Import quantity,1000 t,2011,0.000000
+Sorghum and products,Import quantity,1000 t,2012,0.000000
+Sorghum and products,Import quantity,1000 t,2013,0.000000
+Sorghum and products,Import quantity,1000 t,2020,0.000000
+Sorghum and products,Import quantity,1000 t,2021,0.000000
+Sorghum and products,Import quantity,1000 t,2022,0.000000
+Sorghum and products,Import quantity,1000 t,2023,0.000000
+Sorghum and products,Export quantity,1000 t,2010,130.000000
+Sorghum and products,Export quantity,1000 t,2011,38.000000
+Sorghum and products,Export quantity,1000 t,2012,149.000000
+Sorghum and products,Export quantity,1000 t,2013,219.000000
+Sorghum and products,Export quantity,1000 t,2014,77.000000
+Sorghum and products,Export quantity,1000 t,2015,118.000000
+Sorghum and products,Export quantity,1000 t,2016,66.000000
+Sorghum and products,Export quantity,1000 t,2017,20.000000
+Sorghum and products,Export quantity,1000 t,2018,111.000000
+Sorghum and products,Export quantity,1000 t,2019,49.000000
+Sorghum and products,Export quantity,1000 t,2020,37.000000
+Sorghum and products,Export quantity,1000 t,2021,57.000000
+Sorghum and products,Export quantity,1000 t,2022,40.000000
+Sorghum and products,Export quantity,1000 t,2023,35.000000
+Sorghum and products,Domestic supply quantity,1000 t,2010,6584.000000
+Sorghum and products,Domestic supply quantity,1000 t,2011,6955.000000
+Sorghum and products,Domestic supply quantity,1000 t,2012,6371.000000
+Sorghum and products,Domestic supply quantity,1000 t,2013,5068.000000
+Sorghum and products,Domestic supply quantity,1000 t,2014,5607.000000
+Sorghum and products,Domestic supply quantity,1000 t,2015,5539.000000
+Sorghum and products,Domestic supply quantity,1000 t,2016,4297.000000
+Sorghum and products,Domestic supply quantity,1000 t,2017,4687.000000
+Sorghum and products,Domestic supply quantity,1000 t,2018,4819.000000
+Sorghum and products,Domestic supply quantity,1000 t,2019,3530.000000
+Sorghum and products,Domestic supply quantity,1000 t,2020,4495.000000
+Sorghum and products,Domestic supply quantity,1000 t,2021,4550.000000
+Sorghum and products,Domestic supply quantity,1000 t,2022,4451.000000
+Sorghum and products,Domestic supply quantity,1000 t,2023,3902.000000
+Sorghum and products,Food,1000 t,2010,5920.000000
+Sorghum and products,Food,1000 t,2011,6282.000000
+Sorghum and products,Food,1000 t,2012,5800.000000
+Sorghum and products,Food,1000 t,2013,4555.000000
+Sorghum and products,Food,1000 t,2014,5093.000000
+Sorghum and products,Food,1000 t,2015,5024.000000
+Sorghum and products,Food,1000 t,2016,3861.000000
+Sorghum and products,Food,1000 t,2017,4243.000000
+Sorghum and products,Food,1000 t,2018,4380.000000
+Sorghum and products,Food,1000 t,2019,3188.000000
+Sorghum and products,Food,1000 t,2020,3624.000000
+Sorghum and products,Food,1000 t,2021,3640.000000
+Sorghum and products,Food,1000 t,2022,3687.000000
+Sorghum and products,Food,1000 t,2023,3162.000000
+Sorghum and products,Food supply quantity (kg/capita/yr),kg/cap,2010,4.760000
+Sorghum and products,Food supply quantity (kg/capita/yr),kg/cap,2011,4.980000
+Sorghum and products,Food supply quantity (kg/capita/yr),kg/cap,2012,4.540000
+Sorghum and products,Food supply quantity (kg/capita/yr),kg/cap,2013,3.520000
+Sorghum and products,Food supply quantity (kg/capita/yr),kg/cap,2014,3.880000
+Sorghum and products,Food supply quantity (kg/capita/yr),kg/cap,2015,3.780000
+Sorghum and products,Food supply quantity (kg/capita/yr),kg/cap,2016,2.870000
+Sorghum and products,Food supply quantity (kg/capita/yr),kg/cap,2017,3.120000
+Sorghum and products,Food supply quantity (kg/capita/yr),kg/cap,2018,3.190000
+Sorghum and products,Food supply quantity (kg/capita/yr),kg/cap,2019,2.300000
+Sorghum and products,Food supply quantity (kg/capita/yr),kg/cap,2020,2.580000
+Sorghum and products,Food supply quantity (kg/capita/yr),kg/cap,2021,2.570000
+Sorghum and products,Food supply quantity (kg/capita/yr),kg/cap,2022,2.590000
+Sorghum and products,Food supply quantity (kg/capita/yr),kg/cap,2023,2.200000
+Potatoes and products,Production,1000 t,2010,36577.000000
+Potatoes and products,Production,1000 t,2011,42339.000000
+Potatoes and products,Production,1000 t,2012,41483.000000
+Potatoes and products,Production,1000 t,2013,45344.000000
+Potatoes and products,Production,1000 t,2014,46395.000000
+Potatoes and products,Production,1000 t,2015,48009.000000
+Potatoes and products,Production,1000 t,2016,43417.000000
+Potatoes and products,Production,1000 t,2017,48605.000000
+Potatoes and products,Production,1000 t,2018,51310.000000
+Potatoes and products,Production,1000 t,2019,50190.000000
+Potatoes and products,Production,1000 t,2020,48562.000000
+Potatoes and products,Production,1000 t,2021,54230.000000
+Potatoes and products,Production,1000 t,2022,56176.000000
+Potatoes and products,Production,1000 t,2023,60142.000000
+Potatoes and products,Import quantity,1000 t,2010,17.000000
+Potatoes and products,Import quantity,1000 t,2011,21.000000
+Potatoes and products,Import quantity,1000 t,2012,22.000000
+Potatoes and products,Import quantity,1000 t,2013,22.000000
+Potatoes and products,Import quantity,1000 t,2014,38.000000
+Potatoes and products,Import quantity,1000 t,2015,36.000000
+Potatoes and products,Import quantity,1000 t,2016,23.000000
+Potatoes and products,Import quantity,1000 t,2017,32.000000
+Potatoes and products,Import quantity,1000 t,2018,31.000000
+Potatoes and products,Import quantity,1000 t,2019,14.000000
+Potatoes and products,Import quantity,1000 t,2020,27.000000
+Potatoes and products,Import quantity,1000 t,2021,19.000000
+Potatoes and products,Import quantity,1000 t,2022,22.000000
+Potatoes and products,Import quantity,1000 t,2023,23.000000
+Potatoes and products,Export quantity,1000 t,2010,209.000000
+Potatoes and products,Export quantity,1000 t,2011,298.000000
+Potatoes and products,Export quantity,1000 t,2012,163.000000
+Potatoes and products,Export quantity,1000 t,2013,233.000000
+Potatoes and products,Export quantity,1000 t,2014,405.000000
+Potatoes and products,Export quantity,1000 t,2015,256.000000
+Potatoes and products,Export quantity,1000 t,2016,252.000000
+Potatoes and products,Export quantity,1000 t,2017,392.000000
+Potatoes and products,Export quantity,1000 t,2018,393.000000
+Potatoes and products,Export quantity,1000 t,2019,494.000000
+Potatoes and products,Export quantity,1000 t,2020,412.000000
+Potatoes and products,Export quantity,1000 t,2021,547.000000
+Potatoes and products,Export quantity,1000 t,2022,677.000000
+Potatoes and products,Export quantity,1000 t,2023,861.000000
+Potatoes and products,Domestic supply quantity,1000 t,2010,39637.000000
+Potatoes and products,Domestic supply quantity,1000 t,2011,42245.000000
+Potatoes and products,Domestic supply quantity,1000 t,2012,42722.000000
+Potatoes and products,Domestic supply quantity,1000 t,2013,44731.000000
+Potatoes and products,Domestic supply quantity,1000 t,2014,45887.000000
+Potatoes and products,Domestic supply quantity,1000 t,2015,47768.000000
+Potatoes and products,Domestic supply quantity,1000 t,2016,46871.000000
+Potatoes and products,Domestic supply quantity,1000 t,2017,49426.000000
+Potatoes and products,Domestic supply quantity,1000 t,2018,51375.000000
+Potatoes and products,Domestic supply quantity,1000 t,2019,50763.000000
+Potatoes and products,Domestic supply quantity,1000 t,2020,50677.000000
+Potatoes and products,Domestic supply quantity,1000 t,2021,53062.000000
+Potatoes and products,Domestic supply quantity,1000 t,2022,55421.000000
+Potatoes and products,Domestic supply quantity,1000 t,2023,59304.000000
+Potatoes and products,Food,1000 t,2010,28119.000000
+Potatoes and products,Food,1000 t,2011,28913.000000
+Potatoes and products,Food,1000 t,2012,29656.000000
+Potatoes and products,Food,1000 t,2013,30447.000000
+Potatoes and products,Food,1000 t,2014,31261.000000
+Potatoes and products,Food,1000 t,2015,32629.000000
+Potatoes and products,Food,1000 t,2016,33197.000000
+Potatoes and products,Food,1000 t,2017,34111.000000
+Potatoes and products,Food,1000 t,2018,35209.000000
+Potatoes and products,Food,1000 t,2019,34967.000000
+Potatoes and products,Food,1000 t,2020,34752.000000
+Potatoes and products,Food,1000 t,2021,35771.000000
+Potatoes and products,Food,1000 t,2022,37373.000000
+Potatoes and products,Food,1000 t,2023,40052.000000
+Potatoes and products,Food supply quantity (kg/capita/yr),kg/cap,2010,22.610000
+Potatoes and products,Food supply quantity (kg/capita/yr),kg/cap,2011,22.920000
+Potatoes and products,Food supply quantity (kg/capita/yr),kg/cap,2012,23.190000
+Potatoes and products,Food supply quantity (kg/capita/yr),kg/cap,2013,23.500000
+Potatoes and products,Food supply quantity (kg/capita/yr),kg/cap,2014,23.820000
+Potatoes and products,Food supply quantity (kg/capita/yr),kg/cap,2015,24.570000
+Potatoes and products,Food supply quantity (kg/capita/yr),kg/cap,2016,24.700000
+Potatoes and products,Food supply quantity (kg/capita/yr),kg/cap,2017,25.090000
+Potatoes and products,Food supply quantity (kg/capita/yr),kg/cap,2018,25.610000
+Potatoes and products,Food supply quantity (kg/capita/yr),kg/cap,2019,25.170000
+Potatoes and products,Food supply quantity (kg/capita/yr),kg/cap,2020,24.780000
+Potatoes and products,Food supply quantity (kg/capita/yr),kg/cap,2021,25.290000
+Potatoes and products,Food supply quantity (kg/capita/yr),kg/cap,2022,26.220000
+Potatoes and products,Food supply quantity (kg/capita/yr),kg/cap,2023,27.850000
+Sugar cane,Production,1000 t,2010,292302.000000
+Sugar cane,Production,1000 t,2011,342382.000000
+Sugar cane,Production,1000 t,2012,361037.000000
+Sugar cane,Production,1000 t,2013,341200.000000
+Sugar cane,Production,1000 t,2014,352142.000000
+Sugar cane,Production,1000 t,2015,362333.000000
+Sugar cane,Production,1000 t,2016,348448.000000
+Sugar cane,Production,1000 t,2017,306069.000000
+Sugar cane,Production,1000 t,2018,379905.000000
+Sugar cane,Production,1000 t,2019,405416.000000
+Sugar cane,Production,1000 t,2020,370500.000000
+Sugar cane,Production,1000 t,2021,405399.000000
+Sugar cane,Production,1000 t,2022,439425.000000
+Sugar cane,Production,1000 t,2023,490533.000000
+Sugar cane,Import quantity,1000 t,2010,0.000000
+Sugar cane,Import quantity,1000 t,2011,0.000000
+Sugar cane,Import quantity,1000 t,2012,0.000000
+Sugar cane,Import quantity,1000 t,2013,0.000000
+Sugar cane,Import quantity,1000 t,2017,0.000000
+Sugar cane,Import quantity,1000 t,2018,0.000000
+Sugar cane,Import quantity,1000 t,2023,0.000000
+Sugar cane,Export quantity,1000 t,2010,0.000000
+Sugar cane,Export quantity,1000 t,2011,0.000000
+Sugar cane,Export quantity,1000 t,2012,0.000000
+Sugar cane,Export quantity,1000 t,2013,0.000000
+Sugar cane,Export quantity,1000 t,2014,0.000000
+Sugar cane,Export quantity,1000 t,2015,0.000000
+Sugar cane,Export quantity,1000 t,2016,0.000000
+Sugar cane,Export quantity,1000 t,2017,0.000000
+Sugar cane,Export quantity,1000 t,2018,0.000000
+Sugar cane,Export quantity,1000 t,2019,1.000000
+Sugar cane,Export quantity,1000 t,2020,0.000000
+Sugar cane,Export quantity,1000 t,2021,0.000000
+Sugar cane,Export quantity,1000 t,2022,1.000000
+Sugar cane,Export quantity,1000 t,2023,1.000000
+Sugar cane,Domestic supply quantity,1000 t,2010,292302.000000
+Sugar cane,Domestic supply quantity,1000 t,2011,342382.000000
+Sugar cane,Domestic supply quantity,1000 t,2012,361037.000000
+Sugar cane,Domestic supply quantity,1000 t,2013,341200.000000
+Sugar cane,Domestic supply quantity,1000 t,2014,352142.000000
+Sugar cane,Domestic supply quantity,1000 t,2015,362333.000000
+Sugar cane,Domestic supply quantity,1000 t,2016,348448.000000
+Sugar cane,Domestic supply quantity,1000 t,2017,306069.000000
+Sugar cane,Domestic supply quantity,1000 t,2018,379905.000000
+Sugar cane,Domestic supply quantity,1000 t,2019,405415.000000
+Sugar cane,Domestic supply quantity,1000 t,2020,370500.000000
+Sugar cane,Domestic supply quantity,1000 t,2021,405398.000000
+Sugar cane,Domestic supply quantity,1000 t,2022,439424.000000
+Sugar cane,Domestic supply quantity,1000 t,2023,490533.000000
+Sugar cane,Food,1000 t,2010,10224.000000
+Sugar cane,Food,1000 t,2011,11975.000000
+Sugar cane,Food,1000 t,2012,11209.000000
+Sugar cane,Food,1000 t,2013,11934.000000
+Sugar cane,Food,1000 t,2014,14422.000000
+Sugar cane,Food,1000 t,2015,15161.000000
+Sugar cane,Food,1000 t,2016,15858.000000
+Sugar cane,Food,1000 t,2017,16571.000000
+Sugar cane,Food,1000 t,2018,11794.000000
+Sugar cane,Food,1000 t,2019,17678.000000
+Sugar cane,Food,1000 t,2020,20059.000000
+Sugar cane,Food,1000 t,2021,21948.000000
+Sugar cane,Food,1000 t,2022,19161.000000
+Sugar cane,Food,1000 t,2023,26557.000000
+Sugar cane,Food supply quantity (kg/capita/yr),kg/cap,2010,8.220000
+Sugar cane,Food supply quantity (kg/capita/yr),kg/cap,2011,9.490000
+Sugar cane,Food supply quantity (kg/capita/yr),kg/cap,2012,8.770000
+Sugar cane,Food supply quantity (kg/capita/yr),kg/cap,2013,9.210000
+Sugar cane,Food supply quantity (kg/capita/yr),kg/cap,2014,10.990000
+Sugar cane,Food supply quantity (kg/capita/yr),kg/cap,2015,11.420000
+Sugar cane,Food supply quantity (kg/capita/yr),kg/cap,2016,11.800000
+Sugar cane,Food supply quantity (kg/capita/yr),kg/cap,2017,12.190000
+Sugar cane,Food supply quantity (kg/capita/yr),kg/cap,2018,8.580000
+Sugar cane,Food supply quantity (kg/capita/yr),kg/cap,2019,12.730000
+Sugar cane,Food supply quantity (kg/capita/yr),kg/cap,2020,14.300000
+Sugar cane,Food supply quantity (kg/capita/yr),kg/cap,2021,15.520000
+Sugar cane,Food supply quantity (kg/capita/yr),kg/cap,2022,13.440000
+Sugar cane,Food supply quantity (kg/capita/yr),kg/cap,2023,18.470000
+Soyabeans,Production,1000 t,2010,12736.000000
+Soyabeans,Production,1000 t,2011,12214.000000
+Soyabeans,Production,1000 t,2012,14666.000000
+Soyabeans,Production,1000 t,2013,11861.000000
+Soyabeans,Production,1000 t,2014,10374.000000
+Soyabeans,Production,1000 t,2015,8570.000000
+Soyabeans,Production,1000 t,2016,13159.000000
+Soyabeans,Production,1000 t,2017,13159.000000
+Soyabeans,Production,1000 t,2018,10933.000000
+Soyabeans,Production,1000 t,2019,13268.000000
+Soyabeans,Production,1000 t,2020,11226.000000
+Soyabeans,Production,1000 t,2021,12610.000000
+Soyabeans,Production,1000 t,2022,12987.000000
+Soyabeans,Production,1000 t,2023,14985.000000
+Soyabeans,Import quantity,1000 t,2010,0.000000
+Soyabeans,Import quantity,1000 t,2011,1.000000
+Soyabeans,Import quantity,1000 t,2012,1.000000
+Soyabeans,Import quantity,1000 t,2013,1.000000
+Soyabeans,Import quantity,1000 t,2014,4.000000
+Soyabeans,Import quantity,1000 t,2015,14.000000
+Soyabeans,Import quantity,1000 t,2016,65.000000
+Soyabeans,Import quantity,1000 t,2017,80.000000
+Soyabeans,Import quantity,1000 t,2018,164.000000
+Soyabeans,Import quantity,1000 t,2019,232.000000
+Soyabeans,Import quantity,1000 t,2020,507.000000
+Soyabeans,Import quantity,1000 t,2021,618.000000
+Soyabeans,Import quantity,1000 t,2022,494.000000
+Soyabeans,Import quantity,1000 t,2023,731.000000
+Soyabeans,Export quantity,1000 t,2010,16.000000
+Soyabeans,Export quantity,1000 t,2011,32.000000
+Soyabeans,Export quantity,1000 t,2012,47.000000
+Soyabeans,Export quantity,1000 t,2013,140.000000
+Soyabeans,Export quantity,1000 t,2014,206.000000
+Soyabeans,Export quantity,1000 t,2015,213.000000
+Soyabeans,Export quantity,1000 t,2016,152.000000
+Soyabeans,Export quantity,1000 t,2017,295.000000
+Soyabeans,Export quantity,1000 t,2018,212.000000
+Soyabeans,Export quantity,1000 t,2019,106.000000
+Soyabeans,Export quantity,1000 t,2020,75.000000
+Soyabeans,Export quantity,1000 t,2021,27.000000
+Soyabeans,Export quantity,1000 t,2022,58.000000
+Soyabeans,Export quantity,1000 t,2023,25.000000
+Soyabeans,Domestic supply quantity,1000 t,2010,13705.000000
+Soyabeans,Domestic supply quantity,1000 t,2011,13204.000000
+Soyabeans,Domestic supply quantity,1000 t,2012,15298.000000
+Soyabeans,Domestic supply quantity,1000 t,2013,11602.000000
+Soyabeans,Domestic supply quantity,1000 t,2014,10782.000000
+Soyabeans,Domestic supply quantity,1000 t,2015,8770.000000
+Soyabeans,Domestic supply quantity,1000 t,2016,12934.000000
+Soyabeans,Domestic supply quantity,1000 t,2017,12402.000000
+Soyabeans,Domestic supply quantity,1000 t,2018,11425.000000
+Soyabeans,Domestic supply quantity,1000 t,2019,13300.000000
+Soyabeans,Domestic supply quantity,1000 t,2020,11928.000000
+Soyabeans,Domestic supply quantity,1000 t,2021,11741.000000
+Soyabeans,Domestic supply quantity,1000 t,2022,13183.000000
+Soyabeans,Domestic supply quantity,1000 t,2023,15316.000000
+Soyabeans,Food,1000 t,2010,157.000000
+Soyabeans,Food,1000 t,2011,163.000000
+Soyabeans,Food,1000 t,2012,168.000000
+Soyabeans,Food,1000 t,2013,173.000000
+Soyabeans,Food,1000 t,2014,118.000000
+Soyabeans,Food,1000 t,2015,213.000000
+Soyabeans,Food,1000 t,2016,260.000000
+Soyabeans,Food,1000 t,2017,229.000000
+Soyabeans,Food,1000 t,2018,236.000000
+Soyabeans,Food,1000 t,2019,224.000000
+Soyabeans,Food,1000 t,2020,245.000000
+Soyabeans,Food,1000 t,2021,242.000000
+Soyabeans,Food,1000 t,2022,256.000000
+Soyabeans,Food,1000 t,2023,267.000000
+Soyabeans,Food supply quantity (kg/capita/yr),kg/cap,2010,0.130000
+Soyabeans,Food supply quantity (kg/capita/yr),kg/cap,2011,0.130000
+Soyabeans,Food supply quantity (kg/capita/yr),kg/cap,2012,0.130000
+Soyabeans,Food supply quantity (kg/capita/yr),kg/cap,2013,0.130000
+Soyabeans,Food supply quantity (kg/capita/yr),kg/cap,2014,0.090000
+Soyabeans,Food supply quantity (kg/capita/yr),kg/cap,2015,0.160000
+Soyabeans,Food supply quantity (kg/capita/yr),kg/cap,2016,0.190000
+Soyabeans,Food supply quantity (kg/capita/yr),kg/cap,2017,0.170000
+Soyabeans,Food supply quantity (kg/capita/yr),kg/cap,2018,0.170000
+Soyabeans,Food supply quantity (kg/capita/yr),kg/cap,2019,0.160000
+Soyabeans,Food supply quantity (kg/capita/yr),kg/cap,2020,0.170000
+Soyabeans,Food supply quantity (kg/capita/yr),kg/cap,2021,0.170000
+Soyabeans,Food supply quantity (kg/capita/yr),kg/cap,2022,0.180000
+Soyabeans,Food supply quantity (kg/capita/yr),kg/cap,2023,0.190000
+Groundnuts,Production,1000 t,2010,8265.000000
+Groundnuts,Production,1000 t,2011,6964.000000
+Groundnuts,Production,1000 t,2012,4695.000000
+Groundnuts,Production,1000 t,2013,9472.000000
+Groundnuts,Production,1000 t,2014,7402.000000
+Groundnuts,Production,1000 t,2015,6733.000000
+Groundnuts,Production,1000 t,2016,7462.000000
+Groundnuts,Production,1000 t,2017,7462.000000
+Groundnuts,Production,1000 t,2018,9253.000000
+Groundnuts,Production,1000 t,2019,6727.000000
+Groundnuts,Production,1000 t,2020,9952.000000
+Groundnuts,Production,1000 t,2021,10244.000000
+Groundnuts,Production,1000 t,2022,10135.000000
+Groundnuts,Production,1000 t,2023,10297.000000
+Groundnuts,Import quantity,1000 t,2010,1.000000
+Groundnuts,Import quantity,1000 t,2011,2.000000
+Groundnuts,Import quantity,1000 t,2012,0.000000
+Groundnuts,Import quantity,1000 t,2013,1.000000
+Groundnuts,Import quantity,1000 t,2014,1.000000
+Groundnuts,Import quantity,1000 t,2015,1.000000
+Groundnuts,Import quantity,1000 t,2016,1.000000
+Groundnuts,Import quantity,1000 t,2017,3.000000
+Groundnuts,Import quantity,1000 t,2018,2.000000
+Groundnuts,Import quantity,1000 t,2019,4.000000
+Groundnuts,Import quantity,1000 t,2020,2.000000
+Groundnuts,Import quantity,1000 t,2021,2.000000
+Groundnuts,Import quantity,1000 t,2022,3.000000
+Groundnuts,Import quantity,1000 t,2023,4.000000
+Groundnuts,Export quantity,1000 t,2010,547.000000
+Groundnuts,Export quantity,1000 t,2011,1094.000000
+Groundnuts,Export quantity,1000 t,2012,941.000000
+Groundnuts,Export quantity,1000 t,2013,795.000000
+Groundnuts,Export quantity,1000 t,2014,951.000000
+Groundnuts,Export quantity,1000 t,2015,812.000000
+Groundnuts,Export quantity,1000 t,2016,922.000000
+Groundnuts,Export quantity,1000 t,2017,937.000000
+Groundnuts,Export quantity,1000 t,2018,705.000000
+Groundnuts,Export quantity,1000 t,2019,878.000000
+Groundnuts,Export quantity,1000 t,2020,1034.000000
+Groundnuts,Export quantity,1000 t,2021,852.000000
+Groundnuts,Export quantity,1000 t,2022,879.000000
+Groundnuts,Export quantity,1000 t,2023,1050.000000
+Groundnuts,Domestic supply quantity,1000 t,2010,8549.000000
+Groundnuts,Domestic supply quantity,1000 t,2011,7011.000000
+Groundnuts,Domestic supply quantity,1000 t,2012,6742.000000
+Groundnuts,Domestic supply quantity,1000 t,2013,7908.000000
+Groundnuts,Domestic supply quantity,1000 t,2014,7351.000000
+Groundnuts,Domestic supply quantity,1000 t,2015,6321.000000
+Groundnuts,Domestic supply quantity,1000 t,2016,6584.000000
+Groundnuts,Domestic supply quantity,1000 t,2017,6581.000000
+Groundnuts,Domestic supply quantity,1000 t,2018,7250.000000
+Groundnuts,Domestic supply quantity,1000 t,2019,6137.000000
+Groundnuts,Domestic supply quantity,1000 t,2020,8608.000000
+Groundnuts,Domestic supply quantity,1000 t,2021,8944.000000
+Groundnuts,Domestic supply quantity,1000 t,2022,8937.000000
+Groundnuts,Domestic supply quantity,1000 t,2023,8875.000000
+Groundnuts,Food,1000 t,2010,772.000000
+Groundnuts,Food,1000 t,2011,530.000000
+Groundnuts,Food,1000 t,2012,463.000000
+Groundnuts,Food,1000 t,2013,2534.000000
+Groundnuts,Food,1000 t,2014,2895.000000
+Groundnuts,Food,1000 t,2015,2362.000000
+Groundnuts,Food,1000 t,2016,1580.000000
+Groundnuts,Food,1000 t,2017,1581.000000
+Groundnuts,Food,1000 t,2018,2546.000000
+Groundnuts,Food,1000 t,2019,4324.000000
+Groundnuts,Food,1000 t,2020,5688.000000
+Groundnuts,Food,1000 t,2021,5250.000000
+Groundnuts,Food,1000 t,2022,4810.000000
+Groundnuts,Food,1000 t,2023,5139.000000
+Groundnuts,Food supply quantity (kg/capita/yr),kg/cap,2010,0.620000
+Groundnuts,Food supply quantity (kg/capita/yr),kg/cap,2011,0.420000
+Groundnuts,Food supply quantity (kg/capita/yr),kg/cap,2012,0.360000
+Groundnuts,Food supply quantity (kg/capita/yr),kg/cap,2013,1.960000
+Groundnuts,Food supply quantity (kg/capita/yr),kg/cap,2014,2.210000
+Groundnuts,Food supply quantity (kg/capita/yr),kg/cap,2015,1.780000
+Groundnuts,Food supply quantity (kg/capita/yr),kg/cap,2016,1.180000
+Groundnuts,Food supply quantity (kg/capita/yr),kg/cap,2017,1.160000
+Groundnuts,Food supply quantity (kg/capita/yr),kg/cap,2018,1.850000
+Groundnuts,Food supply quantity (kg/capita/yr),kg/cap,2019,3.110000
+Groundnuts,Food supply quantity (kg/capita/yr),kg/cap,2020,4.060000
+Groundnuts,Food supply quantity (kg/capita/yr),kg/cap,2021,3.710000
+Groundnuts,Food supply quantity (kg/capita/yr),kg/cap,2022,3.370000
+Groundnuts,Food supply quantity (kg/capita/yr),kg/cap,2023,3.570000
+Rape and Mustardseed,Production,1000 t,2010,6608.000000
+Rape and Mustardseed,Production,1000 t,2011,8179.000000
+Rape and Mustardseed,Production,1000 t,2012,6600.000000
+Rape and Mustardseed,Production,1000 t,2013,7820.000000
+Rape and Mustardseed,Production,1000 t,2014,7877.000000
+Rape and Mustardseed,Production,1000 t,2015,6282.000000
+Rape and Mustardseed,Production,1000 t,2016,6797.000000
+Rape and Mustardseed,Production,1000 t,2017,7917.000000
+Rape and Mustardseed,Production,1000 t,2018,8430.000000
+Rape and Mustardseed,Production,1000 t,2019,9256.000000
+Rape and Mustardseed,Production,1000 t,2020,9124.000000
+Rape and Mustardseed,Production,1000 t,2021,10210.000000
+Rape and Mustardseed,Production,1000 t,2022,11963.000000
+Rape and Mustardseed,Production,1000 t,2023,12643.000000
+Rape and Mustardseed,Import quantity,1000 t,2010,0.000000
+Rape and Mustardseed,Import quantity,1000 t,2011,0.000000
+Rape and Mustardseed,Import quantity,1000 t,2012,0.000000
+Rape and Mustardseed,Import quantity,1000 t,2013,0.000000
+Rape and Mustardseed,Import quantity,1000 t,2014,0.000000
+Rape and Mustardseed,Import quantity,1000 t,2015,1.000000
+Rape and Mustardseed,Import quantity,1000 t,2016,1.000000
+Rape and Mustardseed,Import quantity,1000 t,2017,1.000000
+Rape and Mustardseed,Import quantity,1000 t,2018,0.000000
+Rape and Mustardseed,Import quantity,1000 t,2019,0.000000
+Rape and Mustardseed,Import quantity,1000 t,2020,0.000000
+Rape and Mustardseed,Import quantity,1000 t,2021,0.000000
+Rape and Mustardseed,Import quantity,1000 t,2022,0.000000
+Rape and Mustardseed,Import quantity,1000 t,2023,1.000000
+Rape and Mustardseed,Export quantity,1000 t,2010,22.000000
+Rape and Mustardseed,Export quantity,1000 t,2011,36.000000
+Rape and Mustardseed,Export quantity,1000 t,2012,20.000000
+Rape and Mustardseed,Export quantity,1000 t,2013,36.000000
+Rape and Mustardseed,Export quantity,1000 t,2014,34.000000
+Rape and Mustardseed,Export quantity,1000 t,2015,15.000000
+Rape and Mustardseed,Export quantity,1000 t,2016,9.000000
+Rape and Mustardseed,Export quantity,1000 t,2017,18.000000
+Rape and Mustardseed,Export quantity,1000 t,2018,21.000000
+Rape and Mustardseed,Export quantity,1000 t,2019,33.000000
+Rape and Mustardseed,Export quantity,1000 t,2020,42.000000
+Rape and Mustardseed,Export quantity,1000 t,2021,34.000000
+Rape and Mustardseed,Export quantity,1000 t,2022,57.000000
+Rape and Mustardseed,Export quantity,1000 t,2023,42.000000
+Rape and Mustardseed,Domestic supply quantity,1000 t,2010,7038.000000
+Rape and Mustardseed,Domestic supply quantity,1000 t,2011,8712.000000
+Rape and Mustardseed,Domestic supply quantity,1000 t,2012,7034.000000
+Rape and Mustardseed,Domestic supply quantity,1000 t,2013,7821.000000
+Rape and Mustardseed,Domestic supply quantity,1000 t,2014,7843.000000
+Rape and Mustardseed,Domestic supply quantity,1000 t,2015,6264.000000
+Rape and Mustardseed,Domestic supply quantity,1000 t,2016,6789.000000
+Rape and Mustardseed,Domestic supply quantity,1000 t,2017,7431.000000
+Rape and Mustardseed,Domestic supply quantity,1000 t,2018,8568.000000
+Rape and Mustardseed,Domestic supply quantity,1000 t,2019,9004.000000
+Rape and Mustardseed,Domestic supply quantity,1000 t,2020,8158.000000
+Rape and Mustardseed,Domestic supply quantity,1000 t,2021,9721.000000
+Rape and Mustardseed,Domestic supply quantity,1000 t,2022,11526.000000
+Rape and Mustardseed,Domestic supply quantity,1000 t,2023,11901.000000
+Rape and Mustardseed,Food,1000 t,2010,610.000000
+Rape and Mustardseed,Food,1000 t,2011,630.000000
+Rape and Mustardseed,Food,1000 t,2012,660.000000
+Rape and Mustardseed,Food,1000 t,2013,750.000000
+Rape and Mustardseed,Food,1000 t,2014,0.000000
+Rape and Mustardseed,Food,1000 t,2015,0.000000
+Rape and Mustardseed,Food,1000 t,2016,0.000000
+Rape and Mustardseed,Food,1000 t,2017,0.000000
+Rape and Mustardseed,Food,1000 t,2018,0.000000
+Rape and Mustardseed,Food,1000 t,2019,0.000000
+Rape and Mustardseed,Food,1000 t,2020,0.000000
+Rape and Mustardseed,Food,1000 t,2021,0.000000
+Rape and Mustardseed,Food,1000 t,2022,0.000000
+Rape and Mustardseed,Food,1000 t,2023,0.000000
+Rape and Mustardseed,Food supply quantity (kg/capita/yr),kg/cap,2010,0.490000
+Rape and Mustardseed,Food supply quantity (kg/capita/yr),kg/cap,2011,0.500000
+Rape and Mustardseed,Food supply quantity (kg/capita/yr),kg/cap,2012,0.520000
+Rape and Mustardseed,Food supply quantity (kg/capita/yr),kg/cap,2013,0.580000
+Rape and Mustardseed,Food supply quantity (kg/capita/yr),kg/cap,2014,0.000000
+Rape and Mustardseed,Food supply quantity (kg/capita/yr),kg/cap,2015,0.000000
+Rape and Mustardseed,Food supply quantity (kg/capita/yr),kg/cap,2016,0.000000
+Rape and Mustardseed,Food supply quantity (kg/capita/yr),kg/cap,2017,0.000000
+Rape and Mustardseed,Food supply quantity (kg/capita/yr),kg/cap,2018,0.000000
+Rape and Mustardseed,Food supply quantity (kg/capita/yr),kg/cap,2019,0.000000
+Rape and Mustardseed,Food supply quantity (kg/capita/yr),kg/cap,2020,0.000000
+Rape and Mustardseed,Food supply quantity (kg/capita/yr),kg/cap,2021,0.000000
+Rape and Mustardseed,Food supply quantity (kg/capita/yr),kg/cap,2022,0.000000
+Rape and Mustardseed,Food supply quantity (kg/capita/yr),kg/cap,2023,0.000000
+Tomatoes and products,Production,1000 t,2010,12433.000000
+Tomatoes and products,Production,1000 t,2011,16526.000000
+Tomatoes and products,Production,1000 t,2012,18653.000000
+Tomatoes and products,Production,1000 t,2013,18227.000000
+Tomatoes and products,Production,1000 t,2014,18736.000000
+Tomatoes and products,Production,1000 t,2015,16385.000000
+Tomatoes and products,Production,1000 t,2016,18732.000000
+Tomatoes and products,Production,1000 t,2017,20708.000000
+Tomatoes and products,Production,1000 t,2018,19759.000000
+Tomatoes and products,Production,1000 t,2019,19007.000000
+Tomatoes and products,Production,1000 t,2020,20550.000000
+Tomatoes and products,Production,1000 t,2021,21181.000000
+Tomatoes and products,Production,1000 t,2022,20694.000000
+Tomatoes and products,Production,1000 t,2023,20425.000000
+Tomatoes and products,Import quantity,1000 t,2010,16.000000
+Tomatoes and products,Import quantity,1000 t,2011,21.000000
+Tomatoes and products,Import quantity,1000 t,2012,23.000000
+Tomatoes and products,Import quantity,1000 t,2013,21.000000
+Tomatoes and products,Import quantity,1000 t,2014,19.000000
+Tomatoes and products,Import quantity,1000 t,2015,16.000000
+Tomatoes and products,Import quantity,1000 t,2016,17.000000
+Tomatoes and products,Import quantity,1000 t,2017,12.000000
+Tomatoes and products,Import quantity,1000 t,2018,23.000000
+Tomatoes and products,Import quantity,1000 t,2019,53.000000
+Tomatoes and products,Import quantity,1000 t,2020,64.000000
+Tomatoes and products,Import quantity,1000 t,2021,27.000000
+Tomatoes and products,Import quantity,1000 t,2022,27.000000
+Tomatoes and products,Import quantity,1000 t,2023,19.000000
+Tomatoes and products,Export quantity,1000 t,2010,68.000000
+Tomatoes and products,Export quantity,1000 t,2011,231.000000
+Tomatoes and products,Export quantity,1000 t,2012,173.000000
+Tomatoes and products,Export quantity,1000 t,2013,230.000000
+Tomatoes and products,Export quantity,1000 t,2014,298.000000
+Tomatoes and products,Export quantity,1000 t,2015,188.000000
+Tomatoes and products,Export quantity,1000 t,2016,249.000000
+Tomatoes and products,Export quantity,1000 t,2017,35.000000
+Tomatoes and products,Export quantity,1000 t,2018,68.000000
+Tomatoes and products,Export quantity,1000 t,2019,81.000000
+Tomatoes and products,Export quantity,1000 t,2020,98.000000
+Tomatoes and products,Export quantity,1000 t,2021,89.000000
+Tomatoes and products,Export quantity,1000 t,2022,83.000000
+Tomatoes and products,Export quantity,1000 t,2023,127.000000
+Tomatoes and products,Domestic supply quantity,1000 t,2010,12398.000000
+Tomatoes and products,Domestic supply quantity,1000 t,2011,16314.000000
+Tomatoes and products,Domestic supply quantity,1000 t,2012,18485.000000
+Tomatoes and products,Domestic supply quantity,1000 t,2013,18010.000000
+Tomatoes and products,Domestic supply quantity,1000 t,2014,18457.000000
+Tomatoes and products,Domestic supply quantity,1000 t,2015,16213.000000
+Tomatoes and products,Domestic supply quantity,1000 t,2016,18500.000000
+Tomatoes and products,Domestic supply quantity,1000 t,2017,20685.000000
+Tomatoes and products,Domestic supply quantity,1000 t,2018,19713.000000
+Tomatoes and products,Domestic supply quantity,1000 t,2019,18979.000000
+Tomatoes and products,Domestic supply quantity,1000 t,2020,20515.000000
+Tomatoes and products,Domestic supply quantity,1000 t,2021,21116.000000
+Tomatoes and products,Domestic supply quantity,1000 t,2022,20636.000000
+Tomatoes and products,Domestic supply quantity,1000 t,2023,20315.000000
+Tomatoes and products,Food,1000 t,2010,11356.000000
+Tomatoes and products,Food,1000 t,2011,14930.000000
+Tomatoes and products,Food,1000 t,2012,16923.000000
+Tomatoes and products,Food,1000 t,2013,16483.000000
+Tomatoes and products,Food,1000 t,2014,16888.000000
+Tomatoes and products,Food,1000 t,2015,14841.000000
+Tomatoes and products,Food,1000 t,2016,16931.000000
+Tomatoes and products,Food,1000 t,2017,18951.000000
+Tomatoes and products,Food,1000 t,2018,18058.000000
+Tomatoes and products,Food,1000 t,2019,17387.000000
+Tomatoes and products,Food,1000 t,2020,18792.000000
+Tomatoes and products,Food,1000 t,2021,19342.000000
+Tomatoes and products,Food,1000 t,2022,18902.000000
+Tomatoes and products,Food,1000 t,2023,18604.000000
+Tomatoes and products,Food supply quantity (kg/capita/yr),kg/cap,2010,9.130000
+Tomatoes and products,Food supply quantity (kg/capita/yr),kg/cap,2011,11.840000
+Tomatoes and products,Food supply quantity (kg/capita/yr),kg/cap,2012,13.230000
+Tomatoes and products,Food supply quantity (kg/capita/yr),kg/cap,2013,12.720000
+Tomatoes and products,Food supply quantity (kg/capita/yr),kg/cap,2014,12.870000
+Tomatoes and products,Food supply quantity (kg/capita/yr),kg/cap,2015,11.170000
+Tomatoes and products,Food supply quantity (kg/capita/yr),kg/cap,2016,12.600000
+Tomatoes and products,Food supply quantity (kg/capita/yr),kg/cap,2017,13.940000
+Tomatoes and products,Food supply quantity (kg/capita/yr),kg/cap,2018,13.140000
+Tomatoes and products,Food supply quantity (kg/capita/yr),kg/cap,2019,12.520000
+Tomatoes and products,Food supply quantity (kg/capita/yr),kg/cap,2020,13.400000
+Tomatoes and products,Food supply quantity (kg/capita/yr),kg/cap,2021,13.680000
+Tomatoes and products,Food supply quantity (kg/capita/yr),kg/cap,2022,13.260000
+Tomatoes and products,Food supply quantity (kg/capita/yr),kg/cap,2023,12.940000
+Onions,Production,1000 t,2010,15118.000000
+Onions,Production,1000 t,2011,17511.000000
+Onions,Production,1000 t,2012,16813.000000
+Onions,Production,1000 t,2013,19299.000000
+Onions,Production,1000 t,2014,19402.000000
+Onions,Production,1000 t,2015,18927.000000
+Onions,Production,1000 t,2016,20931.000000
+Onions,Production,1000 t,2017,22427.000000
+Onions,Production,1000 t,2018,23262.000000
+Onions,Production,1000 t,2019,22819.000000
+Onions,Production,1000 t,2020,26091.000000
+Onions,Production,1000 t,2021,26641.000000
+Onions,Production,1000 t,2022,31687.000000
+Onions,Production,1000 t,2023,30208.000000
+Onions,Import quantity,1000 t,2010,5.000000
+Onions,Import quantity,1000 t,2011,7.000000
+Onions,Import quantity,1000 t,2012,7.000000
+Onions,Import quantity,1000 t,2013,18.000000
+Onions,Import quantity,1000 t,2014,1.000000
+Onions,Import quantity,1000 t,2015,87.000000
+Onions,Import quantity,1000 t,2016,0.000000
+Onions,Import quantity,1000 t,2017,7.000000
+Onions,Import quantity,1000 t,2018,7.000000
+Onions,Import quantity,1000 t,2019,76.000000
+Onions,Import quantity,1000 t,2020,131.000000
+Onions,Import quantity,1000 t,2021,28.000000
+Onions,Import quantity,1000 t,2022,2.000000
+Onions,Import quantity,1000 t,2023,21.000000
+Onions,Export quantity,1000 t,2010,1364.000000
+Onions,Export quantity,1000 t,2011,1110.000000
+Onions,Export quantity,1000 t,2012,1528.000000
+Onions,Export quantity,1000 t,2013,1477.000000
+Onions,Export quantity,1000 t,2014,1267.000000
+Onions,Export quantity,1000 t,2015,1047.000000
+Onions,Export quantity,1000 t,2016,1837.000000
+Onions,Export quantity,1000 t,2017,1622.000000
+Onions,Export quantity,1000 t,2018,1688.000000
+Onions,Export quantity,1000 t,2019,1461.000000
+Onions,Export quantity,1000 t,2020,1449.000000
+Onions,Export quantity,1000 t,2021,1435.000000
+Onions,Export quantity,1000 t,2022,2125.000000
+Onions,Export quantity,1000 t,2023,2529.000000
+Onions,Domestic supply quantity,1000 t,2010,13759.000000
+Onions,Domestic supply quantity,1000 t,2011,16408.000000
+Onions,Domestic supply quantity,1000 t,2012,15292.000000
+Onions,Domestic supply quantity,1000 t,2013,17840.000000
+Onions,Domestic supply quantity,1000 t,2014,18135.000000
+Onions,Domestic supply quantity,1000 t,2015,17967.000000
+Onions,Domestic supply quantity,1000 t,2016,19094.000000
+Onions,Domestic supply quantity,1000 t,2017,20812.000000
+Onions,Domestic supply quantity,1000 t,2018,21581.000000
+Onions,Domestic supply quantity,1000 t,2019,21435.000000
+Onions,Domestic supply quantity,1000 t,2020,24773.000000
+Onions,Domestic supply quantity,1000 t,2021,25234.000000
+Onions,Domestic supply quantity,1000 t,2022,29564.000000
+Onions,Domestic supply quantity,1000 t,2023,27700.000000
+Onions,Food,1000 t,2010,12493.000000
+Onions,Food,1000 t,2011,14942.000000
+Onions,Food,1000 t,2012,13884.000000
+Onions,Food,1000 t,2013,16224.000000
+Onions,Food,1000 t,2014,16510.000000
+Onions,Food,1000 t,2015,16382.000000
+Onions,Food,1000 t,2016,17341.000000
+Onions,Food,1000 t,2017,18934.000000
+Onions,Food,1000 t,2018,19632.000000
+Onions,Food,1000 t,2019,19519.000000
+Onions,Food,1000 t,2020,22525.000000
+Onions,Food,1000 t,2021,22984.000000
+Onions,Food,1000 t,2022,26876.000000
+Onions,Food,1000 t,2023,25136.000000
+Onions,Food supply quantity (kg/capita/yr),kg/cap,2010,10.050000
+Onions,Food supply quantity (kg/capita/yr),kg/cap,2011,11.850000
+Onions,Food supply quantity (kg/capita/yr),kg/cap,2012,10.860000
+Onions,Food supply quantity (kg/capita/yr),kg/cap,2013,12.520000
+Onions,Food supply quantity (kg/capita/yr),kg/cap,2014,12.580000
+Onions,Food supply quantity (kg/capita/yr),kg/cap,2015,12.340000
+Onions,Food supply quantity (kg/capita/yr),kg/cap,2016,12.900000
+Onions,Food supply quantity (kg/capita/yr),kg/cap,2017,13.930000
+Onions,Food supply quantity (kg/capita/yr),kg/cap,2018,14.280000
+Onions,Food supply quantity (kg/capita/yr),kg/cap,2019,14.050000
+Onions,Food supply quantity (kg/capita/yr),kg/cap,2020,16.060000
+Onions,Food supply quantity (kg/capita/yr),kg/cap,2021,16.250000
+Onions,Food supply quantity (kg/capita/yr),kg/cap,2022,18.860000
+Onions,Food supply quantity (kg/capita/yr),kg/cap,2023,17.480000
+Bananas,Production,1000 t,2010,29780.000000
+Bananas,Production,1000 t,2011,28455.000000
+Bananas,Production,1000 t,2012,26509.000000
+Bananas,Production,1000 t,2013,27575.000000
+Bananas,Production,1000 t,2014,29725.000000
+Bananas,Production,1000 t,2015,29221.000000
+Bananas,Production,1000 t,2016,29135.000000
+Bananas,Production,1000 t,2017,30477.000000
+Bananas,Production,1000 t,2018,30808.000000
+Bananas,Production,1000 t,2019,30460.000000
+Bananas,Production,1000 t,2020,32597.000000
+Bananas,Production,1000 t,2021,33062.000000
+Bananas,Production,1000 t,2022,34528.000000
+Bananas,Production,1000 t,2023,36614.000000
+Bananas,Import quantity,1000 t,2010,0.000000
+Bananas,Import quantity,1000 t,2011,0.000000
+Bananas,Import quantity,1000 t,2012,0.000000
+Bananas,Import quantity,1000 t,2013,0.000000
+Bananas,Import quantity,1000 t,2014,0.000000
+Bananas,Import quantity,1000 t,2020,0.000000
+Bananas,Import quantity,1000 t,2023,0.000000
+Bananas,Export quantity,1000 t,2010,61.000000
+Bananas,Export quantity,1000 t,2011,41.000000
+Bananas,Export quantity,1000 t,2012,54.000000
+Bananas,Export quantity,1000 t,2013,37.000000
+Bananas,Export quantity,1000 t,2014,54.000000
+Bananas,Export quantity,1000 t,2015,80.000000
+Bananas,Export quantity,1000 t,2016,112.000000
+Bananas,Export quantity,1000 t,2017,90.000000
+Bananas,Export quantity,1000 t,2018,116.000000
+Bananas,Export quantity,1000 t,2019,174.000000
+Bananas,Export quantity,1000 t,2020,212.000000
+Bananas,Export quantity,1000 t,2021,341.000000
+Bananas,Export quantity,1000 t,2022,362.000000
+Bananas,Export quantity,1000 t,2023,499.000000
+Bananas,Domestic supply quantity,1000 t,2010,29719.000000
+Bananas,Domestic supply quantity,1000 t,2011,28414.000000
+Bananas,Domestic supply quantity,1000 t,2012,26455.000000
+Bananas,Domestic supply quantity,1000 t,2013,27538.000000
+Bananas,Domestic supply quantity,1000 t,2014,29670.000000
+Bananas,Domestic supply quantity,1000 t,2015,29141.000000
+Bananas,Domestic supply quantity,1000 t,2016,29023.000000
+Bananas,Domestic supply quantity,1000 t,2017,30387.000000
+Bananas,Domestic supply quantity,1000 t,2018,30692.000000
+Bananas,Domestic supply quantity,1000 t,2019,30286.000000
+Bananas,Domestic supply quantity,1000 t,2020,32385.000000
+Bananas,Domestic supply quantity,1000 t,2021,32721.000000
+Bananas,Domestic supply quantity,1000 t,2022,34166.000000
+Bananas,Domestic supply quantity,1000 t,2023,36115.000000
+Bananas,Food,1000 t,2010,23763.000000
+Bananas,Food,1000 t,2011,22723.000000
+Bananas,Food,1000 t,2012,21153.000000
+Bananas,Food,1000 t,2013,22023.000000
+Bananas,Food,1000 t,2014,23725.000000
+Bananas,Food,1000 t,2015,23297.000000
+Bananas,Food,1000 t,2016,23196.000000
+Bananas,Food,1000 t,2017,24292.000000
+Bananas,Food,1000 t,2018,24530.000000
+Bananas,Food,1000 t,2019,24194.000000
+Bananas,Food,1000 t,2020,26084.000000
+Bananas,Food,1000 t,2021,26183.000000
+Bananas,Food,1000 t,2022,27389.000000
+Bananas,Food,1000 t,2023,28928.000000
+Bananas,Food supply quantity (kg/capita/yr),kg/cap,2010,19.110000
+Bananas,Food supply quantity (kg/capita/yr),kg/cap,2011,18.020000
+Bananas,Food supply quantity (kg/capita/yr),kg/cap,2012,16.540000
+Bananas,Food supply quantity (kg/capita/yr),kg/cap,2013,17.000000
+Bananas,Food supply quantity (kg/capita/yr),kg/cap,2014,18.080000
+Bananas,Food supply quantity (kg/capita/yr),kg/cap,2015,17.540000
+Bananas,Food supply quantity (kg/capita/yr),kg/cap,2016,17.260000
+Bananas,Food supply quantity (kg/capita/yr),kg/cap,2017,17.870000
+Bananas,Food supply quantity (kg/capita/yr),kg/cap,2018,17.840000
+Bananas,Food supply quantity (kg/capita/yr),kg/cap,2019,17.420000
+Bananas,Food supply quantity (kg/capita/yr),kg/cap,2020,18.600000
+Bananas,Food supply quantity (kg/capita/yr),kg/cap,2021,18.510000
+Bananas,Food supply quantity (kg/capita/yr),kg/cap,2022,19.210000
+Bananas,Food supply quantity (kg/capita/yr),kg/cap,2023,20.120000

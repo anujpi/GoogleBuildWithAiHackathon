@@ -45,8 +45,10 @@ def model_dir(tmp_path_factory):
 
 
 @pytest.fixture
-def client(model_dir):
-    return TestClient(create_app(supply_model_dir=model_dir))
+def client(model_dir, tmp_path):
+    # No disease model, so /health lists only the supply model under test.
+    return TestClient(create_app(supply_model_dir=model_dir,
+                                 disease_model_dir=tmp_path / "no-disease-model"))
 
 
 VALID = {

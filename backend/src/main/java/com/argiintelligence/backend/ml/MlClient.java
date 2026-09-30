@@ -7,8 +7,13 @@ import com.argiintelligence.backend.ml.exception.MlInvalidResponseException;
 import com.argiintelligence.backend.ml.exception.MlRequestRejectedException;
 import com.argiintelligence.backend.ml.exception.MlUnavailableException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestClient;
 import tools.jackson.core.JacksonException;
@@ -28,6 +33,10 @@ import java.util.StringJoiner;
 public class MlClient {
 
     static final String SUPPLY_PATH = "/v1/predict/supply";
+    public static final String SUITABILITY_PATH = "/v1/predict/crop-suitability";
+    public static final String DEMAND_PATH = "/v1/predict/demand";
+    public static final String ANOMALY_PATH = "/v1/predict/anomaly";
+    public static final String DISEASE_PATH = "/v1/predict/disease";
 
     private final RestClient restClient;
     private final JsonMapper jsonMapper;
@@ -50,6 +59,99 @@ public class MlClient {
             log.warn("ML service unreachable at {}: {}", SUPPLY_PATH, ex.getMessage());
             throw MlUnavailableException.serviceUnreachable();
         }
+    }
+
+    /**
+     * POSTs a JSON body to one of the transparent ML endpoints (suitability, demand, anomaly) and returns the body
+     * as a tree. The caller checks the fields it relies on with {@link #requireFields}; nothing is defaulted here.
+     */
+    public JsonNode postJson(String path, Object request) {
+        try {
+            return restClient.post()
+                    .uri(path)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .accept(MediaType.APPLICATION_JSON)
+                    .body(jsonMapper.writeValueAsBytes(request))
+                    .exchange((req, res) -> handleTree(path, res.getStatusCode(), res.getBody().readAllBytes()));
+        } catch (ResourceAccessException ex) {
+            log.warn("ML service unreachable at {}: {}", path, ex.getMessage());
+            throw MlUnavailableException.serviceUnreachable();
+        }
+    }
+
+    /** Sends one image to {@code POST /v1/predict/disease} as multipart field {@code image}. */
+    public JsonNode predictDisease(byte[] image, String filename, String contentType) {
+        MultiValueMap<String, Object> parts = new LinkedMultiValueMap<>();
+        NamedBytes part = new NamedBytes(image, filename);
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.parseMediaType(contentType));
+        parts.add("image", new HttpEntity<>(part, headers));
+        try {
+            return restClient.post()
+                    .uri(DISEASE_PATH)
+                    .contentType(MediaType.MULTIPART_FORM_DATA)
+                    .accept(MediaType.APPLICATION_JSON)
+                    .body(parts)
+                    .exchange((req, res) -> handleTree(DISEASE_PATH, res.getStatusCode(), res.getBody().readAllBytes()));
+        } catch (ResourceAccessException ex) {
+            log.warn("ML service unreachable at {}: {}", DISEASE_PATH, ex.getMessage());
+            throw MlUnavailableException.serviceUnreachable();
+        }
+    }
+
+    /** A named in-memory file part (multipart needs a filename). */
+    private static final class NamedBytes extends ByteArrayResource {
+        private final String filename;
+
+        NamedBytes(byte[] bytes, String filename) {
+            super(bytes);
+            this.filename = filename == null || filename.isBlank() ? "image" : filename;
+        }
+
+        @Override
+        public String getFilename() {
+            return filename;
+        }
+    }
+
+    /** Throws {@link MlInvalidResponseException} unless every dotted path is present and non-null. */
+    public static JsonNode requireFields(JsonNode body, String... paths) {
+        List<String> missing = new ArrayList<>();
+        for (String p : paths) {
+            JsonNode n = body;
+            for (String part : p.split("\\.")) {
+                n = n == null ? null : n.get(part);
+            }
+            if (n == null || n.isNull()) {
+                missing.add(p);
+            }
+        }
+        if (!missing.isEmpty()) {
+            throw new MlInvalidResponseException("The ML response is missing required fields: " + missing);
+        }
+        return body;
+    }
+
+    private JsonNode handleTree(String path, HttpStatusCode status, byte[] body) {
+        if (status.value() == 200) {
+            try {
+                JsonNode tree = jsonMapper.readTree(body);
+                if (tree == null || !tree.isObject()) {
+                    throw new MlInvalidResponseException("The ML service returned a non-object body on " + path);
+                }
+                return tree;
+            } catch (JacksonException ex) {
+                throw new MlInvalidResponseException("The ML service returned a body that is not JSON on " + path);
+            }
+        }
+        if (status.value() == 422 || status.value() == 415 || status.value() == 413) {
+            throw new MlRequestRejectedException(rejectionDetails(body));
+        }
+        if (status.value() == 503) {
+            throw MlUnavailableException.modelNotLoaded(path);
+        }
+        log.warn("ML service answered {} on {}", status.value(), path);
+        throw new MlInvalidResponseException("The ML service answered with unexpected status " + status.value());
     }
 
     private MlSupplyResponse handleSupply(HttpStatusCode status, byte[] body) {

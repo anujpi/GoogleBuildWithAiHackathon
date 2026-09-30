@@ -103,6 +103,6 @@ export function PublicOnly() {
   const auth = useAuth()
   const from = (useLocation().state as LoginState)?.from
   if (auth.isLoading) return <Centered><LoadingState message="Checking your session..." /></Centered>
-  if (auth.isAuthenticated) return <Navigate to={from?.startsWith('/') && !from.startsWith('//') ? from : '/dashboard'} replace />
+  if (auth.isAuthenticated) return <Navigate to={from?.startsWith('/') && !from.startsWith('//') ? from : '/intelligence'} replace />
   return <Outlet />
 }

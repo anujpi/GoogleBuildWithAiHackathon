@@ -18,4 +18,10 @@ public class MlUnavailableException extends ApiException {
     public static MlUnavailableException modelNotLoaded() {
         return new MlUnavailableException("ML_MODEL_UNAVAILABLE", "The ML service has no supply model loaded");
     }
+
+    /** The ML endpoint at {@code path} has no model or reference data loaded. */
+    public static MlUnavailableException modelNotLoaded(String path) {
+        return new MlUnavailableException("ML_MODEL_UNAVAILABLE",
+                "The ML service has no model or data loaded for " + path);
+    }
 }

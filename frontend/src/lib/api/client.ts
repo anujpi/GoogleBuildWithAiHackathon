@@ -52,7 +52,9 @@ type RequestOptions = { method?: 'GET' | 'POST' | 'PUT' | 'DELETE'; body?: unkno
 export async function api<T>(path: string, { method = 'GET', body, signal }: RequestOptions = {}): Promise<T> {
   const token = accessToken
   const headers: Record<string, string> = { Accept: 'application/json' }
-  if (body !== undefined) headers['Content-Type'] = 'application/json'
+  // FormData (file uploads) sets its own multipart boundary header; everything else is JSON.
+  const isForm = body instanceof FormData
+  if (body !== undefined && !isForm) headers['Content-Type'] = 'application/json'
   if (token) headers.Authorization = `Bearer ${token}`
 
   let res: Response
@@ -61,7 +63,7 @@ export async function api<T>(path: string, { method = 'GET', body, signal }: Req
       method,
       signal,
       headers,
-      body: body === undefined ? undefined : JSON.stringify(body),
+      body: body === undefined ? undefined : isForm ? body : JSON.stringify(body),
     })
   } catch (error) {
     if (signal?.aborted) throw error

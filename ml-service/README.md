@@ -7,11 +7,18 @@ Spring Boot backend. It does not make the final decision about what to plant, an
 produce advisory text. See [`CLAUDE.md`](CLAUDE.md) for the engineering rules and
 [`ML_TEAM_PLAN.md`](ML_TEAM_PLAN.md) for the staged roadmap.
 
-Current stage: **MVP supply model.** A state-level supply model (`supply-xgb-v1`) is trained on
-the Kaggle `crop_yield.csv` and served at `POST /v1/predict/supply`. See
-`docs/model-cards/supply.md` and `docs/ml-contracts/supply.md`. To rebuild the model, run
-`python scripts/train_supply.py`. (`docs/PROGRESS_REPORT.md` describes the earlier audit stage.)
-See [`ML_STATE.md`](ML_STATE.md).
+Endpoints (hackathon MVP):
+
+| Endpoint | Method | Docs |
+|---|---|---|
+| `POST /v1/predict/supply` | XGBoost state-level supply model (`supply-xgb-v1`) | `docs/ml-contracts/supply.md`, `docs/model-cards/supply.md` |
+| `POST /v1/predict/disease` | MobileNetV3 leaf-disease classifier, Potato + Tomato (`disease-mnv3-probe-v1`) | `docs/model-cards/disease.md`, `docs/datasets/plantvillage.md` |
+| `POST /v1/predict/crop-suitability` | Transparent evidence index (no trained model) | `docs/ml-contracts/intelligence.md` |
+| `POST /v1/predict/demand` | FAOSTAT demand proxy with a back-tested baseline | `docs/ml-contracts/intelligence.md`, `reference_data/README.md` |
+| `POST /v1/predict/anomaly` | Robust z-score | `docs/ml-contracts/intelligence.md` |
+
+Rebuild the models with `python scripts/train_supply.py` and
+`python scripts/prepare_plantvillage.py && python scripts/train_disease_probe.py` (CPU linear probe; `train_disease.py` is the full fine-tune, which needs a GPU with enough memory). See [`ML_STATE.md`](ML_STATE.md).
 
 ## Setup
 
@@ -46,12 +53,12 @@ Dependency groups in `pyproject.toml`:
 
 | Group | Contents | Install |
 |---|---|---|
-| core | FastAPI, Uvicorn, Pydantic, pydantic-settings | `pip install -e .` |
+| core | FastAPI, Uvicorn, Pydantic, pydantic-settings, python-multipart | `pip install -e .` |
 | `ml` | pandas, NumPy, scikit-learn, XGBoost, MLflow, matplotlib, seaborn | `.[ml]` |
 | `dev` | pytest, httpx, ruff | `.[dev]` |
+| `dl` | torch, torchvision, pillow (disease endpoint) | `.[dl]` |
 
-PyTorch/torchvision and the geospatial libraries (Earth Engine, GeoPandas, rasterio) are left out
-on purpose. Add them in the phase that needs them.
+The geospatial libraries (Earth Engine, GeoPandas, rasterio) are left out on purpose.
 
 ## Run
 

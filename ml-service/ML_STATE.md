@@ -1,7 +1,25 @@
 # ML_STATE
 
-Last updated: 2026-09-28. Branch: `ml-branch`. Last commit `37f7aa6`. The crop_yield and
-MVP supply work described below is **not committed**.
+Last updated: 2026-09-30. Branch: `ml-branch`. The supply work is committed (`ec2ef04`, `9e94c97`);
+the hackathon additions below (disease, suitability, demand, anomaly) are **not committed**.
+
+## Hackathon MVP additions (2026-09-30, not committed)
+- **Disease** `POST /v1/predict/disease`: MobileNetV3-Large (ImageNet) as a frozen feature extractor with a linear-probe head
+  (`scripts/train_disease_probe.py`, CPU) on 13
+  PlantVillage Potato/Tomato classes, using a leakage-aware split (`docs/datasets/plantvillage.md`). Artifact
+  `artifacts/disease/disease-mnv3-probe-v1/`. Metrics and limits are in `docs/model-cards/disease.md`.
+  Training on MPS stalled four times (process stuck in state U). Each stall coincided with other heavy processes
+  on this 8 GB machine: memory pressure, with 520k page-outs. So the served model is the CPU linear probe. Full fine-tuning
+  (`scripts/train_disease.py`) reached 0.985 validation macro-F1 after 2 epochs but never finished; no artifact was saved.
+- **Crop suitability** `POST /v1/predict/crop-suitability`: a transparent weighted evidence index over
+  crop_yield (no trained model, no accuracy claim).
+- **Demand** `POST /v1/predict/demand`: FAOSTAT FBS India "domestic supply quantity" (a proxy). Naive and
+  linear-trend baselines are both back-tested and the better one is picked. State values use the Census 2011
+  population share. The data lives in `reference_data/` (committed, ~65 KB, see its README).
+- **Anomaly** `POST /v1/predict/anomaly`: robust z-score (median/MAD) on the last point of any series.
+- Contract: `docs/ml-contracts/intelligence.md`. Tests: `tests/test_intelligence.py`.
+- The data.gov.in API (mandi prices) refused connections from this machine on 2026-09-30, so no price data
+  is used.
 
 ## Current stage
 

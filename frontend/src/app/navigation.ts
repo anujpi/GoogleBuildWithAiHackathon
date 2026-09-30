@@ -7,6 +7,7 @@ import {
   LayoutGrid,
   MapPinned,
   Network,
+  Radar,
   ScanSearch,
   SlidersHorizontal,
   type LucideIcon,
@@ -31,6 +32,7 @@ export const navigation: NavGroup[] = [
   {
     label: 'Intelligence',
     items: [
+      { path: '/intelligence', label: 'Farm Intelligence', icon: Radar, phase: 0, summary: 'One farm end to end: conditions, suitability, crop health, supply, demand, risk and AI advisory.' },
       { path: '/dashboard', label: 'Dashboard', icon: LayoutGrid, phase: 0, synthetic: true, summary: 'What is happening right now across the selected region and farm.' },
       { path: '/farms', label: 'Farms', icon: MapPinned, phase: 1, summary: 'Farm onboarding, location, soil profile, irrigation and crop history.' },
       { path: '/crops', label: 'Crop Intelligence', icon: ChartScatter, phase: 4, summary: 'Compare candidate crops across suitability, yield, water, risk and market gap.' },

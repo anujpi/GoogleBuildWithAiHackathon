@@ -5,7 +5,8 @@ from agri_ml.api.app import create_app
 
 
 def test_health_returns_up_with_camel_case_fields(tmp_path):
-    client = TestClient(create_app(supply_model_dir=tmp_path / "missing"))
+    client = TestClient(create_app(supply_model_dir=tmp_path / "missing",
+                                   disease_model_dir=tmp_path / "missing"))
 
     response = client.get("/health")
 
@@ -20,6 +21,7 @@ def test_health_returns_up_with_camel_case_fields(tmp_path):
 
 
 def test_unknown_route_returns_404(tmp_path):
-    client = TestClient(create_app(supply_model_dir=tmp_path / "missing"))
+    client = TestClient(create_app(supply_model_dir=tmp_path / "missing",
+                                   disease_model_dir=tmp_path / "missing"))
 
     assert client.get("/v1/predict/unknown").status_code == 404

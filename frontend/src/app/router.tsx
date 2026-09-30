@@ -10,9 +10,11 @@ import { DashboardPage } from '@/features/dashboard/DashboardPage'
 import { EditFarmPage, NewFarmPage } from '@/features/farms/FarmFormPages'
 import { FarmProfilePage } from '@/features/farms/FarmProfilePage'
 import { FarmsPage } from '@/features/farms/FarmsPage'
+import { IntelligencePage } from '@/features/intelligence/IntelligencePage'
 
 // Modules with real screens. Every other navigation entry gets its "scheduled for phase N" page.
 const built: Record<string, { path: string; element: ReactNode }[]> = {
+  '/intelligence': [{ path: '/intelligence', element: <IntelligencePage /> }],
   '/dashboard': [{ path: '/dashboard', element: <DashboardPage /> }],
   '/farms': [
     { path: '/farms', element: <FarmsPage /> },
@@ -43,7 +45,7 @@ export const router = createBrowserRouter([
           {
             element: <AppShell />,
             children: [
-              { index: true, element: <Navigate to="/dashboard" replace /> },
+              { index: true, element: <Navigate to="/intelligence" replace /> },
               ...moduleRoutes,
               { path: '*', element: <NotFoundPage /> },
             ],

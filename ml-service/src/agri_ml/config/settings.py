@@ -20,6 +20,14 @@ class Settings(BaseSettings):
     data_dir: Path = SERVICE_ROOT / "data"
     # Versioned supply model served by POST /v1/predict/supply.
     supply_model_dir: Path = SERVICE_ROOT / "artifacts" / "supply" / "supply-xgb-v1"
+    # Versioned leaf-disease classifier served by POST /v1/predict/disease. The linear probe
+    # (scripts/train_disease_probe.py) is the default; the full fine-tune (scripts/train_disease.py,
+    # disease-mnv3-v1) stalled on the 8 GB dev machine and has no artifact yet.
+    disease_model_dir: Path = SERVICE_ROOT / "artifacts" / "disease" / "disease-mnv3-probe-v1"
+    # Kaggle crop_yield.csv, used by POST /v1/predict/crop-suitability.
+    crop_yield_csv: Path = SERVICE_ROOT / "data" / "raw" / "crop_yield.csv"
+    # Small committed public extracts (FAOSTAT, Census) used by POST /v1/predict/demand.
+    reference_data_dir: Path = SERVICE_ROOT / "reference_data"
 
 
 @lru_cache

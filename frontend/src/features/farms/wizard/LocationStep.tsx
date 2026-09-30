@@ -4,6 +4,9 @@ import { Field } from '@/components/forms/Field'
 import { LocationPicker, type LatLon } from '@/components/maps/LocationPicker'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
+import { NativeSelect, NativeSelectOption } from '@/components/ui/native-select'
+import { useReferenceScope } from '@/features/insight/api'
+import { describeError } from '@/lib/api/client'
 import { formatCoords } from '../model'
 import type { FarmFormValues } from '../schema'
 
@@ -20,6 +23,11 @@ export function LocationStep() {
   const [lat, lon] = useWatch<FarmFormValues, ['location.latitude', 'location.longitude']>({ name: ['location.latitude', 'location.longitude'] })
   const point = toPoint(lat, lon)
   const e = errors.location
+  const scope = useReferenceScope()
+  const current = useWatch<FarmFormValues, 'districtId'>({ name: 'districtId' })
+  const districts = scope.data?.districts ?? []
+  // Keep a saved district selectable even if the scope no longer lists it, so editing never silently drops it.
+  const orphan = current && !districts.some((d) => d.districtId === current)
 
   const setPoint = (p: { lat: string; lon: string }) => {
     const opts = { shouldDirty: true, shouldValidate: p.lat !== '' }
@@ -41,10 +49,10 @@ export function LocationStep() {
           <legend className="mb-1 text-sm font-semibold">Coordinates</legend>
           <div className="grid grid-cols-2 gap-3">
             <Field label="Latitude" suffix="−90 to 90" error={e?.latitude?.message}>
-              {(a) => <Input {...a} inputMode="decimal" autoComplete="off" placeholder="e.g. 12.7200" className="tabular" {...register('location.latitude')} />}
+              {(a) => <Input {...a} inputMode="decimal" autoComplete="off" placeholder="e.g. 27.1767" className="tabular" {...register('location.latitude')} />}
             </Field>
             <Field label="Longitude" suffix="−180 to 180" error={e?.longitude?.message}>
-              {(a) => <Input {...a} inputMode="decimal" autoComplete="off" placeholder="e.g. 77.2800" className="tabular" {...register('location.longitude')} />}
+              {(a) => <Input {...a} inputMode="decimal" autoComplete="off" placeholder="e.g. 78.0081" className="tabular" {...register('location.longitude')} />}
             </Field>
           </div>
 
@@ -72,18 +80,45 @@ export function LocationStep() {
         <fieldset className="grid grid-cols-1 gap-3 sm:grid-cols-2">
           <legend className="mb-1 text-sm font-semibold">Administrative area</legend>
           <Field label="State" error={e?.state?.message}>
-            {(a) => <Input {...a} autoComplete="address-level1" placeholder="e.g. Karnataka" {...register('location.state')} />}
+            {(a) => <Input {...a} autoComplete="address-level1" placeholder="e.g. Uttar Pradesh" {...register('location.state')} />}
           </Field>
           <Field label="District" error={e?.district?.message}>
-            {(a) => <Input {...a} autoComplete="address-level2" placeholder="e.g. Ramanagara" {...register('location.district')} />}
+            {(a) => <Input {...a} autoComplete="address-level2" placeholder="e.g. Agra" {...register('location.district')} />}
           </Field>
           <Field label="Taluk" optional error={e?.taluk?.message}>
-            {(a) => <Input {...a} placeholder="e.g. Ramanagara" {...register('location.taluk')} />}
+            {(a) => <Input {...a} placeholder="e.g. Etmadpur" {...register('location.taluk')} />}
           </Field>
           <Field label="Address label" optional error={e?.addressLabel?.message} hint="How the farm is named in lists.">
-            {(a) => <Input {...a} placeholder="e.g. Ramanagara, Karnataka" {...register('location.addressLabel')} />}
+            {(a) => <Input {...a} placeholder="e.g. Etmadpur, Agra" {...register('location.addressLabel')} />}
           </Field>
         </fieldset>
+
+        <Field
+          label="Canonical district"
+          optional
+          error={errors.districtId?.message}
+          hint={
+            scope.error
+              ? describeError(scope.error, 'the district list')
+              : scope.isPending
+                ? 'Loading supported districts...'
+                : districts.length === 0
+                  ? 'Reference data not loaded yet. The farm can be saved without a district; crop evidence and risk stay unavailable.'
+                  : 'Needed for crop evidence and risk. Only districts in the served scope are listed.'
+          }
+        >
+          {(a) => (
+            <NativeSelect {...a} className="w-full" {...register('districtId')}>
+              <NativeSelectOption value="">No district</NativeSelectOption>
+              {orphan && <NativeSelectOption value={current}>{current}</NativeSelectOption>}
+              {districts.map((d) => (
+                <NativeSelectOption key={d.districtId} value={d.districtId}>
+                  {d.label} ({d.stateId.toUpperCase()})
+                </NativeSelectOption>
+              ))}
+            </NativeSelect>
+          )}
+        </Field>
       </div>
     </div>
   )

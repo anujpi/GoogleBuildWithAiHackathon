@@ -4,7 +4,8 @@ import { Navigate, Outlet, useLocation } from 'react-router'
 import { ErrorState, LoadingState } from '@/components/feedback/states'
 import { Button } from '@/components/ui/button'
 import { describeError, getAccessToken, setAccessToken, setUnauthorizedHandler } from '@/lib/api/client'
-import { getMe, login as postLogin, type Credentials } from './api'
+import { ForbiddenPage } from '@/app/ModulePage'
+import { canOwnFarms, getMe, login as postLogin, type Credentials } from './api'
 import { AuthContext, useAuth, type Auth, type LoginState, type SessionEnd } from './context'
 
 const ME = ['auth', 'me'] as const
@@ -105,4 +106,10 @@ export function PublicOnly() {
   if (auth.isLoading) return <Centered><LoadingState message="Checking your session..." /></Centered>
   if (auth.isAuthenticated) return <Navigate to={from?.startsWith('/') && !from.startsWith('//') ? from : '/dashboard'} replace />
   return <Outlet />
+}
+
+/** Wraps farm routes. UX only: the backend answers 403 to other roles anyway. */
+export function FarmOwnersOnly() {
+  const { currentUser } = useAuth()
+  return currentUser && canOwnFarms(currentUser.role) ? <Outlet /> : <ForbiddenPage />
 }

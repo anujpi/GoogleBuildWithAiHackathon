@@ -46,6 +46,8 @@ export type FarmRequest = {
   currentCrop: string | null
   previousCrop: string | null
   season: Season
+  /** Canonical district id from GET /reference/scope (e.g. "up-agra"). Needed for crop evidence and risk. */
+  districtId: string | null
   location: FarmLocation
   /** null or omitted = no soil data for this farm. On PUT, null removes a stored profile. */
   soilProfile: SoilProfile | null
@@ -55,6 +57,9 @@ export type Farm = FarmRequest & {
   id: string
   /** Backend-authoritative. false means soilProfile is null: show soil as unavailable, never as zeros. */
   soilDataAvailable: boolean
+  districtLabel: string | null
+  /** Backend-authoritative: the district is set and has a supply series. When false, evidence and risk answer 422. */
+  intelligenceSupported: boolean
   createdAt: string
   updatedAt: string
 }

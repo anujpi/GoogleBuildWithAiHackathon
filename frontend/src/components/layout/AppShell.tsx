@@ -1,4 +1,4 @@
-import { FlaskConical, LogOut, Menu } from 'lucide-react'
+import { LogOut, Menu } from 'lucide-react'
 import { useState } from 'react'
 import { Outlet, useLocation } from 'react-router'
 import { navigation } from '@/app/navigation'
@@ -62,12 +62,6 @@ function TopBar() {
       </nav>
 
       <div className="ml-auto flex items-center gap-3">
-        {current?.item.synthetic && (
-          <span className="inline-flex h-6 items-center gap-1.5 rounded-sm border border-caution/30 bg-caution/12 px-2 text-xs font-medium text-caution">
-            <FlaskConical className="size-3.5" aria-hidden />
-            <span className="hidden sm:inline">Prototype ·</span> Synthetic data
-          </span>
-        )}
         <UserMenu />
       </div>
     </header>

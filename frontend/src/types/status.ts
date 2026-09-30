@@ -13,3 +13,6 @@ export type Trend = 'up' | 'flat' | 'down'
 
 /** Model confidence in [0, 1]. Supplied by the backend, never computed in the UI. */
 export type Confidence = number
+
+/** Backend D4 classification. Shown with ProvenanceBadge, never mapped to a different label. */
+export type DataClassification = 'OBSERVED' | 'FORECAST' | 'MODEL_PREDICTION' | 'ESTIMATED' | 'SYNTHETIC'

@@ -67,6 +67,7 @@ export function ReviewStep({ onEdit }: { onEdit: (step: number) => void }) {
             ['District', orNone(loc.district ?? '')],
             ['Taluk', orNone(loc.taluk ?? '')],
             ['Address label', orNone(loc.addressLabel ?? '')],
+            ['Canonical district', orNone(v.districtId ?? '')],
           ]}
         />
       </Section>

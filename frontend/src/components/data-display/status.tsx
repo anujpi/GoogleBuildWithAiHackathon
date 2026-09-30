@@ -18,7 +18,7 @@ import {
 } from 'lucide-react'
 import { cn } from 'cn'
 import { formatDateTime, formatPercent, formatRelative } from '@/lib/format'
-import type { Availability, Confidence, DataOrigin, GapState, RiskLevel, Trend } from '@/types/status'
+import type { Availability, Confidence, DataClassification, DataOrigin, GapState, RiskLevel, Trend } from '@/types/status'
 
 type Tone = 'positive' | 'caution' | 'warning' | 'critical' | 'neutral'
 
@@ -30,9 +30,9 @@ const toneClass: Record<Tone, string> = {
   neutral: 'text-muted-foreground bg-muted border-border',
 }
 
-type Meta = { label: string; icon: LucideIcon; tone: Tone }
+export type Meta = { label: string; icon: LucideIcon; tone: Tone }
 
-function Pill({ meta, prefix, className }: { meta: Meta; prefix?: string; className?: string }) {
+export function Pill({ meta, prefix, className }: { meta: Meta; prefix?: string; className?: string }) {
   const Icon = meta.icon
   return (
     <span
@@ -70,6 +70,19 @@ const origin: Record<DataOrigin, Meta> = {
 
 export function DataOriginBadge({ origin: o, label }: { origin: DataOrigin; label?: string }) {
   return <Pill meta={label ? { ...origin[o], label } : origin[o]} className="h-5 px-1.5 text-[11px]" />
+}
+
+const classificationOrigin: Record<DataClassification, DataOrigin> = {
+  OBSERVED: 'observed',
+  FORECAST: 'forecast',
+  MODEL_PREDICTION: 'model',
+  ESTIMATED: 'estimate',
+  SYNTHETIC: 'synthetic',
+}
+
+/** The backend's data classification, shown as-is: Observed, Forecast, Model prediction, Estimated or Synthetic. */
+export function ProvenanceBadge({ classification }: { classification: DataClassification }) {
+  return <DataOriginBadge origin={classificationOrigin[classification]} label={classification === 'ESTIMATED' ? 'Estimated' : undefined} />
 }
 
 const availability: Record<Availability, Meta> = {

@@ -1,4 +1,4 @@
-import { ArrowLeft, CalendarClock, Pencil } from 'lucide-react'
+import { ArrowLeft, Pencil } from 'lucide-react'
 import type { ReactNode } from 'react'
 import { Link, useLocation, useParams } from 'react-router'
 import { AvailabilityBadge, ConfidenceBadge } from '@/components/data-display/status'
@@ -10,19 +10,11 @@ import { LocationPicker } from '@/components/maps/LocationPicker'
 import { Button } from '@/components/ui/button'
 import { ApiError, describeError } from '@/lib/api/client'
 import { formatDateTime, formatDay, formatNumber } from '@/lib/format'
+import { CropEvidencePanel, RiskPanel, WeatherPanel } from '@/features/insight/components'
 import { SoilProvenance, SoilReadings } from './components'
 import type { SavedState } from './FarmFormPages'
 import { useFarm } from './hooks'
 import { areaUnitLabel, countReadings, formatCoords, irrigationLabel, locationLabel, seasonLabel, SOIL_METRICS, soilOf, type Farm, type SoilProfile } from './model'
-
-// Modules that will attach to a farm later. Listed, not faked.
-const upcoming = [
-  { label: 'Weather & environment', phase: 3 },
-  { label: 'Crop intelligence', phase: 4 },
-  { label: 'Supply & demand', phase: 7 },
-  { label: 'Market intelligence', phase: 7 },
-  { label: 'Production & market risk', phase: 8 },
-]
 
 function Fact({ label, children }: { label: string; children: ReactNode }) {
   return (
@@ -96,6 +88,10 @@ function FarmProfile({ farm }: { farm: Farm }) {
           {seasonLabel[farm.season].label} {muted(`· ${seasonLabel[farm.season].hint}`)}
         </Fact>
         <Fact label="Irrigation">{irrigationLabel[farm.irrigationType]}</Fact>
+        <Fact label="Canonical district">
+          {farm.districtLabel ?? farm.districtId ?? muted('Not set')}{' '}
+          {muted(farm.intelligenceSupported ? '· intelligence supported' : '· intelligence unavailable')}
+        </Fact>
       </dl>
 
       <div className="grid grid-cols-1 items-start gap-4 xl:grid-cols-[minmax(0,1fr)_22rem]">
@@ -144,18 +140,9 @@ function FarmProfile({ farm }: { farm: Farm }) {
         </div>
       </div>
 
-      <Panel title="Farm intelligence" description="Modules that will attach to this farm as they are built.">
-        <ul className="grid grid-cols-1 divide-y sm:grid-cols-2 sm:divide-y-0 lg:grid-cols-5 lg:divide-x">
-          {upcoming.map((m) => (
-            <li key={m.label} className="flex flex-col gap-1 px-4 py-3">
-              <span className="text-sm font-medium">{m.label}</span>
-              <span className="inline-flex items-center gap-1 text-xs text-muted-foreground">
-                <CalendarClock className="size-3.5" aria-hidden /> Not yet available · phase {m.phase}
-              </span>
-            </li>
-          ))}
-        </ul>
-      </Panel>
+      <WeatherPanel latitude={loc.latitude} longitude={loc.longitude} />
+      <CropEvidencePanel farm={farm} />
+      <RiskPanel farm={farm} />
     </>
   )
 }

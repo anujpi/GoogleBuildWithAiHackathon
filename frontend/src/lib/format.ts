@@ -23,3 +23,6 @@ export function formatRelative(iso: string, now = Date.now()) {
   }
   return 'just now'
 }
+
+/** Backend enum codes for display: "WITHIN_OPTIMAL" → "Within optimal". */
+export const humanize = (code: string) => code.charAt(0) + code.slice(1).toLowerCase().replace(/_/g, ' ')

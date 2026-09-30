@@ -55,11 +55,11 @@ export function FarmInfoStep() {
       />
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-        <Field label="Current crop" optional error={e.currentCrop?.message} hint="Free text for now, e.g. Tomato.">
-          {(a) => <Input {...a} autoComplete="off" placeholder="e.g. Tomato" {...register('currentCrop')} />}
+        <Field label="Current crop" optional error={e.currentCrop?.message} hint="Free text, e.g. Wheat. Naming a supported crop preselects it for risk.">
+          {(a) => <Input {...a} autoComplete="off" placeholder="e.g. Wheat" {...register('currentCrop')} />}
         </Field>
         <Field label="Previous crop" optional error={e.previousCrop?.message} hint="The crop grown in the last season.">
-          {(a) => <Input {...a} autoComplete="off" placeholder="e.g. Millet" {...register('previousCrop')} />}
+          {(a) => <Input {...a} autoComplete="off" placeholder="e.g. Maize" {...register('previousCrop')} />}
         </Field>
       </div>
     </div>

@@ -15,7 +15,7 @@ import { ReviewStep } from './ReviewStep'
 import { SoilStep } from './SoilStep'
 
 const STEPS = [
-  { title: 'Location', description: 'Where the farm is. Pick it on the map or enter coordinates.', fields: ['location'] },
+  { title: 'Location', description: 'Where the farm is. Pick it on the map or enter coordinates.', fields: ['location', 'districtId'] },
   { title: 'Farm information', description: 'Size, water and what is being grown.', fields: ['name', 'area', 'areaUnit', 'irrigationType', 'currentCrop', 'previousCrop', 'season'] },
   { title: 'Soil', description: 'Soil test values and where they come from, if you have them.', fields: ['soilData', 'soilProfile'] },
   { title: 'Review', description: 'Check everything before saving. Nothing has been saved yet.', fields: [] },

@@ -1,7 +1,8 @@
-import { FlaskConical } from 'lucide-react'
+import { Database } from 'lucide-react'
 import { NavLink } from 'react-router'
 import { cn } from 'cn'
 import { navigation } from '@/app/navigation'
+import { useAuth } from '@/features/auth/context'
 
 export function ProductMark() {
   return (
@@ -19,6 +20,7 @@ export function ProductMark() {
 }
 
 export function SidebarNav({ onNavigate }: { onNavigate?: () => void }) {
+  const role = useAuth().currentUser?.role
   return (
     <nav aria-label="Main" className="flex flex-col gap-5">
       {navigation.map((group) => (
@@ -27,7 +29,7 @@ export function SidebarNav({ onNavigate }: { onNavigate?: () => void }) {
             {group.label}
           </div>
           <ul className="flex flex-col gap-px">
-            {group.items.map(({ path, label, icon: Icon }) => (
+            {group.items.filter((i) => !i.roles || (role && i.roles.includes(role))).map(({ path, label, icon: Icon }) => (
               <li key={path}>
                 <NavLink
                   to={path}
@@ -62,8 +64,8 @@ export function Sidebar() {
       </div>
       <SidebarNav />
       <div className="mt-auto flex items-start gap-2 rounded-sm border border-sidebar-border p-2.5 text-[11px] text-sidebar-foreground/80">
-        <FlaskConical className="mt-px size-3.5 shrink-0 text-caution" aria-hidden />
-        <p>Prototype build. Synthetic values are always labelled; farm records come from the backend.</p>
+        <Database className="mt-px size-3.5 shrink-0" aria-hidden />
+        <p>All values come from the backend. A source that is down is shown as unavailable, never replaced.</p>
       </div>
     </aside>
   )

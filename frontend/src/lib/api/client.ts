@@ -10,13 +10,16 @@ export class ApiError extends Error {
   readonly status: number
   readonly code: string
   readonly details: FieldViolation[]
+  /** The backend's X-Request-Id for this response, shown on server errors so a failure can be traced in logs. */
+  readonly requestId: string | null
 
-  constructor(status: number, code: string, message: string, details: FieldViolation[] = []) {
+  constructor(status: number, code: string, message: string, details: FieldViolation[] = [], requestId: string | null = null) {
     super(message)
     this.name = 'ApiError'
     this.status = status
     this.code = code
     this.details = details
+    this.requestId = requestId
   }
 }
 
@@ -83,21 +86,37 @@ export async function api<T>(path: string, { method = 'GET', body, signal }: Req
     typeof payload?.code === 'string' ? payload.code : `HTTP_${res.status}`,
     typeof payload?.message === 'string' ? payload.message : res.statusText || 'Request failed',
     Array.isArray(payload?.details) ? payload.details : [],
+    res.headers.get('X-Request-Id'),
   )
+}
+
+// Backend §13 codes whose own message is already the best explanation for the user.
+const OWN_MESSAGE = new Set(['UNSUPPORTED_INPUT', 'INSUFFICIENT_DATA', 'EMAIL_ALREADY_REGISTERED', 'INVALID_CREDENTIALS', 'INCONSISTENT_SOIL_PROVENANCE', 'CONFLICT'])
+
+const UNAVAILABLE: Record<string, string> = {
+  ML_UNAVAILABLE: 'The prediction service is not reachable right now.',
+  ML_PREDICTION_UNAVAILABLE: 'The prediction service is running but has no trained model loaded yet.',
+  UPSTREAM_UNAVAILABLE: 'The weather provider is not reachable right now.',
+  UPSTREAM_RATE_LIMITED: 'The weather provider is rate-limiting requests. Try again in a few minutes.',
+  ML_INVALID_RESPONSE: 'The prediction service returned data that failed validation, so it was not shown.',
+  UPSTREAM_INVALID_RESPONSE: 'The weather provider returned data that failed validation, so it was not shown.',
 }
 
 /** A user-facing sentence for any error, phrased for the thing that failed ("the farm list"). */
 export function describeError(error: unknown, subject: string): string {
   if (!(error instanceof ApiError)) return `Something went wrong while loading ${subject}.`
-  // MALFORMED_RESPONSE comes from intelligence/shared/http.ts; PREDICTION_UNAVAILABLE is the backend's 503 when no
-  // prediction source is connected. Both messages are already user-facing.
-  if (error.code === 'MALFORMED_RESPONSE' || error.code === 'PREDICTION_UNAVAILABLE') return error.message
+  const ref = error.requestId && error.status >= 500 ? ` (reference ${error.requestId})` : ''
+  if (UNAVAILABLE[error.code]) return `${UNAVAILABLE[error.code]} ${subject[0].toUpperCase()}${subject.slice(1)} is unavailable${ref}.`
+  if (OWN_MESSAGE.has(error.code)) return error.message
   if (error.status === 0) return `Could not reach the server. Check that the backend is running at ${API_BASE_URL}.`
   if (error.status === 401) return 'Your session has ended. Sign in again to continue.'
-  if (error.status === 403) return `You do not have access to ${subject}.`
+  if (error.status === 403) return `Your role does not have access to ${subject}.`
   if (error.status === 400 || error.status === 422) return error.details.length ? 'Some details need attention before this can be saved.' : error.message
   if (error.status === 404) return `${subject[0].toUpperCase()}${subject.slice(1)} could not be found. It may have been removed.`
-  if (error.status >= 500) return `The server hit an unexpected error with ${subject}. Nothing was lost on your side — try again.`
+  if (error.status === 409) return error.message
+  if (error.status === 502) return `An upstream service returned invalid data for ${subject}${ref}.`
+  if (error.status === 503) return `${subject[0].toUpperCase()}${subject.slice(1)} is temporarily unavailable${ref}.`
+  if (error.status >= 500) return `The server hit an unexpected error with ${subject}${ref}. Nothing was lost on your side — try again.`
   return error.message
 }
 

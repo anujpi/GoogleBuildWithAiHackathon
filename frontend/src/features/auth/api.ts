@@ -1,7 +1,10 @@
 import { api } from '@/lib/api/client'
 
-export type UserRole = 'FARMER' | (string & {})
-export type User = { id: string; fullName: string; email: string; role: UserRole }
+export type UserRole = 'FARMER' | 'FPO' | 'AGRICULTURAL_OFFICER' | 'ADMIN'
+export type User = { id: string; fullName: string; email: string; role: UserRole; enabled: boolean; assignedDistrictIds: string[] }
+
+/** UX only: the backend enforces this (farm endpoints answer 403 to other roles). */
+export const canOwnFarms = (role: UserRole) => role === 'FARMER' || role === 'FPO'
 
 export type Credentials = { email: string; password: string }
 export type Registration = { fullName: string; email: string; password: string }
@@ -16,4 +19,4 @@ export const register = (body: Registration) => api<unknown>('/auth/register', {
 
 export const getMe = (signal?: AbortSignal) => api<User>('/auth/me', { signal })
 
-export const roleLabel = (role: UserRole) => role.charAt(0) + role.slice(1).toLowerCase().replace(/_/g, ' ')
+export const roleLabel = (role: UserRole) => (role === 'FPO' ? 'FPO' : role.charAt(0) + role.slice(1).toLowerCase().replace(/_/g, ' '))

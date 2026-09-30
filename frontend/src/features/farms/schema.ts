@@ -93,6 +93,7 @@ const farmBase = z.object({
   currentCrop: optionalText('crop name', 100),
   previousCrop: optionalText('crop name', 100),
   season: choice(SEASONS, 'Choose a season'),
+  districtId: z.string().transform((v) => v || null),
 })
 
 /** `soilData` is form-only: "unavailable" sends soilProfile: null, which the backend stores as no soil data. */
@@ -130,6 +131,7 @@ export const emptyFarmForm: FarmFormValues = {
   currentCrop: '',
   previousCrop: '',
   season: '',
+  districtId: '',
   soilData: 'provided',
   soilProfile: emptySoil,
 }
@@ -150,6 +152,7 @@ export const farmToForm = (f: Farm): FarmFormValues => ({
   currentCrop: str(f.currentCrop),
   previousCrop: str(f.previousCrop),
   season: f.season,
+  districtId: f.districtId ?? '',
   ...soilToForm(soilOf(f)),
 })
 
@@ -169,7 +172,7 @@ function soilToForm(s: SoilProfile | null): Pick<FarmFormValues, 'soilData' | 's
 
 /** Which wizard step owns a field path — used to route server validation errors to the right step. */
 export function stepOfField(field: string): number | null {
-  if (field.startsWith('location')) return 0
+  if (field.startsWith('location') || field === 'districtId') return 0
   if (field.startsWith('soilProfile') || field === 'soilData') return 2
   if (['name', 'area', 'areaUnit', 'irrigationType', 'currentCrop', 'previousCrop', 'season'].includes(field)) return 1
   return null
